@@ -1,0 +1,1510 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="《土豆荣耀》重构笔记（十七）随机生成可拾取道具, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>《土豆荣耀》重构笔记（十七）随机生成可拾取道具 | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（十七）随机生成可拾取道具</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/tutorial/" class="post-category">
+                                教程
+                            </a>
+                        
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                《土豆荣耀》重构笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-01-26
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-19
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.5k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    14 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;我们在<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-14/">前面的文章</a>中，已经实现了<code>随机生成足够多的怪物</code>的功能。为了能延长游戏时间，增加游戏的趣味性，我们需要<code>随机生成一些可拾取的道具</code>，来<code>恢复角色的血量</code>或者<code>增加角色可释放的炸弹数</code>。<code>可拾取道具</code>的需求如下：</p>
+<blockquote>
+<p><code>可拾取道具</code>的需求：</p>
+</blockquote>
+<ol>
+<li><code>可拾取道具</code>在设定上是<code>空投补给</code>的，所以在落地之前，<code>可拾取道具</code>将会<code>在降落伞的作用下缓慢下降</code>，在落地之后，<code>可拾取道具</code>上的<code>降落伞缓慢消失</code></li>
+<li><code>可拾取道具</code>一共有两种，分别是<code>能恢复角色血量</code>的<code>医疗箱</code>和<code>增加角色可释放炸弹数</code>的<code>装备箱</code></li>
+<li><code>可拾取道具</code>在<code>降落的过程</code>中也能被角色拾取</li>
+<li><code>装备箱</code>被<code>导弹击中</code>会被直接引爆</li>
+</ol>
+<hr>
+<h2 id="制作降落伞动画"><a href="#制作降落伞动画" class="headerlink" title="制作降落伞动画"></a>制作降落伞动画</h2><p>&emsp;&emsp;根据<code>可拾取道具的需求</code>，我们知道降落伞应该有两个动画，一个是<code>降落时在空中飘动的动画</code>，另一个则是<code>落地时缓慢消失的动画</code>。首先，我们在<code>Assets\Animation</code>和<code>Assets\Animator</code>文件夹下新建一个名为<code>Prop</code>的文件夹，分别用来保存降落伞的<code>动画文件</code>和<code>动画状态机文件</code>。创建完毕之后，我们先来制作<code>降落伞降落时在空中飘动的动画</code>。</p>
+<blockquote>
+<p>制作<code>降落伞降落时在空中飘动的动画</code>的步骤：</p>
+</blockquote>
+<ol>
+<li>在场景中创建一个名为<code>Parachute</code>的<code>Empty GameObject</code>，然后将<code>Assets\Sprites\Props</code>文件夹下的<code>prop_parachute</code>图片拖拽至<code>Parachute</code>物体，使其成为<code>Parachute</code>物体的子物体</li>
+<li>将<code>prop_parachute</code>物体上<code>SpriteRenderer</code>组件的<code>Sorting Layer</code>设置为<code>Foreground</code>，<code>Order In Layer</code>设置为<code>1</code></li>
+<li>打开<code>Animation</code>窗口，在<code>Hierarchy</code>窗口中选中<code>Parachute</code>物体，然后点击<code>Create</code>创建一个名为<code>FloatDown.anim</code>的动画，并将其保存在<code>Assets\Animation\Prop</code>文件夹下</li>
+<li>将<code>Assets\Animation\Prop</code>文件夹下的<code>Parachute.controller</code>文件移动至<code>Assets\Animator\Prop</code>文件夹下</li>
+<li>点击<code>Animation</code>窗口的<code>红点按钮</code>，开始为<code>FloatDown.anim</code>添加关键帧，添加的关键帧信息如下：<blockquote>
+<blockquote>
+<p><code>FloatDown.anim</code>的关键帧：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li><code>第一帧</code>：<ul>
+<li><code>frame</code>: 0</li>
+<li><code>Parachute：Rotaition</code>: (0, 0, -12)</li>
+</ul>
+</li>
+<li><code>第二帧</code>：<ul>
+<li><code>frame</code>: 30</li>
+<li><code>Parachute：Rotaition</code>: (0, 0, 12)</li>
+</ul>
+</li>
+<li><code>第三帧</code>：<ul>
+<li><code>frame</code>: 60</li>
+<li><code>Parachute：Rotaition</code>: (0, 0, 12)</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p>&emsp;&emsp;制作完成之后，我们接着制作<code>降落伞落地时缓慢消失的动画</code>。</p>
+<blockquote>
+<p>制作<code>降落伞落地时缓慢消失的动画</code>的步骤：</p>
+</blockquote>
+<ol>
+<li>为<code>Parachute</code>物体添加<code>Destroyer.cs</code>脚本</li>
+<li>在<code>Animation</code>窗口选中<code>FloatDown</code>下拉框，然后点击<code>Create New Clip</code>创建一个名为<code>Landing.anim</code>的动画，并将其保存在<code>Assets\Animation\Prop</code>文件夹下</li>
+<li>点击<code>Animation</code>窗口的<code>红点按钮</code>，开始为<code>Landing.anim</code>添加关键帧，添加的关键帧信息如下：<blockquote>
+<blockquote>
+<p><code>Landing.anim</code>的关键帧：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li><code>第一帧</code>：<ul>
+<li><code>frame</code>: 0</li>
+<li><code>prop_parachute：Scale</code>: (1, 1, 1)</li>
+<li><code>prop_parachute：GameObject.IsActive</code>: true</li>
+<li><code>prop_parachute：Sprite Renderer.Color</code>: (1, 1, 1, 1)</li>
+</ul>
+</li>
+<li><code>第二帧</code>：<ul>
+<li><code>frame</code>: 45</li>
+<li><code>prop_parachute：Sprite Renderer.Color</code>: (1, 1, 1, 0)</li>
+</ul>
+</li>
+<li><code>第三帧</code>：<ul>
+<li><code>frame</code>: 60</li>
+<li><code>prop_parachute：Scale</code>: (0, 0, 1)</li>
+<li><code>prop_parachute：GameObject.IsActive</code>: false</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>在<code>Landing.anim</code>的最后一帧处添加一个<code>Animation Event</code>，选择<code>DestroyGameObject</code>方法作为这个<code>Animation Event</code>的调用方法</li>
+</ol>
+<hr>
+<h2 id="制作降落伞的其他工作"><a href="#制作降落伞的其他工作" class="headerlink" title="制作降落伞的其他工作"></a>制作降落伞的其他工作</h2><p>&emsp;&emsp;制作完成降落伞的所有动画之后，我们接下来继续编辑<code>控制降落伞动画</code>的<code>动画状态机</code>，也就是Unity自动为我们创建的<code>Parachute.controller</code>文件。</p>
+<blockquote>
+<p>编辑<code>Parachute.controller</code>的步骤：</p>
+</blockquote>
+<ol>
+<li>打开<code>Animator</code>窗口，然后选择<code>Hierarchy</code>窗口中的<code>Parachute</code>物体</li>
+<li>新建一个名为<code>Landing</code>的<code>Trigger</code>变量</li>
+<li>新建一个从<code>FloatDown</code>到<code>Landing</code>的<code>Transition</code>，然后设置<code>转移条件</code>为<code>Landing</code>这一<code>Trigger</code>变量，并取消<code>Has Exit Time</code>的勾选<blockquote>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay17/Image1.png" alt="Parachute.controller"></p>
+</blockquote>
+</li>
+</ol>
+<p>&emsp;&emsp;降落伞的<code>动画状态机</code>编辑完成之后，我们还需要让降落伞能在重力的作用下缓慢下降。因此，我们需要为<code>Parachute</code>物体添加<code>Rigidbody2D</code>组件，并将<code>Parachute</code>物体上<code>Rigidbody2D</code>组件的<code>Linear Grag</code>属性设置为<code>6</code>，用来模拟降落伞下落时受到的<code>空气阻力</code>。</p>
+<hr>
+<h2 id="编写控制可拾取道具的脚本"><a href="#编写控制可拾取道具的脚本" class="headerlink" title="编写控制可拾取道具的脚本"></a>编写控制可拾取道具的脚本</h2><p>&emsp;&emsp;降落伞制作完毕之后，我们先根据<code>可拾取道具的需求</code>来编写<code>控制可拾取道具的脚本</code>。首先，我们在<code>Assets\Scripts</code>文件夹下创建一个名为<code>Prop</code>的文件夹，并在<code>Assets\Scripts\Prop</code>文件夹下分别创建一个名为<code>MedicalBoxPickup</code>和一个名为<code>AmmunitionBoxPickup</code>的C#脚本。创建完毕之后，我们先来编写<code>MedicalBoxPickup.cs</code>，用于控制<code>医疗箱</code>：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>CircleCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>BoxCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MedicalBoxPickup</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"医疗箱的治疗量"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> HealAmount<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"被拾取时播放的音效"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> AudioClip PickupEffect<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Animator m_Animator<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_Landed<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_Animator <span class="token operator">=</span> transform<span class="token punctuation">.</span>root<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Animator<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>CircleCollider2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>isTrigger <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_Landed <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnTriggerEnter2D</span><span class="token punctuation">(</span>Collider2D collision<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 接触到地面</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>collision<span class="token punctuation">.</span>tag <span class="token operator">==</span> <span class="token string">"Ground"</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>m_Landed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Landed <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 脱离降落伞</span>
+            transform<span class="token punctuation">.</span>parent <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            gameObject<span class="token punctuation">.</span><span class="token generic-method function">AddComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 播放降落伞的落地动画</span>
+            m_Animator<span class="token punctuation">.</span><span class="token function">SetTrigger</span><span class="token punctuation">(</span><span class="token string">"Landing"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 被角色拾取</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collision<span class="token punctuation">.</span><span class="token function">CompareTag</span><span class="token punctuation">(</span><span class="token string">"Player"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 恢复角色血量</span>
+            collision<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>PlayerHealth<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Heal</span><span class="token punctuation">(</span>HealAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 播放拾取音效</span>
+            AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>PickupEffect<span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 销毁整个物体</span>
+            <span class="token function">Destroy</span><span class="token punctuation">(</span>transform<span class="token punctuation">.</span>root<span class="token punctuation">.</span>gameObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>代码说明：<br>&emsp;&emsp;这里，我们使用<code>Trigger</code>来识别当前降落伞触碰到哪些物体，因此我们需要新建一个名为<code>Ground</code>的<code>Tag</code>，并将<code>Foreground</code>物体下的子物体<code>env_PlatformBridge</code>、<code>env_PlatformBridge (1)</code>、<code>env_PlatformTop</code>、<code>env_PlatformTop (1)</code>以及<code>env_PlatformUfo</code>的<code>Tag</code>设置为<code>Ground</code>。</p>
+</blockquote>
+<p>&emsp;&emsp;接着，我们需要改写<code>PlayerHealth.cs</code>，编辑<code>PlayerHealth.cs</code>如下：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Rigidbody2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PlayerHealth</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色的最大生命值"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MaxHP <span class="token operator">=</span> <span class="token number">100f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色的受伤音效"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> AudioClip<span class="token punctuation">[</span><span class="token punctuation">]</span> OuchClips<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色受伤后的免伤时间"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> FreeDamagePeriod <span class="token operator">=</span> <span class="token number">0.35f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"血量条"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> SpriteRenderer HealthSprite<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 角色当前的血量</span>
+    <span class="token keyword">private</span> <span class="token keyword">float</span> m_CurrentHP<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 上一次受到伤害的时间</span>
+    <span class="token keyword">private</span> <span class="token keyword">float</span> m_LastFreeDamageTime<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 血量条的初始长度</span>
+    <span class="token keyword">private</span> Vector3 m_InitHealthScale<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 角色当前是否死亡</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_IsDead<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Rigidbody2D m_Rigidbody2D<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_Rigidbody2D <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 初始化变量</span>
+        m_CurrentHP <span class="token operator">=</span> MaxHP<span class="token punctuation">;</span>
+        m_LastFreeDamageTime <span class="token operator">=</span> <span class="token number">0f</span><span class="token punctuation">;</span>
+        m_InitHealthScale <span class="token operator">=</span> HealthSprite<span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale<span class="token punctuation">;</span>
+        m_IsDead <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 受伤函数</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">TakeDamage</span><span class="token punctuation">(</span>Transform enemy<span class="token punctuation">,</span> <span class="token keyword">float</span> hurtForce<span class="token punctuation">,</span> <span class="token keyword">float</span> damage<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_IsDead<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 处于免伤状态，不执行任何操作</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Time<span class="token punctuation">.</span>time <span class="token operator">&lt;=</span> m_LastFreeDamageTime <span class="token operator">+</span> FreeDamagePeriod<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 更新上次受伤害的时间</span>
+        m_LastFreeDamageTime <span class="token operator">=</span> Time<span class="token punctuation">.</span>time<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 给角色加上后退的力，制造击退效果</span>
+        Vector3 hurtVector <span class="token operator">=</span> transform<span class="token punctuation">.</span>position <span class="token operator">-</span> enemy<span class="token punctuation">.</span>position <span class="token operator">+</span> Vector3<span class="token punctuation">.</span>up <span class="token operator">*</span> <span class="token number">5f</span><span class="token punctuation">;</span>
+        m_Rigidbody2D<span class="token punctuation">.</span><span class="token function">AddForce</span><span class="token punctuation">(</span>hurtVector<span class="token punctuation">.</span>normalized <span class="token operator">*</span> hurtForce<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 更新角色的生命值</span>
+        m_CurrentHP <span class="token operator">-</span><span class="token operator">=</span> damage<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 更新生命条</span>
+        <span class="token function">UpdateHealthBar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 随机播放受伤音频</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>OuchClips <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> OuchClips<span class="token punctuation">.</span>Length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> i <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> OuchClips<span class="token punctuation">.</span>Length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>OuchClips<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogWarning</span><span class="token punctuation">(</span><span class="token string">"请设置OuchClips"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 角色死亡</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_CurrentHP <span class="token operator">&lt;=</span> <span class="token number">0f</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Death</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 恢复血量</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Heal</span><span class="token punctuation">(</span><span class="token keyword">float</span> healAmount<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_IsDead<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        m_CurrentHP <span class="token operator">+</span><span class="token operator">=</span> healAmount<span class="token punctuation">;</span>
+
+        <span class="token function">UpdateHealthBar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 更新血量条的函数</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">UpdateHealthBar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 限制当前血量的值</span>
+        m_CurrentHP <span class="token operator">=</span> Mathf<span class="token punctuation">.</span><span class="token function">Clamp</span><span class="token punctuation">(</span>m_CurrentHP<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> MaxHP<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>HealthSprite <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 更新血量条颜色</span>
+            HealthSprite<span class="token punctuation">.</span>color <span class="token operator">=</span> Color<span class="token punctuation">.</span><span class="token function">Lerp</span><span class="token punctuation">(</span>Color<span class="token punctuation">.</span>green<span class="token punctuation">,</span> Color<span class="token punctuation">.</span>red<span class="token punctuation">,</span> <span class="token number">1</span> <span class="token operator">-</span> m_CurrentHP <span class="token operator">*</span> <span class="token number">0.01f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 更新血量条长度</span>
+            HealthSprite<span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale <span class="token operator">=</span> Vector3<span class="token punctuation">.</span><span class="token function">Scale</span><span class="token punctuation">(</span>m_InitHealthScale<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Vector3</span><span class="token punctuation">(</span>m_CurrentHP <span class="token operator">*</span> <span class="token number">0.01f</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogError</span><span class="token punctuation">(</span><span class="token string">"请设置HealthSprite"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 死亡函数</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Death</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_IsDead <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 将碰撞体设置为Trigger，避免和其他物体产生碰撞效果</span>
+        Collider2D<span class="token punctuation">[</span><span class="token punctuation">]</span> cols <span class="token operator">=</span> <span class="token generic-method function">GetComponents<span class="token punctuation">&lt;</span>Collider2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">foreach</span><span class="token punctuation">(</span>Collider2D c <span class="token keyword">in</span> cols<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            c<span class="token punctuation">.</span>isTrigger <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 禁用脚本</span>
+        <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>PlayerController<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>enabled <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 播放死亡动画</span>
+        <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Animator<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">SetTrigger</span><span class="token punctuation">(</span><span class="token string">"Death"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>代码说明：<br>&emsp;&emsp;这里，我们新增了一个变量<code>m_IsDead</code>来检测角色是否死亡，然后增加一个用于恢复角色血量的<code>Heal</code>函数。最后，我们在<code>UpdateHealthBar</code>内限制了角色的血量。</p>
+</blockquote>
+<p>&emsp;&emsp;编写<code>MedicalBoxPickup.cs</code>之后，我们继续编写<code>AmmunitionBoxPickup.cs</code>来控制<code>弹药箱</code>：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>CircleCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>BoxCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AmmunitionBoxPickup</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"增加的炸弹数"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> BombAmount <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"被拾取时播放的音效"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> AudioClip PickupEffect<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Animator m_Animator<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_Landed<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_Animator <span class="token operator">=</span> transform<span class="token punctuation">.</span>root<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Animator<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>CircleCollider2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>isTrigger <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_Landed <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnTriggerEnter2D</span><span class="token punctuation">(</span>Collider2D collision<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 接触到地面</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>collision<span class="token punctuation">.</span>tag <span class="token operator">==</span> <span class="token string">"Ground"</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>m_Landed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Landed <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 脱离降落伞</span>
+            transform<span class="token punctuation">.</span>parent <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            gameObject<span class="token punctuation">.</span><span class="token generic-method function">AddComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 播放降落伞的落地动画</span>
+            m_Animator<span class="token punctuation">.</span><span class="token function">SetTrigger</span><span class="token punctuation">(</span><span class="token string">"Landing"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 被角色拾取</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collision<span class="token punctuation">.</span>tag <span class="token operator">==</span> <span class="token string">"Player"</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 增加炸弹数</span>
+            collision<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>PlayerAttack<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AddBomb</span><span class="token punctuation">(</span>BombAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 播放拾取音效</span>
+            AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>PickupEffect<span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 销毁整个物体</span>
+            <span class="token function">Destroy</span><span class="token punctuation">(</span>transform<span class="token punctuation">.</span>root<span class="token punctuation">.</span>gameObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;最后，我们在<code>PlayerAttack.cs</code>中增加<code>AddBomb</code>函数：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// [RequireComponent(typeof(Animator))]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>PlayerController<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PlayerAttack</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">AddBomb</span><span class="token punctuation">(</span><span class="token keyword">int</span> bombNum<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m_CurrentBombNumber <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<h2 id="制作可拾取道具"><a href="#制作可拾取道具" class="headerlink" title="制作可拾取道具"></a>制作可拾取道具</h2><p>&emsp;&emsp;编写完控制可拾取道具的脚本之后，我们开始制作可拾取道具。首先，我们需要将<code>Assets\Sprites\Props</code>文件夹下的<code>prop_crate_ammo</code>和<code>prop_crate_health</code>图片的<code>Pixel Per Unit</code>都调整为<code>200</code>创建完之后，我们复制场景中的<code>Parachute</code>物体，并将<code>Parachute</code>物体重命名为<code>MedicalBoxPickup</code>，将复制得到的<code>Parachute(1)</code>物体重名为<code>AmmunitionBoxPickup</code>。接着，我们在<code>Assets\Prefabs</code>文件夹下新建一个名为<code>Props</code>的文件夹，用于保存<code>可拾取道具</code>的Prefab。最后，<code>可拾取道具</code>不应该跟怪物产生交互，因此我们还需要新建一个名为<code>Pickup</code>的<code>Layer</code>，并在<code>Layer Collision Matrix</code>中取消<code>Enemy-Pickup</code>和<code>Setting-Pickup</code>这两项的勾选：</p>
+<blockquote>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay17/Image2.png" alt="Layer Collision Matrix"></p>
+</blockquote>
+<p>&emsp;&emsp;做完这些准备工作之后，我们先来制作<code>医疗箱</code>这一可拾取道具：</p>
+<blockquote>
+<p><code>医疗箱</code>制作步骤如下：</p>
+</blockquote>
+<ol>
+<li>将<code>Assets\Sprites\Props</code>文件夹下的<code>prop_crate_health</code>拖拽至<code>MedicalBoxPickup</code>物体成为其子物体</li>
+<li>修改<code>prop_crate_health</code>物体的<code>Position</code>为<code>(0.2, -0.7, 0)</code></li>
+<li>将<code>prop_crate_health</code>物体上<code>SpriteRenderer</code>组件的<code>Sorting Layer</code>设置为<code>Foreground</code>，<code>Order In Layer</code>设置为<code>0</code></li>
+<li>为<code>prop_crate_health</code>物体添加<code>MedicalBoxPickup.cs</code>，设置<code>Heal Amount</code>为<code>50</code>，<code>Pickup Effect</code>为<code>Assets\Audio\FX</code>下的<code>healthPickup</code></li>
+<li>将<code>prop_crate_health</code>物体上<code>BoxCollider2D</code>组件的<code>Offset</code>设置为<code>(-0.2, 0)</code>，<code>Size</code>设置为<code>(1.8, 1.4)</code></li>
+<li>将<code>prop_crate_health</code>物体上<code>CircleCollider2D</code>组件的<code>Offset</code>设置为<code>(-0.2, 0)</code>，<code>Radius</code>设置为<code>1.4</code>，并勾选<code>Is Trigger</code></li>
+<li>将<code>MedicalBoxPickup</code>物体的<code>Layer</code>设置为<code>Pickup</code>，并选择<code>Yes, change children</code>将子物体的<code>Layer</code>也设置为<code>Pickup</code></li>
+<li>将<code>MedicalBoxPickup</code>物体拖拽至<code>Assets\Prefabs\Props</code>文件夹下，将其制作为Prefab，并删除场景中的<code>MedicalBoxPickup</code>物体</li>
+</ol>
+<p>&emsp;&emsp;<code>医疗箱</code>制作完毕之后，我们继续制作<code>弹药箱</code>：</p>
+<blockquote>
+<p><code>弹药箱</code>制作步骤如下：</p>
+</blockquote>
+<ol>
+<li>将<code>Assets\Sprites\Props</code>文件夹下的<code>prop_crate_ammo</code>拖拽至<code>AmmunitionBoxPickup</code>物体成为其子物体</li>
+<li>修改<code>prop_crate_ammo</code>物体的<code>Position</code>为<code>(-0.1, -0.65, 0)</code></li>
+<li>将<code>prop_crate_ammo</code>物体上<code>SpriteRenderer</code>组件的<code>Sorting Layer</code>设置为<code>Foreground</code>，<code>Order In Layer</code>设置为<code>0</code></li>
+<li>为<code>prop_crate_ammo</code>物体添加<code>AmmunitionBoxPickup.cs</code>，设置<code>Bomb Amount</code>为<code>2</code>，<code>Pickup Effect</code>为<code>Assets\Audio\FX</code>下的<code>bombCollect</code></li>
+<li>将<code>prop_crate_ammo</code>物体上<code>BoxCollider2D</code>组件的<code>Offset</code>设置为<code>(0, -0.05)</code>，<code>Size</code>设置为<code>(1.84, 1.25)</code></li>
+<li>将<code>prop_crate_ammo</code>物体上<code>CircleCollider2D</code>组件的<code>Offset</code>设置为<code>(0, 0)</code>，<code>Radius</code>设置为<code>1.4</code>，并勾选<code>Is Trigger</code></li>
+<li>将<code>AmmunitionBoxPickup</code>物体的<code>Layer</code>设置为<code>Pickup</code>，并选择<code>Yes, change children</code>将子物体的<code>Layer</code>也设置为<code>Pickup</code></li>
+<li>新建一个名为<code>AmmunitionBox</code>的<code>Tag</code>，将<code>prop_crate_ammo</code>物体的<code>Tag</code>设置为<code>AmmunitionBox</code></li>
+<li>为<code>prop_crate_ammo</code>物体添加<code>Bomb.cs</code>，并修改其属性如下：<blockquote>
+<blockquote>
+<p><code>Bomb.cs</code>的属性</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>DamageAmount</code>: 50</li>
+<li><code>BombRadius</code>: 10</li>
+<li><code>BombForce</code>: 800</li>
+<li><code>BoomClip</code>: <code>Assets\Audio\FX</code>下的<code>bigboom</code></li>
+<li><code>FuseTime</code>: 1.5f</li>
+<li><code>FuseClip</code>: <code>Assets\Audio\FX</code>下的<code>bombfuse</code></li>
+</ul>
+</li>
+<li>将<code>AmmunitionBoxPickup</code>物体拖拽至<code>Assets\Prefabs\Props</code>文件夹下，将其制作为Prefab，并删除场景中的<code>AmmunitionBoxPickup</code>物体</li>
+</ol>
+<p>&emsp;&emsp;<code>弹药箱</code>制作完毕之后，为了能让<code>弹药箱</code>被<code>导弹</code>击中之后直接引爆，我们需要修改<code>Missile.cs</code>的<code>OnTriggerEnter2D</code>函数：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Rigidbody2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>CapsuleCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Missile</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnTriggerEnter2D</span><span class="token punctuation">(</span>Collider2D collider<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 不对角色产生任何操作</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collider<span class="token punctuation">.</span><span class="token function">CompareTag</span><span class="token punctuation">(</span><span class="token string">"Player"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 引爆弹药箱</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collider<span class="token punctuation">.</span>tag <span class="token operator">==</span> <span class="token string">"AmmunitionBox"</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            collider<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Bomb<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Explode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 对怪物造成伤害</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collider<span class="token punctuation">.</span><span class="token function">CompareTag</span><span class="token punctuation">(</span><span class="token string">"Enemy"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            collider<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Enemy<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">TakeDamage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">,</span> HurtForce<span class="token punctuation">,</span> DamageAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token function">OnExplode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;最后，如果<code>弹药箱</code>在降落过程中被引爆，那么我们需要直接销毁整个降落伞，所以我们还需要修改<code>Bomb.cs</code>的<code>Explode</code>函数</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>AudioSource<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Bomb</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token comment" spellcheck="true">// 爆炸函数</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Explode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取一定范围内的所有Layer为Enemy或者Player物体</span>
+        Collider2D<span class="token punctuation">[</span><span class="token punctuation">]</span> objects <span class="token operator">=</span> Physics2D<span class="token punctuation">.</span><span class="token function">OverlapCircleAll</span><span class="token punctuation">(</span>transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span> BombRadius<span class="token punctuation">,</span> m_LayerMask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">foreach</span><span class="token punctuation">(</span>Collider2D obj <span class="token keyword">in</span> objects<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 对怪物造成伤害</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span>tag <span class="token operator">==</span> <span class="token string">"Enemy"</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                obj<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Enemy<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">TakeDamage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">,</span> BombForce<span class="token punctuation">,</span> DamageAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 对角色造成伤害</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span><span class="token function">CompareTag</span><span class="token punctuation">(</span><span class="token string">"Player"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                obj<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>PlayerHealth<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">TakeDamage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">,</span> BombForce<span class="token punctuation">,</span> DamageAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 实例化爆炸特效</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>BombExplosion <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Instantiate</span><span class="token punctuation">(</span>BombExplosion<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span> Quaternion<span class="token punctuation">.</span>identity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogWarning</span><span class="token punctuation">(</span><span class="token string">"请设置BombExplosion"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 播放爆炸音效</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>BoomClip <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>BoomClip<span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogWarning</span><span class="token punctuation">(</span><span class="token string">"请设置BoomClip"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 直接删除父物体</span>
+        <span class="token function">Destroy</span><span class="token punctuation">(</span>transform<span class="token punctuation">.</span>root<span class="token punctuation">.</span>gameObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<h2 id="生成可拾取道具"><a href="#生成可拾取道具" class="headerlink" title="生成可拾取道具"></a>生成可拾取道具</h2><p>&emsp;&emsp;最后，我们还需要使用<code>Generator</code>来生成我们制作好的可交互道具。首先，我们在<code>Hierarchy</code>窗口的<code>Generator</code>物体下创建一个名为<code>PickupGenerators</code>的<code>Empty GameObject</code>。接着，我们在<code>PickupGenerators</code>物体下创建一个名为<code>PickupGenerator</code>的<code>Empty GameObject</code>，并为<code>PickupGenerator</code>物体添加<code>Generator.cs</code>组件。</p>
+<blockquote>
+<p><code>PickupGenerator</code>的设置如下：</p>
+</blockquote>
+<ul>
+<li><code>Position</code>: (-10, 20, 0)</li>
+<li><code>Generate Delay</code>: 5</li>
+<li><code>Generate Interval</code>: 10</li>
+<li><code>Prefab Orientation</code>: None</li>
+<li><code>Prefabs</code>:<ul>
+<li><code>Element0</code>: <code>Assets\Prefabs\Props</code>文件夹下的<code>AmmunitionBoxPickup</code>物体的Prefab</li>
+<li><code>Element1</code>: <code>Assets\Prefabs\Props</code>文件夹下的<code>MedicalBoxPickup</code>物体的Prefab</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;&emsp;编辑完之后，我们将<code>PickupGenerator</code>物体拖拽至<code>Assets\Prefabs\Generators</code>文件夹下将其制作为Prefab。然后复制场景中已经成为实例对象的<code>PickupGenerator</code>物体得到<code>PickupGenerator (1)</code>物体，并将<code>PickupGenerator (1)</code>物体的<code>Position</code>修改为<code>(10, 20, 0)</code>。运行游戏，我们可以看到此时游戏中已经能不断随机生成<code>弹药箱</code>和<code>医疗箱</code>。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&emsp;&emsp;至此，我们已经完成了<code>随机生成可交互道具</code>的功能。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay15</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-17/">https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-17/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/potatoglorytutorial-18/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;到目前为止，我们已经实现了使用Generator来生成怪物、不可交互物体和可拾取道具的功能。但我们发现，现有的Generator只能做到在固定的时刻、在固定的位置随机生成某个Prefab，我们希望能拓展Gener
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-01-27
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/potatoglorytutorial-16/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（十六）随机生成不可交互物体">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（十六）随机生成不可交互物体</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;在前面的文章中，我们提到，为了不让游戏背景那么一成不变，显得更有动感一点，我们通常需要加入一些不能与游戏内的元素发生交互的背景动画。但有一些作为背景动画的物体并不是在进行重复运动的，我们不能简单地为制作循环播放的
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>

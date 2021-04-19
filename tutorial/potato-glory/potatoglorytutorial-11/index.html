@@ -1,0 +1,1340 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="《土豆荣耀》重构笔记（十一）实现发射导弹的功能, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>《土豆荣耀》重构笔记（十一）实现发射导弹的功能 | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（十一）实现发射导弹的功能</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/tutorial/" class="post-category">
+                                教程
+                            </a>
+                        
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                《土豆荣耀》重构笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-04-19
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-19
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.4k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    13 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;在实现了怪物攻击角色的功能之后，我们接下来需要实现玩家攻击怪物的功能。玩家攻击怪物的方式有<code>发射导弹</code>和<code>放置炸弹</code>。<code>导弹在场景中会以恒定速率飞行，碰到物体时爆炸，若碰到怪物则对怪物造成伤害</code>。接下来，我们开始制作能伤害怪物导弹并实现角色发射导弹的功能。</p>
+<hr>
+<h2 id="调整图片的Pixels-Per-Unit"><a href="#调整图片的Pixels-Per-Unit" class="headerlink" title="调整图片的Pixels Per Unit"></a>调整图片的Pixels Per Unit</h2><p>&emsp;&emsp;在<code>Hierarchy</code>创建一个名为<code>Missile</code>的<code>Empty GameObject</code>，然后将<code>Assets\Sprites\Props</code>下的<code>part_rocket</code>和<code>part_flame</code>拖拽到<code>Missile</code>成为其子物体<code>（由于part_flame是图集，所以添加到场景后会创建一个名为frame1的GameObject）</code>。可以看到，此时<code>part_rocket</code>和<code>flame1</code>比角色和怪物大了很多，这是因为<code>part_rocket</code>和<code>part_flame</code>的像素太大了，我们需要对<code>part_rocket</code>和<code>part_flame</code>进行调整。</p>
+<p>&emsp;&emsp;我们可以在游戏场景中调整<code>part_rocket</code>和<code>flame1</code>的<code>Scale</code>将其缩小，但是这样的话，我们每次往场景里添加<code>part_rocket</code>和<code>part_flame</code>时，都必须手动将其缩小一遍。为了减少不必要的修改，我们直接修改<code>part_rocket</code>和<code>part_flame</code>的<code>Pixels Per Unit</code>。在Unity里，<code>Pixels Per Unit</code>表示<code>一个Unity3D单位对应该图片多少个图片像素</code>，我们增大图片的<code>Pixels Per Unit</code>，那么将该图片添加到游戏场景中时，其大小也会随之变小。</p>
+<p>&emsp;&emsp;在<code>Project</code>窗口分别选中<code>part_rocket</code>和<code>part_flame</code>，然后将它们的<code>Pixels Per Unit</code>放大<code>5</code>倍，也就是分别修改为<code>500</code>和<code>125</code>。修改完成后，点击右下角的<code>Apply</code>，可以看到，游戏场景中的<code>part_rocket</code>和<code>part_flame</code>都缩小了。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image1.png" alt="修改Pixels Per Unit"></p>
+<hr>
+<h2 id="创建导弹Prefab"><a href="#创建导弹Prefab" class="headerlink" title="创建导弹Prefab"></a>创建导弹Prefab</h2><p>&emsp;&emsp;接下来，我们创建一个名为<code>Weapons</code>的<code>Sorting Layer</code>，然后调整<code>Weapons</code>这一<code>Sorting Layer</code>的位置，让其处于<code>Foreground</code>和<code>Character</code>之间。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image2.png" alt="Sorting Layer"></p>
+<blockquote>
+<p><code>Missile</code>子物体各属性的值：</p>
+</blockquote>
+<ul>
+<li><code>part_rocket</code>:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>: Weapons, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li><code>flame1</code>:<ul>
+<li><code>Position</code>: (-1.5, 0, 0)</li>
+<li><code>Sorting Layer</code>: Weapons, <code>Order In Layer</code>: 0</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;&emsp;修改完成之后，我们在<code>Assets\Prefabs</code>下创建一个名为<code>Weapons</code>的文件夹，并将<code>Missile</code>从<code>Hierarchy</code>窗口拖到<code>Weapons</code>文件夹下，将<code>Missile</code>做成Prefab。</p>
+<hr>
+<h2 id="让导弹飞起来"><a href="#让导弹飞起来" class="headerlink" title="让导弹飞起来"></a>让导弹飞起来</h2><p>&emsp;&emsp;为了导弹拥有速度这一物理属性，我们需要为<code>Missile</code>添加<code>Rigidbody2D</code>组件。为了避免导弹出现翻转的问题，我们需要勾选<code>Rigidbody2D</code>组件的<code>Freeze Rotation Z</code>。此外，因为导弹在飞行的过程中，不会受到重力影响下落，为了<code>提高游戏性能</code>，我们可以将其<code>Rigidbody2D</code>组件的<code>Body Type</code>设置为<code>Kinematic</code>。关于<code>Rigidbody2D</code>组件各种<code>Body Type</code>对应的作用，可以查阅<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-Rigidbody2D.html">Unity关于Rigidbody2D的说明</a>。</p>
+<p>&emsp;&emsp;接着，为了让导弹知道是否撞上场景内的其他物体，我们为<code>Missile</code>添加一个<code>Capsule Collider2D</code>组件。因为导弹和其他物体碰撞之后，不会产生一系列的物理碰撞效果，所以为了<code>提高游戏性能</code>，我们可以将勾选<code>Capsule Collider 2D</code>组件的<code>Is Trigger</code>属性。这样，当<code>Missile</code>和其他物体发生碰撞时，物理引擎将不对<code>Missile</code>和其他物体进行碰撞模拟。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image3.png" alt="Missile的组件属性"></p>
+<p>&emsp;&emsp;添加完<code>Rigidbody2D</code>和<code>Capsule Collider2D</code>后，我们在<code>Assets\Scripts</code>下创建一个名为<code>Weapons</code>的文件夹，然后在<code>Weapons</code>文件夹下创建一个名为<code>Missile</code>的C#脚本。最后我们将<code>Missile.cs</code>添加到<code>Missile</code>上，并打开<code>Missile.cs</code>进行编辑。</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Rigidbody2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>CapsuleCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Missile</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"爆炸效果"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> GameObject Explosion<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"导弹飞行的速度"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> Speed <span class="token operator">=</span> <span class="token number">25f</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Rigidbody2D m_Rigidbody2D<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> CapsuleCollider2D m_Trigger<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取引用</span>
+        m_Rigidbody2D <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        m_Trigger <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>CapsuleCollider2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 确保Body Type为Kinematic</span>
+        m_Rigidbody2D<span class="token punctuation">.</span>bodyType <span class="token operator">=</span> RigidbodyType2D<span class="token punctuation">.</span>Kinematic<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 设置速度</span>
+        m_Rigidbody2D<span class="token punctuation">.</span>velocity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span>Speed<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 确保勾选了Trigger</span>
+        m_Trigger<span class="token punctuation">.</span>isTrigger <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 导弹爆炸时调用的函数</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnExplode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Explosion <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 随机生成一个四元数</span>
+            Quaternion randomRotation <span class="token operator">=</span> Quaternion<span class="token punctuation">.</span><span class="token function">Euler</span><span class="token punctuation">(</span><span class="token number">0f</span><span class="token punctuation">,</span> <span class="token number">0f</span><span class="token punctuation">,</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0f</span><span class="token punctuation">,</span> <span class="token number">360f</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 实例化爆炸对象</span>
+            <span class="token function">Instantiate</span><span class="token punctuation">(</span>Explosion<span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span> randomRotation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogWarning</span><span class="token punctuation">(</span><span class="token string">"请设置Explosion"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//销毁自身</span>
+        <span class="token function">Destroy</span><span class="token punctuation">(</span>gameObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnTriggerEnter2D</span><span class="token punctuation">(</span>Collider2D collider<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 不对角色产生任何操作</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collider<span class="token punctuation">.</span><span class="token function">CompareTag</span><span class="token punctuation">(</span><span class="token string">"Player"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token function">OnExplode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ul>
+<li><code>Rigidbody2D.bodyType</code>：我们可以通过修改<code>Rigidbody2D.bodyType</code>的值来动态修改<code>Rigidbody2D</code>的类型</li>
+<li><code>Collider2D.isTrigger</code>：我们可以通过修改<code>Collider2D.isTrigger</code>的值来动态设置Collider2D是否开启<code>Trigger</code>属性</li>
+<li><code>OnTriggerEnter2D</code>：当我们开启Collider2D的<code>Trigger</code>属性时，我们需要使用<code>OnTriggerEnter</code>来知道Collider2D正和哪些物体发生接触。类似的可用于Trigger检测的函数还有<code>OnTriggerStay</code>和<code>OnTriggerExit</code>。</li>
+</ul>
+<p>&emsp;&emsp;编辑完<code>Missile.cs</code>之后，运行游戏，可以看到导弹在场景内以恒定速率飞行，在接触到其他物体之后消失。</p>
+<hr>
+<h2 id="制作导弹爆炸动画"><a href="#制作导弹爆炸动画" class="headerlink" title="制作导弹爆炸动画"></a>制作导弹爆炸动画</h2><p>&emsp;&emsp;导弹在接触到其他物体之后直接消失游戏体验不佳，因此我们还需要一个爆炸的动画。</p>
+<p>&emsp;&emsp;首先，在<code>Assets\Animation</code>和<code>Assets\Animator</code>下创建一个名为<code>Weapons</code>的文件夹。接着，打开<code>Assets\Sprites\FX</code>文件夹，可以看到<code>part_explosion</code>的<code>Sprite Mode</code>为<code>Multiple</code>，被切割为四张图片。因为导弹爆炸动画是更换当前显示的图片实现的，<code>四张图片分别代表爆炸动画的四个关键帧</code>，这里，我们<code>采用一种新的制作帧动画的方式来快速制作帧动画</code>。</p>
+<p>&emsp;&emsp;在场景中新建一个名为<code>MissileExplosion</code>的Empty GameObject，然后同时选中<code>part_explosion</code>切割出来的四张图片，然后将它们拖拽到<code>Hierarchy</code>窗口中<code>MissileExplosion</code>上。因为我们同时给游戏场景里面添加了多个Sprite，Unity会认为我们想使用这些Sprite为<code>MissileExplosion</code>制作帧动画，所以会询问我们新建的帧动画保存的位置。这里，我们将该帧动画命名为<code>MissileExplosion.anim</code>并将其保存至<code>Assets\Animation\Weapons</code>文件夹下，<code>Unity会自动利用我们选择的四张图片帮我们创建好帧动画</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image4.png" alt="制作导弹爆炸动画"></p>
+<p>&emsp;&emsp;接着，我们在<code>Project</code>窗口将<code>Assets\Animation\Weapons</code>文件夹下的<code>MissileExplosion.controller</code>移动至<code>Assets\Animator\Weapons</code>文件夹下。因为我们是为空物体创建的动画，因此我们看不到动画的位置。为了便于观察，我们需要为<code>MissileExplosion</code>添加一个初始Sprite，这里我们选择<code>Assets\Sprites\FX</code>下<code>part_explosion</code>切割出来的<code>part_explosion_0</code>作为<code>MissileExplosion</code>的初始Sprite。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image5.png" alt="设置初始Sprite"></p>
+<p>&emsp;&emsp;最后，我们还需要在<code>导弹爆炸时</code>播放爆炸音效。在<code>MissileExplosion</code>下添加<code>AudioSource</code>组件，然后将<code>Assets\Audio\FX</code>下的<code>rocketExplode</code>拖拽到<code>AudioClip</code>的赋值框处。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image6.png" alt="添加爆炸音效"></p>
+<p>&emsp;&emsp;添加完音效之后，我们将<code>MissileExplosion</code>拖拽到<code>Assets\Prefabs\Weapons</code>文件夹下做成Prefab。运行游戏，可以听到播放了一次导弹爆炸音效，且导弹爆炸动画在不断循环播放。</p>
+<hr>
+<h2 id="添加Animation-Event"><a href="#添加Animation-Event" class="headerlink" title="添加Animation Event"></a>添加Animation Event</h2><p>&emsp;&emsp;我们不希望导弹爆炸动画一直在游戏场景中循环播放，我们希望导弹爆炸动画播放完之后，动画能自动被销毁。也就是说，我们希望导弹爆炸动画在播放至最后一帧时，能调用一个销毁自己的函数，我们可以使用<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/animeditor-AnimationEvents.html">Animation Event</a>来完成这件事。</p>
+<p>&emsp;&emsp;首先，我们在<code>Assets\Scripts\Utility</code>文件夹下创建一个名为<code>Destroyer</code>的C#脚本后，编辑<code>Destroyer.cs</code>。</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Destroyer</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 销毁自身</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">DestroyGameObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token function">Destroy</span><span class="token punctuation">(</span>gameObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;接着，把<code>Destroyer.cs</code>添加到<code>Hierarchy</code>窗口的<code>MissileExplosion</code>上。我们打开<code>Animation</code>窗口并选择<code>MissileExplosion</code>，在最后一帧处右击鼠标选择<code>Add Animation Event</code>并设置调用的函数为<code>DestroyGameObject</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image7.png" alt="Animation Event"></p>
+<p>&emsp;&emsp;运行游戏，可以看到爆炸动画播放完之后，被自动销毁。最后，我们将<code>MissileExplosion</code>产生的修改Apply至Prefab上，删除<code>Hierarchy</code>窗口中的<code>MissileExplosion</code>物体，并选中<code>Assets\Prefabs\Weapons</code>下的<code>Missile</code>，将<code>MissileExplosion</code>拖拽到<code>Explosion</code>赋值框。<code>因为我们是在Prefab做修改，所以场景中所有Prefab的实例都会同步修改</code>。再次运行游戏，可以看到导弹接触到物体之后，已经能正常产生爆炸效果了。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image8.png" alt="修改导弹Prefab"></p>
+<hr>
+<h2 id="制作导弹飞行特效"><a href="#制作导弹飞行特效" class="headerlink" title="制作导弹飞行特效"></a>制作导弹飞行特效</h2><p>&emsp;&emsp;为了避免让玩家决定导弹是在平移而不是飞行，我们需要在导弹飞行过程中加入<code>火焰喷射动画</code>和<code>烟雾拖尾粒子</code>。</p>
+<p>&emsp;&emsp;首先，我们使用跟创建导弹爆炸动画一样的方式创建导弹的飞行过程中的火焰喷射动画。在<code>Project</code>窗口中同时选中<code>flame1</code>和<code>flame2</code>两张图片，并将它们拖动至<code>Missile</code>的子物体<code>flame1</code>上。接着，我们将新创建的动画命名为<code>Flame.anim</code>并将其保存至<code>Assets\Animation\Weapons</code>下，并将<code>Assets\Animation\Weapons</code>下的<code>flame1.controller</code>移动至<code>Assets\Animator\Weapons</code>文件夹即可。此时，将导弹的飞行速度调小至<code>2</code>，然后运行游戏，就可以看到导弹飞行的过程中在播放火焰喷射动画。</p>
+<p>&emsp;&emsp;除了创建火焰喷射动画，我们还需要使用<code>粒子系统（Particle System）</code>来制作导弹飞行时的烟雾拖尾效果。</p>
+<p>&emsp;&emsp;首先，在<code>Missile</code>下创建一个名为<code>trail</code>的Empty GameObject，然后设置其<code>Position</code>为<code>(-0.5, 0, 0)</code>。接着，我们为<code>trail</code>添加<code>Particle System</code>组件，因为<code>Particle System</code>组件里面还内嵌了很多包括<code>Emission</code>、<code>Render</code>等模块，我们不在这里一一细讲每个模块，感兴趣的同学可以参阅<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ParticleSystemModules.html">Particle System modules</a>来了解例子系统各个模块的功能。</p>
+<blockquote>
+<p><code>trail</code>物体的<code>Particle System</code>组件设置：</p>
+</blockquote>
+<ul>
+<li>Main Module:<ul>
+<li><code>Start Lifetime</code>: 0.3</li>
+<li><code>Start Size(Random Between Two Constants)</code>: (0.3, 0.8)</li>
+<li><code>Start Rotation(Random Between Two Constants)</code>: (-30, 30)</li>
+<li><code>Start Color(Random Between Two Colors)</code> :((255, 255, 255, 255), (147, 142, 138, 255))</li>
+<li><code>Gravity Modefier</code>: 0.1</li>
+<li><code>Simulation Space</code>: World</li>
+<li><code>Scaling Mode</code>: Shape</li>
+</ul>
+</li>
+<li>Emission:<ul>
+<li><code>Rate Over Time</code>: 30</li>
+</ul>
+</li>
+<li>Limit Velocity Over Lifetime:<ul>
+<li><code>Dampen</code>: 0.7</li>
+</ul>
+</li>
+<li>Size over Lifetime:<ul>
+<li><code>Size(Random Between Two Constants)</code>: (1, 2)</li>
+</ul>
+</li>
+<li>Rotation over Lifetime:<ul>
+<li><code>Angular Velocity(Random Between Two Constants)</code>: (-10, 10)</li>
+</ul>
+</li>
+<li>Texture Sheet Animation<ul>
+<li><code>Animation</code>: Single Row</li>
+<li><code>Randow Row</code>: false</li>
+<li><code>Frame over Time(Random Between Two Constants)</code>: (1, 3.9996)</li>
+</ul>
+</li>
+<li>Render<ul>
+<li><code>Material</code>: Smoke</li>
+<li><code>Max Particle Size</code>: 5</li>
+<li><code>Sorting Layer</code>: Weapons</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;&emsp;修改完成后，将导弹的速度调回<code>25</code>，运行游戏，可以看到导弹飞行的过程中出现了烟雾拖尾的效果。此时，我们将<code>Missile</code>的修改Apply至它的Prefab上，保存修改，然后在<code>Hierarchy</code>窗口中删除<code>Missile</code>物体。需要注意的是，为了方便阐述，上面大部分属性都没有使用<code>Curve</code>，为了做出效果更好的粒子系统，大家可以根据自己的喜好来调整各个<code>Particle System modules</code>的属性。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image9.png" alt="Particle System modules"></p>
+<hr>
+<h2 id="发射导弹"><a href="#发射导弹" class="headerlink" title="发射导弹"></a>发射导弹</h2><p>&emsp;&emsp;接下来，我们可以实现发射导弹的功能。在<code>Assets\Scripts\Player</code>下创建一个名为<code>PlayerAttack</code>的C#脚本。然后编辑<code>PlayerAttack.cs</code>如下</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// [RequireComponent(typeof(Animator))]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>PlayerController<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PlayerAttack</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"导弹Prefab"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> Missile MissilePrefab<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"导弹发射点"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> Transform ShootingPoint<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"发射导弹的音效"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> AudioClip ShootEffect<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// private Animator m_Animator;</span>
+    <span class="token keyword">private</span> PlayerController m_PlayerCtrl<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取引用</span>
+        <span class="token comment" spellcheck="true">// m_Animator = GetComponent&lt;Animator>();</span>
+        m_PlayerCtrl <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>PlayerController<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>Input<span class="token punctuation">.</span><span class="token function">GetButtonDown</span><span class="token punctuation">(</span><span class="token string">"Fire1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 发射导弹</span>
+            <span class="token function">Fire</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Fire</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// // 播放射击动画</span>
+        <span class="token comment" spellcheck="true">// m_Animator.SetTrigger("Shoot");</span>
+        <span class="token comment" spellcheck="true">// 播放射击音效</span>
+        AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>ShootEffect<span class="token punctuation">,</span> ShootingPoint<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>ShootingPoint <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 创建导弹</span>
+            Missile instance <span class="token operator">=</span> <span class="token function">Instantiate</span><span class="token punctuation">(</span>MissilePrefab<span class="token punctuation">,</span> ShootingPoint<span class="token punctuation">.</span>position<span class="token punctuation">,</span> Quaternion<span class="token punctuation">.</span>identity<span class="token punctuation">)</span> <span class="token keyword">as</span> Missile<span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 如果角色跟导弹的朝向不一致，就翻转导弹</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>m_PlayerCtrl<span class="token punctuation">.</span>FacingRight <span class="token operator">^</span> instance<span class="token punctuation">.</span>FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                instance<span class="token punctuation">.</span><span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogError</span><span class="token punctuation">(</span><span class="token string">"请设置ShootingPoint"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>此外，我们还需要编辑<code>Missile.cs</code>，加入<code>Flip函数</code>，并且添加根据朝向来设置速度的代码。</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Rigidbody2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>CapsuleCollider2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Missile</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"导弹是否朝向右边"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> FacingRight <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"爆炸效果"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> GameObject Explosion<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"导弹飞行的速度"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> Speed <span class="token operator">=</span> <span class="token number">25f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"导弹造成的伤害"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> DamageAmount <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Rigidbody2D m_Rigidbody2D<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> CapsuleCollider2D m_Trigger<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取引用</span>
+        m_Rigidbody2D <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        m_Trigger <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>CapsuleCollider2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 确保Body Type为Kinematic</span>
+        m_Rigidbody2D<span class="token punctuation">.</span>bodyType <span class="token operator">=</span> RigidbodyType2D<span class="token punctuation">.</span>Kinematic<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 根据导弹朝向设置速度</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Rigidbody2D<span class="token punctuation">.</span>velocity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span>Speed<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Rigidbody2D<span class="token punctuation">.</span>velocity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span><span class="token operator">-</span>Speed<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 确保勾选了Trigger</span>
+        m_Trigger<span class="token punctuation">.</span>isTrigger <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 更新朝向</span>
+        FacingRight <span class="token operator">=</span> <span class="token operator">!</span>FacingRight<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 修改scale的x分量实现转向</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale <span class="token operator">=</span> Vector3<span class="token punctuation">.</span><span class="token function">Scale</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">Vector3</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 导弹爆炸时调用的函数</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnExplode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Explosion <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 随机生成一个四元数</span>
+            Quaternion randomRotation <span class="token operator">=</span> Quaternion<span class="token punctuation">.</span><span class="token function">Euler</span><span class="token punctuation">(</span><span class="token number">0f</span><span class="token punctuation">,</span> <span class="token number">0f</span><span class="token punctuation">,</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0f</span><span class="token punctuation">,</span> <span class="token number">360f</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 实例化爆炸对象</span>
+            <span class="token function">Instantiate</span><span class="token punctuation">(</span>Explosion<span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span> randomRotation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogWarning</span><span class="token punctuation">(</span><span class="token string">"请设置Explosion"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//销毁自身</span>
+        <span class="token function">Destroy</span><span class="token punctuation">(</span>gameObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">OnTriggerEnter2D</span><span class="token punctuation">(</span>Collider2D collider<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 不对角色产生任何操作</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>collider<span class="token punctuation">.</span><span class="token function">CompareTag</span><span class="token punctuation">(</span><span class="token string">"Player"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token function">OnExplode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;编辑完成之后，我们在<code>Player</code>下新建一个名为<code>ShootingPoint</code>的Empty GameObject，然后将其<code>Position</code>设置为<code>(1.2, 0.25, 0)</code>。接着，我们将<code>Missile</code>的Prefab拖拽至<code>MissilePrefab</code>的赋值框处，将<code>Player</code>的子物体<code>ShootingPoint</code>拖拽至<code>ShootingPoint</code>的赋值框处，将<code>Assets\Audio\FX</code>下的<code>bazooka</code>拖拽到<code>ShootEffect</code>的赋值框处，最后点击<code>Apply</code>将修改应用至<code>Player</code>的Prefab，保存场景产生的修改。运行游戏，我们已经可以<code>通过点击鼠标左键来发射导弹</code>了。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay11/Image10.png" alt="设置PlayerAttack的属性"></p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&emsp;&emsp;至此，我们已经完成了角色发射导弹的功能。由于篇幅限制，我们将会在下一篇文章里实现利用导弹对怪物造成伤害的功能。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay9</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/Tilemap-Isometric-SpritesImport.html">Importing and preparing Sprites</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-Rigidbody2D.html">Unity的Rigidbody2D</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/animeditor-AnimationEvents.html">Using Animation Events</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ParticleSystemModules.html">Particle System modules</a></li>
+</ol>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-11/">https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-11/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/potatoglorytutorial-12/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（十二）对怪物造成伤害">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（十二）对怪物造成伤害</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;在上篇文章，我们已经实现了发射导弹的功能，但此时导弹并不能对怪物造成任何伤害。接下来，我们来实现对怪物造成伤害的功能。
+
+为怪物添加血量管理&emsp;&emsp;打开Enemy.cs，可以看到目前怪物只有在场景
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-19
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/potatoglorytutorial-23/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（二十三）打包游戏">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（二十三）打包游戏</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;在上篇文章中，我们实现了虚拟摇杆和按钮，完成了游戏所有的开发工作，是时候对游戏进行打包，在手机上进行测试了。
+
+修改Player Settings&emsp;&emsp;在进行打包前，我们需要修改一下游戏的Pla
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-03
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>

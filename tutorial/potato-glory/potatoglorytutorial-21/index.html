@@ -1,0 +1,1379 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="《土豆荣耀》重构笔记（二十一）制作游戏菜单场景, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>《土豆荣耀》重构笔记（二十一）制作游戏菜单场景 | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（二十一）制作游戏菜单场景</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/tutorial/" class="post-category">
+                                教程
+                            </a>
+                        
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                《土豆荣耀》重构笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-01-31
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-19
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.3k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    9 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;到目前为止，我们游戏中只有一个游戏场景，我们还需要制作一个游戏菜单场景，让玩家可以选择开始游戏。</p>
+<hr>
+<h2 id="创建游戏菜单场景"><a href="#创建游戏菜单场景" class="headerlink" title="创建游戏菜单场景"></a>创建游戏菜单场景</h2><p>&emsp;&emsp;首先，我们在顶部菜单栏选择<code>File-&gt;New Scene</code>，然后按快捷键<code>Ctrl + S</code>将创建的场景保存至<code>Assets\Scenes</code>文件夹下，并将其命名为<code>GameMenuScene</code>。接着，我们创建一个用于绘制UI的Canvas：</p>
+<blockquote>
+<p>创建Canvas的步骤如下：</p>
+</blockquote>
+<ol>
+<li>在<code>Hierarchy</code>窗口中右击鼠标，选择<code>UI-&gt;Canvas</code>在场景中新建一个<code>Canvas</code>，然后将其重命名为<code>UICanvas</code></li>
+<li>接着修改<code>UICanvas</code>下<code>Canvas Scaler</code>组件<blockquote>
+<p><code>Canvas Scaler</code>组件的属性</p>
+</blockquote>
+<ul>
+<li><code>UI Scale Mode</code>: <code>Scale With Screen Size</code></li>
+<li><code>Reference Resolution</code>: <code>X(1920), Y(1080)</code></li>
+<li><code>Screen Match Mode</code>: <code>Match Width or Height</code></li>
+<li><code>Match</code>: <code>0.5</code></li>
+</ul>
+</li>
+</ol>
+<p>&emsp;&emsp;创建完<code>UICanvas</code>之后，我们开始添加UI，添加UI的步骤如下：</p>
+<blockquote>
+<p>添加<code>UI</code>的步骤：</p>
+</blockquote>
+<ol>
+<li>在<code>UICanvas</code>物体下新建一个<code>Panel</code>，然后将其重名为<code>BackgroundPanel</code>，然后删除<code>BackgroundPanel</code>的<code>Image</code>组件</li>
+<li>在<code>BackgroundPanel</code>物体下新建一个<code>Panel</code>，然后其重名为<code>Background</code><blockquote>
+<blockquote>
+<p><code>Background</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Environment</code>文件夹下的<code>env_bg</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>BackgroundPanel</code>物体下新建一个<code>Panel</code>，然后其重名为<code>Gherkin</code><blockquote>
+<blockquote>
+<p><code>Gherkin</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Environment</code>文件夹下的<code>env_Gherkin</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>BackgroundPanel</code>物体下新建一个<code>Panel</code>，然后其重名为<code>BigBen</code><blockquote>
+<blockquote>
+<p><code>BigBen</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Environment</code>文件夹下的<code>env_BigBen</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>BackgroundPanel</code>物体下新建一个<code>Panel</code>，然后其重名为<code>Bank</code><blockquote>
+<blockquote>
+<p><code>Bank</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Environment</code>文件夹下的<code>env_Bank</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>BackgroundPanel</code>物体下新建一个<code>Panel</code>，然后其重名为<code>River</code><blockquote>
+<blockquote>
+<p><code>River</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Left</code>: 0</li>
+<li><code>Top</code>: 1000</li>
+<li><code>Right</code>: 0</li>
+<li><code>Bottom</code>: 0</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Environment</code>文件夹下的<code>env_RiverBase</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>UICanvas</code>物体下新建一个<code>Image</code>，然后其重名为<code>OptionWindow</code><blockquote>
+<blockquote>
+<p><code>OptionWindow</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Anchors</code>: 点击<code>Rect Transform</code>组件左上角的方框，然后选择<code>middle-left</code></li>
+<li><code>PosX</code>: 500</li>
+<li><code>PosY</code>: -55</li>
+<li><code>Width</code>: 540</li>
+<li><code>Height</code>: 720</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>SF Window</code>图片</li>
+<li><code>Color</code>: (8, 68, 225, 110)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>OptionWindow</code>物体下新建一个<code>Button</code>，然后其重名为<code>StartButton</code><blockquote>
+<blockquote>
+<p><code>StartButton</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: 110</li>
+<li><code>Width</code>: 320</li>
+<li><code>Height</code>: 120</li>
+</ul>
+</li>
+<li><code>Image</code>:<ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>SF Button</code>图片</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>修改<code>StartButton</code>物体下的子物体<code>Text</code><blockquote>
+<blockquote>
+<p><code>Text</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Text</code>:<ul>
+<li><code>Text</code>: <code>Start</code></li>
+<li><code>Font</code>: <code>Assets\Fonts</code>下的<code>BradBunR</code>字体文件</li>
+<li><code>Font Size</code>: 80</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>OptionWindow</code>物体下新建一个<code>Button</code>，然后其重名为<code>ExitButton</code><blockquote>
+<blockquote>
+<p><code>ExitButton</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: -110</li>
+<li><code>Width</code>: 320</li>
+<li><code>Height</code>: 120</li>
+</ul>
+</li>
+<li><code>Image</code>:<ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>SF Button</code>图片</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>修改<code>ExitButton</code>物体下的子物体<code>Text</code><blockquote>
+<blockquote>
+<p><code>Text</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Text</code>:<ul>
+<li><code>Text</code>: <code>Exit</code></li>
+<li><code>Font</code>: <code>Assets\Fonts</code>下的<code>BradBunR</code>字体文件</li>
+<li><code>Font Size</code>: 80</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>UICanvas</code>物体下新建一个<code>Text</code>，然后其重名为<code>Title</code><blockquote>
+<blockquote>
+<p><code>Title</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Anchors</code>: 点击<code>Rect Transform</code>组件左上角的方框，然后选择<code>top-center</code></li>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: -100</li>
+<li><code>Width</code>: 600</li>
+<li><code>Height</code>: 180</li>
+</ul>
+</li>
+<li><code>Text</code>:<ul>
+<li><code>Text</code>: <code>Potato Glory</code></li>
+<li><code>Font</code>: <code>Assets\Fonts</code>下的<code>BradBunR</code>字体文件</li>
+<li><code>Font Size</code>: 120</li>
+<li><code>Alignment</code>: 水平居中，垂直居中</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>UICanvas</code>物体下新建一个<code>Text</code>，然后其重名为<code>Author</code><blockquote>
+<blockquote>
+<p><code>Author</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Anchors</code>: 点击<code>Rect Transform</code>组件左上角的方框，然后选择<code>bottom-right</code></li>
+<li><code>PosX</code>: -200</li>
+<li><code>PosY</code>: 115</li>
+<li><code>Width</code>: 340</li>
+<li><code>Height</code>: 80</li>
+</ul>
+</li>
+<li><code>Text</code>:<ul>
+<li><code>Text</code>: <code>@RainbowCyan</code></li>
+<li><code>Font</code>: <code>Assets\Fonts</code>下的<code>BradBunR</code>字体文件</li>
+<li><code>Font Size</code>: 60</li>
+<li><code>Alignment</code>: 水平居中，垂直居中</li>
+<li><code>Color</code>: (119, 119, 119, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>&emsp;&emsp;至此，我们就完成了游戏菜单场景的UI制作，其效果图如下：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay21/Image1.png" alt="添加UI之后的游戏菜单场景"></p>
+<hr>
+<h2 id="在UI上添加能动的物体"><a href="#在UI上添加能动的物体" class="headerlink" title="在UI上添加能动的物体"></a>在UI上添加能动的物体</h2><p>&emsp;&emsp;添加完游戏菜单场景的UI之后，我们发现整个界面的右边比较空旷，影响美感，因此我们希望能在右边加上一些会动的物体来装饰界面。因为加入的物体需要能动，使用Unity提供的UI难以实现，所以我们选择可以使用动画的<code>GameObject</code>作为我们的<code>装饰物</code>。</p>
+<blockquote>
+<p>添加<code>装饰物</code>的步骤：</p>
+</blockquote>
+<ol>
+<li>在场景中新建一个名为<code>Decoration</code>的<code>Empty GameObject</code>，并将其<code>Position</code>设置为<code>(0, 0, 0)</code></li>
+<li>将<code>Assets\Prefabs\Character</code>文件夹下的<code>Player</code>这一Prefab拖拽到<code>Decoration</code>物体上成为其子物体<blockquote>
+<blockquote>
+<p>对<code>Player</code>物体的操作如下：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>设置<code>Position</code>为<code>(0.53, -0.85, 0)</code>，<code>Rotation</code>为<code>(0, 0, 14.5)</code></li>
+<li>移除<code>Player</code>物体上除了<code>Animator</code>组件外，的其他所有组件<code>（有依赖关系，注意先移除脚本，再移除其他组件）</code></li>
+<li>删除<code>Player</code>物体下的<code>HealthBarDisplay</code>、<code>GroundCheck</code>和<code>GroundCheck</code>子物体</li>
+</ol>
+</li>
+<li>将<code>Assets\Prefabs\Character</code>文件夹下的<code>AlienSlug</code>这一Prefab拖拽到<code>Decoration</code>物体上成为其子物体<blockquote>
+<blockquote>
+<p>对<code>AlienSlug</code>物体的操作如下：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>设置<code>Position</code>为<code>(2.84, 1.31, 0)</code>，<code>Scale</code>为<code>(-1, 1, 1)</code></li>
+<li>移除<code>AlienSlug</code>物体上除了<code>Animator</code>组件外，的其他所有组件<code>（有依赖关系，注意先移除脚本，再移除其他组件）</code></li>
+<li>删除<code>AlienSlug</code>物体下的<code>FrontCheck</code>子物体</li>
+</ol>
+</li>
+<li>将<code>Assets\Prefabs\Character</code>文件夹下的<code>AlienShip</code>这一Prefab拖拽到<code>Decoration</code>物体上成为其子物体<blockquote>
+<blockquote>
+<p>对<code>AlienShip</code>物体的操作如下：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>设置<code>Position</code>为<code>(6.3, 1.6, 0)</code>，<code>Scale</code>为<code>(-1, 1, 1)</code></li>
+<li>移除<code>AlienShip</code>物体上除了<code>Animator</code>组件外，的其他所有组件<code>（有依赖关系，注意先移除脚本，再移除其他组件）</code></li>
+<li>删除<code>AlienShip</code>物体下的<code>FrontCheck</code>子物体</li>
+</ol>
+</li>
+<li>将<code>Assets\Sprites\Environment</code>文件夹下的<code>env_PlatformUfo</code>图片拖拽到<code>Decoration</code>物体上成为其子物体<blockquote>
+<blockquote>
+<p>对<code>env_PlatformUfo</code>物体的操作如下：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>设置<code>Position</code>为<code>(5.32, -0.72, 0)</code>，<code>Rotation</code>为<code>(0, 0, 18.2)</code>，<code>Scale</code>为<code>(0.2, 0.2, 0.2)</code></li>
+</ol>
+</li>
+<li>将<code>Assets\Sprites\Environment</code>文件夹下的<code>env_UfoLegs</code>图片拖拽到<code>env_PlatformUfo</code>物体上成为其子物体<blockquote>
+<blockquote>
+<p>对<code>env_UfoLegs</code>物体的操作如下：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>设置<code>Position</code>为<code>(0, 3.8, 0)</code>，<code>Rotation</code>为<code>(0, 0, 0)</code>，<code>Scale</code>为<code>(1, 1, 1)</code></li>
+</ol>
+</li>
+</ol>
+<p>&emsp;&emsp;添加完毕之后，我们发现在<code>Game</code>窗口中看不到我们添加的<code>GameObject</code>。如何让<code>GameObject</code>显示在Canvas之上？这里，我们想到了前面提到的<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/UICanvas.html">Canvas绘制方式</a>中的<code>Screen Space - Camera</code>。因此，我们需要将<code>UICanvas</code>物体上<code>Canvas</code>组件的<code>Render Mode</code>设置为<code>Screen Space - Camera</code>，并将<code>Canvas</code>组件的<code>Render Camera</code>设置为场景中的<code>Main Camera</code>。最后，我们发现装饰物偏大，因此我们将<code>Main Camera</code>物体上<code>Camera</code>组件的<code>Size</code>设置为<code>6.8</code>。此时，我们发现已经能在<code>Game</code>窗口中看到我们添加的<code>GameObject</code>了。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay21/Image2.png" alt="添加GameObject之后的游戏菜单场景"></p>
+<hr>
+<h2 id="加入控制代码"><a href="#加入控制代码" class="headerlink" title="加入控制代码"></a>加入控制代码</h2><p>&emsp;&emsp;在场景中添加<code>GameObject</code>作为装饰物之后，我们还需要添加控制代码。首先，我们在<code>Assets\Scrpits\Manager</code>文件夹下创建一个名为<code>MenuSceneManager</code>的C#脚本，然后编辑<code>MenuSceneManager.cs</code>:</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>SceneManagement<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MenuSceneManager</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 加载SinglePlayerGameScene场景开始游戏</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">StartGame</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        SceneManager<span class="token punctuation">.</span><span class="token function">LoadScene</span><span class="token punctuation">(</span><span class="token string">"SinglePlayerGameScene"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 退出应用</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">ExitGame</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        Application<span class="token punctuation">.</span><span class="token function">Quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;编辑完<code>MenuSceneManager.cs</code>之后，我们在场景中创建一个名为<code>MenuSceneManager</code>的<code>Empty GameObject</code>，然后为<code>MenuSceneManager</code>添加<code>MenuSceneManager.cs</code>。接着，我们来设置<code>OptionWindow</code>物体的子物体<code>StartButton</code>的点击事件。</p>
+<blockquote>
+<p><code>StartButton</code>点击事件的设置步骤：</p>
+</blockquote>
+<ol>
+<li>选中<code>StartButton</code>物体，然后点击其<code>Button</code>组件上<code>On Click()</code>下的<code>+</code>号增加一个<code>空点击事件</code></li>
+<li>将场景中的<code>MenuSceneManager</code>拖拽至<code>On Click()</code>下的<code>GameObject</code>赋值框处</li>
+<li>点击<code>No Function</code>下拉菜单，选择<code>MenuSceneManager</code>下的<code>StartGame函数</code></li>
+</ol>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay21/Image3.png" alt="设置StartButton的点击事件"></p>
+<p>&emsp;&emsp;最后，我们按照相同的步骤，将<code>OptionWindow</code>物体的子物体<code>ExitButton</code>的点击事件设置为<code>MenuSceneManager</code>下的<code>ExitGame函数</code></p>
+<hr>
+<h2 id="修改GameStateManager-cs并修改BuildSetting"><a href="#修改GameStateManager-cs并修改BuildSetting" class="headerlink" title="修改GameStateManager.cs并修改BuildSetting"></a>修改GameStateManager.cs并修改BuildSetting</h2><p>&emsp;&emsp;在<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-20/">前面的文章</a>中，因为我们还没有创建游戏菜单场景，所有<code>GameStateManager.cs</code>中用于返回游戏菜单场景的<code>Back函数</code>我们留空了。现在我们已经创建好了游戏菜单场景，因此我们需要补全<code>GameStateManager.cs</code>的<code>Back函数</code>：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>AudioSource<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">GameStateManager</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token preprocessor property">#<span class="token directive keyword">region</span>  外部调用函数</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token comment" spellcheck="true">// 返回主菜单</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Back</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 恢复游戏的Time.timeScale</span>
+        Time<span class="token punctuation">.</span>timeScale <span class="token operator">=</span> <span class="token number">1f</span><span class="token punctuation">;</span>
+
+        SceneManager<span class="token punctuation">.</span><span class="token function">LoadScene</span><span class="token punctuation">(</span><span class="token string">"GameMenuScene"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;修改完成之后，我们运行游戏，点击<code>Start</code>按钮，发现场景并没有跳转。这是因为我们还没有将我们创建好的<code>GameMenuScene</code>和<code>SinglePlayerGameScene</code>添加至<code>Build Setting</code>中。选择顶部菜单栏的<code>File-&gt;Build Settings...</code>打开<code>Build Setting</code>窗口，然后同时选中<code>Assets\Scenes</code>文件夹下的<code>GameMenuScene</code>和<code>SinglePlayerGameScene</code>将它们拖拽至<code>Build Setting</code>窗口的<code>Scenes In Build</code>处<code>(游戏运行时，会默认加载下标为0的场景，因此我们要确保GameMenuScene的下标为0)</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay21/Image4.png" alt="将创建好的场景添加到Build Setting"></p>
+<p>&emsp;&emsp;再次运行游戏，点击<code>Start</code>按钮，此时场景跳转到<code>SinglePlayerGameScene</code>场景。在<code>SinglePlayerGameScene</code>中点击<code>BackButton</code>按钮，然后再点击<code>Yes</code>按钮，场景则跳转回<code>GameMenuScene</code>场景。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&emsp;&emsp;至此，我们就已经完成了制作游戏菜单场景的所有工作。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay19</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-21/">https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-21/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/potatoglorytutorial-22/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;到目前为止，我们已经实现了游戏的所有功能。但目前，我们仍然使用键盘和鼠标来操作角色的移动和攻击。为了能让游戏在手机上正常运行，我们需要实现虚拟摇杆和按钮，来替换键盘和鼠标输入。此外，为了减少代码的修改，且同时兼容
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-02-03
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/potatoglorytutorial-20/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（二十）为游戏场景添加UI">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（二十）为游戏场景添加UI</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;在上篇文章中，我们已经实现了游戏主逻辑管理器，并加入了游戏的胜负条件。但在游戏中，玩家并不能清晰地知道当前自己获得了多少分数、游戏胜利的目标分数是多少以及当前还能释放多少颗炸弹，我们需要加入UI进行提示。
+
+加入
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-30
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>

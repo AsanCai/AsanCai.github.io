@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>RainbowCyan</title>
+  
+  <subtitle>一只想成为段子手的学院派程序猿</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://asancai.github.io/"/>
+  <updated>2021-04-19T14:32:04.763Z</updated>
+  <id>https://asancai.github.io/</id>
+  
+  <author>
+    <name>RainbowCyan</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十二）对怪物造成伤害</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-12/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-12/</id>
+    <published>2021-04-19T14:32:04.763Z</published>
+    <updated>2021-04-19T14:32:04.763Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十一）实现发射导弹的功能</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-11/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-11/</id>
+    <published>2021-04-19T14:32:04.762Z</published>
+    <updated>2021-04-19T14:32:04.762Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（二十三）打包游戏</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-23/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-23/</id>
+    <published>2019-02-03T11:20:21.000Z</published>
+    <updated>2021-04-19T14:32:04.767Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-22/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-22/</id>
+    <published>2019-02-03T09:55:44.000Z</published>
+    <updated>2021-04-19T14:32:04.767Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（二十一）制作游戏菜单场景</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-21/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-21/</id>
+    <published>2019-01-31T11:15:55.000Z</published>
+    <updated>2021-04-19T14:32:04.766Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（二十）为游戏场景添加UI</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-20/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-20/</id>
+    <published>2019-01-29T16:56:29.000Z</published>
+    <updated>2021-04-19T14:32:04.766Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-19/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-19/</id>
+    <published>2019-01-28T17:34:18.000Z</published>
+    <updated>2021-04-19T14:32:04.765Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-18/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-18/</id>
+    <published>2019-01-27T11:41:24.000Z</published>
+    <updated>2021-04-19T14:32:04.765Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;到目前为止，我们已经实现了使用&lt;code&gt;Generator&lt;/code&gt;来生成&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十七）随机生成可拾取道具</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-17/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-17/</id>
+    <published>2019-01-26T08:35:31.000Z</published>
+    <updated>2021-04-19T14:32:04.764Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;我们在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十六）随机生成不可交互物体</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-16/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-16/</id>
+    <published>2019-01-24T06:12:23.000Z</published>
+    <updated>2021-04-19T14:32:04.764Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十五）实现角色和怪物掉入河中被销毁的功能</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-15/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-15/</id>
+    <published>2019-01-20T11:36:00.000Z</published>
+    <updated>2021-04-19T14:32:04.764Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;我们在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十四）随机生成更多的怪物</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-14/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-14/</id>
+    <published>2019-01-20T05:15:23.000Z</published>
+    <updated>2021-04-19T14:32:04.763Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十三）实现放置炸弹的功能</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-13/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-13/</id>
+    <published>2019-01-13T02:39:01.000Z</published>
+    <updated>2021-04-19T14:32:04.763Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十）实现摄像机跟随角色移动的功能</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-10/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-10/</id>
+    <published>2019-01-06T09:44:38.000Z</published>
+    <updated>2021-04-19T14:32:04.762Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（九）实现角色的血量控制功能</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-9/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-9/</id>
+    <published>2019-01-01T02:57:46.000Z</published>
+    <updated>2021-04-19T14:32:04.770Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（八）给角色添加动画</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-8/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-8/</id>
+    <published>2018-12-31T03:20:03.000Z</published>
+    <updated>2021-04-19T14:32:04.769Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（七）控制角色移动并添加音效</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-7/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-7/</id>
+    <published>2018-12-30T13:04:08.000Z</published>
+    <updated>2021-04-19T14:32:04.769Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（六）实现怪物的AI</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-6/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-6/</id>
+    <published>2018-12-27T10:53:16.000Z</published>
+    <updated>2021-04-19T14:32:04.768Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（五）创建角色以及怪物的动画</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-5/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/potatoglorytutorial-5/</id>
+    <published>2018-12-26T12:35:22.000Z</published>
+    <updated>2021-04-19T14:32:04.768Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unity的Animation</title>
+    <link href="https://asancai.github.io/game-development/unity-animation/"/>
+    <id>https://asancai.github.io/game-development/unity-animation/</id>
+    <published>2018-12-25T03:11:15.000Z</published>
+    <updated>2021-04-19T14:32:04.770Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在Unity中，我们可以使用&lt;code&gt;Animation
+        
+      
+    
+    </summary>
+    
+      <category term="游戏开发" scheme="https://asancai.github.io/categories/game-development/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+</feed>
