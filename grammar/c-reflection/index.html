@@ -1,0 +1,1421 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="C# 反射（Reflection）, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>C# 反射（Reflection） | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">C# 反射（Reflection）</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/CSharp/">
+                                <span class="chip bg-color">CSharp</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/grammar/" class="post-category">
+                                语法
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2018-10-17
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-20
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    11 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="Reflection是什么？"><a href="#Reflection是什么？" class="headerlink" title="Reflection是什么？"></a>Reflection是什么？</h2><p>&emsp;&emsp;<code>Reflection（反射）</code>是C#提供的一个允许程序<code>访问</code>、<code>检测</code>和<code>修改</code>程序自身状态或行为的重要机制。通过使用Reflection，我们可以在运行时访问程序产生的<code>Metadata（元数据）</code>并对<code>Metadata</code>进行解析，从而获得<code>Assembly（程序集）</code>、<code>Module（模块）</code>或者<code>Type（类型，包括类、结构、委托、接口和枚举等）</code>的信息。</p>
+<p>&emsp;&emsp;举个例子，通过使用Reflection，我们可以在<code>程序运行时</code>动态地获取<code>某个类型未知的对象</code>的类型，然后调用该对象的方法或者访问该对象的字段和属性。当然，在获取到对象类型之后，我们还可以动态地创建对象。除此之外，因为Attribute编译之后会放进Metadata中，所以我们也可以通过Reflection来获取Attribute。</p>
+<h2 id="Reflection的优缺点"><a href="#Reflection的优缺点" class="headerlink" title="Reflection的优缺点"></a>Reflection的优缺点</h2><ul>
+<li><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>可以动态修改程序，降低了程序的耦合性，提高了程序的灵活性和拓展性</li>
+<li>允许程序动态创建和控制任何类，不需要提前硬编码目标类</li>
+</ol>
+</li>
+<li><h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li><strong>性能损耗</strong>：前面提到，Reflection通过访问和解析<code>Metadata</code>使程序可以<code>访问</code>、<code>检测</code>和<code>修改</code>自身状态或行为。也就是说，Reflection本质上是一种<code>解释操作</code>，在操作某个程序实体之前，程序需要花时间访问<code>Metadata</code>去弄清楚这个程序实体是什么。因此，Reflection的效率远低于直接代码</li>
+<li><strong>模糊代码逻辑</strong>：因为Reflection允许程序在提前硬编码目标类的情况下动态创建和控制类，所以在源代码中不能直接看到程序的逻辑，导致使用了Reflection的代码比相应的直接代码更难理解和维护</li>
+</ol>
+</li>
+</ul>
+<h2 id="Reflection有关的类"><a href="#Reflection有关的类" class="headerlink" title="Reflection有关的类"></a>Reflection有关的类</h2><p>&emsp;&emsp;根据前面的内容，我们知道Reflection的主要作用是在程序运行时获取Assembly、Module或者Type的信息。<code>System.Reflection</code>命名空间中的类和<code>System.Type</code>则为我们提供了所有能够获取这些信息的接口。</p>
+<ul>
+<li><h3 id="抽象基类System-Type"><a href="#抽象基类System-Type" class="headerlink" title="抽象基类System.Type"></a>抽象基类System.Type</h3><ul>
+<li><h5 id="作用："><a href="#作用：" class="headerlink" title="作用："></a>作用：</h5>&emsp;&emsp;System.Type类在Reflection中起着<code>核心作用</code>。作为一个抽象基类，Type类有与每种数据类型对应的派生类，通过Type类我们可以访问任何给定类型的信息</li>
+<li><h5 id="获取Type引用："><a href="#获取Type引用：" class="headerlink" title="获取Type引用："></a>获取Type引用：</h5><ol>
+<li>使用C# <code>typeof</code>运算符<pre class=" language-cs"><code class="language-cs">Type t = typeof(string);</code></pre>
+</li>
+<li>使用对象的<code>GetType</code>方法<pre class=" language-cs"><code class="language-cs">string str = "";
+Type t = str.GetType();</code></pre>
+</li>
+<li>调用Type类的静态方法<code>GetType</code>（需要注意的是，这里必须使用类的完全限定名<code>命名空间+类名</code>；如果返回<code>null</code>，说明在Metadata中搜索相关信息失败，需要检查是否使用了类的完全限定名）<pre class=" language-cs"><code class="language-cs">string str = "";
+Type t = Type.GetType(str);</code></pre>
+</li>
+</ol>
+</li>
+<li><h5 id="常用属性和常用方法："><a href="#常用属性和常用方法：" class="headerlink" title="常用属性和常用方法："></a>常用属性和常用方法：</h5></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">属性名</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Name</td>
+<td align="left">数据类型名</td>
+</tr>
+<tr>
+<td align="left">FullName</td>
+<td align="left">数据类型的完全限定名(包括命名空间名)</td>
+</tr>
+<tr>
+<td align="left">Namespace</td>
+<td align="left">定义数据类型的命名空间名</td>
+</tr>
+<tr>
+<td align="left">IsAbstract</td>
+<td align="left">指示该类型是否是抽象类型</td>
+</tr>
+<tr>
+<td align="left">IsArray</td>
+<td align="left">指示该类型是否是数组</td>
+</tr>
+<tr>
+<td align="left">IsClass</td>
+<td align="left">指示该类型是否是类</td>
+</tr>
+<tr>
+<td align="left">IsEnum</td>
+<td align="left">指示该类型是否是枚举</td>
+</tr>
+<tr>
+<td align="left">IsInterface</td>
+<td align="left">指示该类型是否是接口</td>
+</tr>
+<tr>
+<td align="left">IsPublic</td>
+<td align="left">指示该类型是否是公有的</td>
+</tr>
+<tr>
+<td align="left">IsSealed</td>
+<td align="left">指示该类型是否是密封类</td>
+</tr>
+<tr>
+<td align="left">IsValueType</td>
+<td align="left">指示该类型是否是值类型</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">方法名</th>
+<th align="left">方法说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GetConstructor(Type[])</td>
+<td align="left">返回参数匹配传入的Type数组的<code>public</code>构造函数，返回类型为<code>ConstructorInfo</code>类型</td>
+</tr>
+<tr>
+<td align="left">GetConstructors()</td>
+<td align="left">返回所有<code>public</code>构造函数，返回类型为<code>ConstructorInfo[]</code>类型</td>
+</tr>
+<tr>
+<td align="left">GetEvent()</td>
+<td align="left">获取指定的<code>public</code>事件信息，返回返回<code>EventInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetEvents()</td>
+<td align="left">获取所有<code>public</code>事件信息，返回类型为<code>EventInfo[]</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetField()</td>
+<td align="left">获取指定的<code>public</code>字段，返回类型为<code>FieldInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetFields()</td>
+<td align="left">获取所有<code>public</code>字段，返回类型为<code>FieldInfo[]</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetInterface()</td>
+<td align="left">获取实现的指定接口，返回类型为<code>InterfaceInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetInterfaces()</td>
+<td align="left">获取实现的所有接口，返回类型为<code>InterfaceInfo[]</code>类型<code>（该方法有多个重载版本)</code></td>
+</tr>
+<tr>
+<td align="left">GetMember()</td>
+<td align="left">获取指定的<code>public</code>成员，返回类型为<code>MemberInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetMembers()</td>
+<td align="left">获取所有<code>public</code>成员，返回类型为<code>MemberInfo[]</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetMethod()</td>
+<td align="left">获取指定的<code>public</code>方法，返回类型为<code>MethodInfo</code>类型 <code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetMethods()</td>
+<td align="left">获取所有<code>public</code>方法，返回类型为<code>MethodInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetProperty()</td>
+<td align="left">获取指定的<code>public</code>属性，返回类型为<code>PropertyInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+<tr>
+<td align="left">GetProperties()</td>
+<td align="left">获取所有<code>public</code>属性，返回类型为<code>PropertyInfo</code>类型<code>（该方法有多个重载版本）</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li><h3 id="命名空间System-Reflection"><a href="#命名空间System-Reflection" class="headerlink" title="命名空间System.Reflection"></a>命名空间System.Reflection</h3>&emsp;&emsp;System.Type用于获取程序信息的常用方法的返回类型基本都是在System.Reflection里面定义的，System.Reflection里常用的类型主要有：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">类型名</th>
+<th align="left">类型说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Assembly</td>
+<td align="left">定义和加载程序集，加载程序集清单中列出的模块，以及在此程序集中定位一个类型并创建一个它的实例</td>
+</tr>
+<tr>
+<td align="left">Module</td>
+<td align="left">保存模块信息，包括包含该模块的程序集和模块中的类，还可以获取所有全局方法或模块上定义的其它特定的非全局方法</td>
+</tr>
+<tr>
+<td align="left">ConstructorInfo</td>
+<td align="left">保存构造函数信息，如名称、参数、访问修饰符（如 public 或 private）和实现的详细信息</td>
+</tr>
+<tr>
+<td align="left">MethodInfo</td>
+<td align="left">保存方法信息，如名称、返回类型、参数、访问修饰符（如 public 或 private）和方法的实现详细信息（如 abstract 或 virtual）</td>
+</tr>
+<tr>
+<td align="left">FieldInfo</td>
+<td align="left">保存字段信息，如名称、访问修饰符（如 public 或 private）和一个字段的实现详细信息 （如 static）；并获取或设置字段值</td>
+</tr>
+<tr>
+<td align="left">EventInfo</td>
+<td align="left">保存事件信息，包括名称、事件处理程序的数据类型、自定义特性、声明类型以及事件的反射的类型，并且可以添加或删除事件</td>
+</tr>
+<tr>
+<td align="left">PropertyInfo</td>
+<td align="left">保存属性信息，如名称、数据类型、声明类型，反射的类型和属性的只读或可写状态，并获取或设置属性值。</td>
+</tr>
+<tr>
+<td align="left">ParameterInfo</td>
+<td align="left">保存参数信息，如参数的名称、数据类型、参数是输入参数还是输出参数以及参数在方法签名中的位置</td>
+</tr>
+<tr>
+<td align="left">CustomAttributeData</td>
+<td align="left">发现有关自定义特性的信息，<code>CustomAttributeData</code>使你能够检查特性，而无需创建它们的实例</td>
+</tr>
+</tbody></table>
+<ul>
+<li><h3 id="System-Activator类"><a href="#System-Activator类" class="headerlink" title="System.Activator类"></a>System.Activator类</h3>&emsp;&emsp;<code>System.Activator</code>类提供了<code>CreateInstance</code>方法来创建对象类型，因此可以配合Reflection来动态创建对象。<code>CreateInstance</code>方法有多个重载版本，当调用<code>CreateInstance</code>方法时，会根据传递给<code>CreateInstance</code>方法的实际<code>参数</code>从<code>目标类型</code>里找到一个<code>最匹配</code>的<code>构造函数</code>，并调用该构造函数创建对象。</li>
+</ul>
+<h2 id="Reflection使用示例"><a href="#Reflection使用示例" class="headerlink" title="Reflection使用示例"></a>Reflection使用示例</h2><ul>
+<li><p>首先创建定义用于测试的简单类</p>
+<pre class=" language-cs"><code class="language-cs">public class Student &#123;
+  public string Name;
+  public int Age &#123; set; get; &#125;
+
+  public Student() &#123;
+      Name = "default";
+      Age = 0;
+  &#125;
+
+  public Student(string name, int age) &#123;
+      Name = name;
+      Age = age;
+  &#125;
+
+  public void Show() &#123;
+      Console.WriteLine("Student message: " + "name:" + Name + ", " + "age:" + Age);
+  &#125;
+&#125;</code></pre>
+</li>
+<li><p>查看类中的构造方法</p>
+<pre class=" language-cs"><code class="language-cs">Student stu = new Student();
+Type type = stu.GetType();
+</code></pre>
+</li>
+</ul>
+<p>//获取所有构造函数<br>ConstructorInfo[] constructors = type.GetConstructors();<br>Console.WriteLine(“Constructor Num: “ + constructors.Length);<br>foreach(ConstructorInfo c in constructors) &#123;<br>    Console.Write(“Constructor Paramter: “);<br>    //获取函数的参数信息<br>    ParameterInfo[] parameters = c.GetParameters();<br>    foreach(var p in parameters) &#123;<br>        Console.Write(p.ParameterType.ToString() + “=” + p.Name + “ “);<br>    &#125;<br>    Console.WriteLine();<br>&#125;</p>
+<p>/*<strong><strong>output**</strong></strong><br>Constructor Num: 2<br>Constructor Paramter:<br>Constructor Paramter: System.String=name System.Int32=age<br>**<strong><strong><strong>****</strong></strong></strong>/</p>
+<pre><code>* 用构造函数生成对象
+``` cs ConstructorInfo.Invoke
+Student stu = new Student();
+Type type = stu.GetType();
+
+Type[] pt = new Type[2];
+pt[0] = typeof(string);
+pt[1] = typeof(int);
+//根据参数列表获取匹配的构造函数
+ConstructorInfo constructor = type.GetConstructor(pt);
+Object[] obj = new object[2] &amp;#123; &quot;Asan&quot;, 20 &amp;#125;;
+//调用构造函数
+Object obj1 = constructor.Invoke(obj);
+//测试创建的结果
+((Student)obj1).Show();
+
+/*****output******
+Student message: name:Asan, age:20
+******************/</code></pre>
+<ul>
+<li>使用<code>System.Activator</code>生成对象<pre class=" language-cs"><code class="language-cs">Student stu = new Student();
+Type type = stu.GetType();
+</code></pre>
+</li>
+</ul>
+<p>//使用Activator创建对象，不传递参数调用默认构造函数<br>Object obj2 = Activator.CreateInstance(type);<br>//测试创建的结果<br>((Student)obj2).Show();</p>
+<p>/*<strong><strong>output**</strong></strong><br>Age<br>**<strong><strong><strong>****</strong></strong></strong>/</p>
+<pre><code>* 查看类中的`public`属性
+``` cs PropertyInfo
+Student stu = new Student();
+Type type = stu.GetType();
+
+//查看public属性
+PropertyInfo[] properties = type.GetProperties();
+foreach(var property in properties) &amp;#123;
+    Console.WriteLine(property.Name);
+&amp;#125;
+
+/*****output******
+System.Void set_Age
+System.Int32 get_Age
+******************/</code></pre>
+<ul>
+<li>查看类中的<code>public</code>方法<pre class=" language-cs"><code class="language-cs">Student stu = new Student();
+Type type = stu.GetType();
+</code></pre>
+</li>
+</ul>
+<p>//查看public方法<br>MethodInfo[] methods = type.GetMethods();<br>foreach (var method in methods) &#123;<br>    Console.WriteLine(method.ReturnType + “ “ + method.Name);<br>&#125;</p>
+<p>/*<strong><strong>output**</strong></strong><br>System.Void Show<br>System.String ToString<br>System.Boolean Equals<br>System.Int32 GetHashCode<br>System.Type GetType<br>**<strong><strong><strong>****</strong></strong></strong>/</p>
+<pre><code>* 查看`public`字段
+``` cs FieldInfo
+Student stu = new Student();
+Type type = stu.GetType();
+
+//查看public字段
+FieldInfo[] fields = type.GetFields();
+foreach (var field in fields) &amp;#123;
+    Console.WriteLine(field.Name);
+&amp;#125;
+
+/*****output******
+Name
+******************/</code></pre>
+<ul>
+<li>使用Reflection构造对象，设置字段和属性的值，并调用方法<pre class=" language-cs"><code class="language-cs">Student stu = new Student();
+Type type = stu.GetType();
+</code></pre>
+</li>
+</ul>
+<p>//构建对象<br>Object obj3 = Activator.CreateInstance(type);<br>//获取字段并设置值<br>FieldInfo fi = type.GetField(“Name”);<br>fi.SetValue(obj3, “Object”);<br>//获取属性并设置值<br>PropertyInfo pi = type.GetProperty(“Age”);<br>pi.SetValue(obj3, 30);<br>//获取方法并调用<br>MethodInfo mi = type.GetMethod(“Show”);<br>mi.Invoke(obj3, null);</p>
+<p>/*<strong><strong>output**</strong></strong><br>Student message: name:Object, age:30<br>**<strong><strong><strong>****</strong></strong></strong>/</p>
+<pre><code>* 完整代码
+``` cs
+using System;
+using System.Reflection;
+
+namespace Reflection &amp;#123;
+    public class Student &amp;#123;
+        public string Name;
+        public int Age &amp;#123; set; get; &amp;#125;
+
+        public Student() &amp;#123;
+            Name = &quot;default&quot;;
+            Age = 0;
+        &amp;#125;
+
+        public Student(string name, int age) &amp;#123;
+            Name = name;
+            Age = age;
+        &amp;#125;
+
+        public void Show() &amp;#123;
+            Console.WriteLine(&quot;Student message: &quot; + &quot;name:&quot; + Name + &quot;, &quot; + &quot;age:&quot; + Age);
+        &amp;#125;
+    &amp;#125;
+
+    class Program &amp;#123;
+        static void Main(string[] args) &amp;#123;
+            Student stu = new Student();
+            Type type = stu.GetType();
+
+            //获取所有构造函数
+            ConstructorInfo[] constructors = type.GetConstructors();
+            Console.WriteLine(&quot;Constructor Num: &quot; + constructors.Length);
+            foreach(ConstructorInfo c in constructors) &amp;#123;
+                Console.Write(&quot;Constructor Paramter: &quot;);
+                //获取函数的参数信息
+                ParameterInfo[] parameters = c.GetParameters();
+                foreach(var p in parameters) &amp;#123;
+                    Console.Write(p.ParameterType.ToString() + &quot;=&quot; + p.Name + &quot; &quot;);
+                &amp;#125;
+                Console.WriteLine();
+            &amp;#125;
+
+            Type[] pt = new Type[2];
+            pt[0] = typeof(string);
+            pt[1] = typeof(int);
+            //根据参数列表获取匹配的构造函数
+            ConstructorInfo constructor = type.GetConstructor(pt);
+            Object[] obj = new object[2] &amp;#123; &quot;Asan&quot;, 20 &amp;#125;;
+            //调用构造函数
+            Object obj1 = constructor.Invoke(obj);
+            //测试创建的结果
+            ((Student)obj1).Show();
+
+            //使用Activator创建对象，不传递参数调用默认构造函数
+            Object obj2 = Activator.CreateInstance(type);
+            //测试创建的结果
+            ((Student)obj2).Show();
+
+            //查看public属性
+            PropertyInfo[] properties = type.GetProperties();
+            foreach(var property in properties) &amp;#123;
+                Console.WriteLine(property.Name);
+            &amp;#125;
+
+            //查看public方法
+            MethodInfo[] methods = type.GetMethods();
+            foreach (var method in methods) &amp;#123;
+                Console.WriteLine(method.ReturnType + &quot; &quot; + method.Name);
+            &amp;#125;
+
+            //查看public字段
+            FieldInfo[] fields = type.GetFields();
+            foreach (var field in fields) &amp;#123;
+                Console.WriteLine(field.Name);
+            &amp;#125;
+
+            //构建对象
+            Object obj3 = Activator.CreateInstance(type);
+            //获取字段并设置值
+            FieldInfo fi = type.GetField(&quot;Name&quot;);
+            fi.SetValue(obj3, &quot;Object&quot;);
+            //获取属性并设置值
+            PropertyInfo pi = type.GetProperty(&quot;Age&quot;);
+            pi.SetValue(obj3, 30);
+            //获取方法并调用
+            MethodInfo mi = type.GetMethod(&quot;Show&quot;);
+            mi.Invoke(obj3, null);
+
+            Console.ReadLine();
+        &amp;#125;
+    &amp;#125;
+&amp;#125;
+
+/*****output******
+Constructor Num: 2
+Constructor Paramter:
+Constructor Paramter: System.String=name System.Int32=age
+Student message: name:Asan, age:20
+Student message: name:default, age:0
+Age
+System.Void set_Age
+System.Int32 get_Age
+System.Void Show
+System.String ToString
+System.Boolean Equals
+System.Int32 GetHashCode
+System.Type GetType
+Name
+Student message: name:Object, age:30
+******************/</code></pre>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/reflection">.NET Framework 中的反射</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41282759">C#反射机制</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/grammar/c-reflection/">https://asancai.github.io/grammar/c-reflection/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/CSharp/">
+                                    <span class="chip bg-color">CSharp</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/uncategorized/c-delegate/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="C# 委托（Delegate）">
+                        
+                        <span class="card-title">C# 委托（Delegate）</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Delegate是什么&emsp;&emsp;C#中的Delegate（委托）是一种获取具有特定参数列表和返回类型的方法的引用的机制，类似于C++中的函数指针。需要注意的是，和C++的函数指针不同，C#提供的Delegate完全面向对象，在
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2018-10-18
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            RainbowCyan
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/CSharp/">
+                        <span class="chip bg-color">CSharp</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/grammar/c-attribute/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="C# 特性（Attribute）">
+                        
+                        <span class="card-title">C# 特性（Attribute）</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Attribute是什么？&emsp;&emsp;Attribute（特性）是用来为程序实体（class、method、property等）提供描述性信息的类。作为程序的一部分，Attribute会被编译进Assembly（程序集）的Met
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2018-10-16
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/grammar/" class="post-category">
+                                    语法
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/CSharp/">
+                        <span class="chip bg-color">CSharp</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>

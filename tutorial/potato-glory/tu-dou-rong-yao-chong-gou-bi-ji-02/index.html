@@ -1,0 +1,1113 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="《土豆荣耀》重构笔记（二）Unity的安装以及安卓环境的配置, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>《土豆荣耀》重构笔记（二）Unity的安装以及安卓环境的配置 | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（二）Unity的安装以及安卓环境的配置</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/tutorial/" class="post-category">
+                                教程
+                            </a>
+                        
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                《土豆荣耀》重构笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2018-12-19
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-20
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    7 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="安装Unity"><a href="#安装Unity" class="headerlink" title="安装Unity"></a>安装Unity</h2><p>&emsp;&emsp;本项目使用Unity 2017.3.0f3进行开发，首先在Unity官网上下载<a target="_blank" rel="noopener" href="https://unity3d.com/cn/get-unity/download?thank-you=update&download_nid=49126&os=Win">安装包</a>，然后点击下载好的exe文件，选择需要下载的组件。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image1.png" alt="组件"></p>
+<blockquote>
+<p>模块说明：</p>
+</blockquote>
+<ul>
+<li><code>Unity X.X.X</code>这个组件包含了Unity引擎的可视化编辑器面板，如果之前没有安装过，则必须勾选安装</li>
+<li><code>MonoDevelop / Unity Debugger</code>这个组件包含了IDE<code>MonoDevelop</code>和<code>断点调试</code>模块，建议下载</li>
+<li><code>Microsoft Visual Studio Community X</code>如果电脑上已经安装了Visual Studio，那么不会出现这个选项。总所周知，Visual Studio虽然是个很强大的IDE，但它体量太大，所以不建议下载</li>
+<li><code>Documentation</code>这个组件包含了Unity的离线文档，由于在线文档打开时经常比较慢，建议下载</li>
+<li><code>Standard Assets</code>这个组件包含了Unity提供的标准资源库，里面有不少不错的插件和资源，建议下载</li>
+<li><code>Example Project</code>这个组件包含了Unity提供的示例项目，新手建议下载</li>
+<li>剩下的组件都是各个发布平台的Build Support，需要在哪个平台发布就下哪个support, 由于我们本次想开发安卓手机上的游戏，因此我们勾选<code>Android Build Support</code></li>
+</ul>
+<p>&emsp;&emsp;选择好安装组件之后，选择一个合适的安装路径，一路next，等待一段时间之后完成安装。<code>下面部分是关于如何配置安卓环境的介绍，如果暂时不感兴趣，可以跳过先看其他的，等到最终打包时再回头配置环境</code>。</p>
+<hr>
+<h2 id="下载Android-SDK-Tools"><a href="#下载Android-SDK-Tools" class="headerlink" title="下载Android SDK Tools"></a>下载Android SDK Tools</h2><p>&emsp;&emsp;Android SDK相当于安卓机器的操作系统，Unity想要导出Android应用，就需要先下载Android SDK。Android SDK需要通过Android SDK Manager安装，如果嫌麻烦，可以<a target="_blank" rel="noopener" href="https://developer.android.com/studio/?hl=zh-cn#downloads">下载Android Studio</a>，使用里面集成的Android SDK Manager来安装，缺点是<code>Android Studio</code>比较大。如果不想安装Android Studio，也可以在<a target="_blank" rel="noopener" href="https://developer.android.com/studio/releases/sdk-tools">官网</a>上下载Android SDK Tools。</p>
+<p>&emsp;&emsp;这里，我们选择<a target="_blank" rel="noopener" href="https://dl.google.com/android/installer_r24.4.1-windows.exe?utm_source=androiddevtools&utm_medium=website">下载Android SDK Tools</a>，点击下载好的exe文件开始安装。因为<code>Android SDK Tools</code>的安装需要JDK，所以如果电脑上没有配置JDK，将会安装失败。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image2.png" alt="安装失败界面"></p>
+<hr>
+<h2 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h2><p>&emsp;&emsp;<code>JDK（Java Development Kit）</code>继承了Java语言的各种类库，提供了Java的开发环境和运行环境。因为Android Tools的安装依赖JDK，因此我们先安装JDK。需要注意的是，如果JDK版本太高，和Android SDK使用的版本兼容不了，在构建游戏时有可能会报错。我使用的JDK版本是<code>JDK 8u192</code>，官网目前提供目前提供的可下载版本为<a target="_blank" rel="noopener" href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK 8u191和JDk 8u192</a>。JDK 8应该都能正常构建，如果该版本JDK确实有问题，可以卸载JDK，然后使用其他版本的JDK重新安装一次。</p>
+<p>&emsp;&emsp;打开<a target="_blank" rel="noopener" href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK官网下载地址</a>下载JDK，这里要注意，我们只需要JDK，不选择带有<code>Demos and Samples</code>的版本。先点击接受License，然后点击下方的下载链接开始下载。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image3.png" alt="下载JDK"></p>
+<p>&emsp;&emsp;下载完成之后，点击下载好的exe文件，选择JDK安装路径之后开始安装。<code>需要注意的是，安装完JDK之后，会提示你安装JRE，建议将JRE安装在JDK安装路径的同级目录下</code>。如图所示，我分别将JDK和JRE分别安装在<code>文件夹JDK</code>和<code>文件夹JRE</code>中。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image4.png" alt="安装目录"></p>
+<hr>
+<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>&emsp;&emsp;安装好JDK之后，我们还需要为JDK配置系统变量。</p>
+<blockquote>
+<p>配置的具体步骤如下：</p>
+</blockquote>
+<ol>
+<li>在电脑搜索框搜索<code>高级系统设置</code>，然后点击<code>环境变量</code>打开环境变量设置面板</li>
+<li>在<code>系统变量</code>框，新建一个变量名为<code>JAVA_HOME</code>的变量，然后点击<code>浏览目录</code>选择JDK安装路径，或者直接将JDK安装路径填入<code>变量值</code>框</li>
+<li>在<code>系统变量</code>框，新建一个变量，先在<code>变量名</code>框填入<code>CLASSPATH</code>，然后在<code>变量值</code>框里填入<code>.;%JAVA_HOME%\lib;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;</code>，需要注意最前面有个<code>.</code></li>
+<li>保存退出之后，打开cmd窗口，输入<code>java -version</code>，若输出版本信息则配置成功，若没有则配置失败，请返回前面的步骤进行检查</li>
+</ol>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image5.png" alt="系统变量设置"></p>
+<hr>
+<h2 id="安装Android-SDK"><a href="#安装Android-SDK" class="headerlink" title="安装Android SDK"></a>安装Android SDK</h2><p>&emsp;&emsp;安装配置好JDK之后，我们继续前面Android SDK Tools的安装。安装完成之后，打开安装目录，点击<code>SDK Manager.exe</code>打开Android SDK Manager下载SDK。</p>
+<blockquote>
+<p>在<a target="_blank" rel="noopener" href="https://stuff.mit.edu/afs/sipb/project/android/docs/sdk/exploring.html">官方指导</a>中，在SDK Manager中需要安装以下内容：</p>
+</blockquote>
+<ul>
+<li>Tools 目录下选择:<ul>
+<li>Android SDK Tools（Android SDK 的一个组件，包括一套完整的 Android 开发和调试工具）</li>
+<li>Android SDK Platform-tools（Android SDK 的一个组件，内容主要包含与 Android 移动平台交互的工具，例如用来和应用通信的adb和查看分析系统运行中的所有数据的systrace等）</li>
+<li>Android SDK Build-tools (选择最高版本)</li>
+</ul>
+</li>
+<li>Android X.X 文件夹选择:<ul>
+<li>SDK Platform</li>
+<li>ARM EABI v7a System Image（模拟器需要，非必须）</li>
+<li>Sources for Android SDK（源代码，非必须）</li>
+</ul>
+</li>
+<li>Extras目录下：<ul>
+<li>Android Support Repository</li>
+<li>Google USB Driver（在Windows进行ADB调试时需要用到）</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image6.png" alt="下载的项目"></p>
+<hr>
+<h2 id="配置NDK"><a href="#配置NDK" class="headerlink" title="配置NDK"></a>配置NDK</h2><p>&emsp;&emsp;<code>NDK（Native Development Kit）</code>是一系列工具的集合，帮助开发者快速开发C（或C++）的动态库，并能自动将<code>so文件</code>和Java应用一起打包成apk。Unity为<code>Android平台</code>提供了两种<code>脚本后端（Scripting backend）</code>来编译和执行C#脚本，一种是传统的<code>Mono</code>，另外一种则是比较新的<code>IL2CPP</code>。如果我们在打包时选择<code>IL2CPP</code>作为执行C#脚本的脚本后端，那么我们就要下载并配置相应的NDK版本。在这里，我们选择使用<code>Mono</code>作为脚本后端，因此暂时不需要下载并配置NDK。关于<code>IL2CPP</code>的详细介绍，见<a href="https://asancai.github.io/game-development/Unity-IL2CPP/">Unity的IL2CPP</a>。</p>
+<hr>
+<h2 id="Unity的Android环境设置"><a href="#Unity的Android环境设置" class="headerlink" title="Unity的Android环境设置"></a>Unity的Android环境设置</h2><p>&emsp;&emsp;Android SDK下载完成之后，我们就可以在Unity进行Android开发设置了。打开Unity，输入自己的账号密码登录，如果没有账号可以前往<a target="_blank" rel="noopener" href="https://id.unity.com/en/conversations/f5cb5457-8200-4cd4-905c-2f34569a70c400ef">Unity官网</a>注册一个。登录完成之后，点击新建一个项目，打开Unity界面，然后点击<code>Edit-&gt;Preferences-&gt;External Tools</code>，在Android下的SDK、JDK项里选择Android SDK、JDK的安装路径。<code>如果不清楚Android SDK的安装路径，可以打开Android SDK Manager查看</code>。</p>
+<blockquote>
+<p>前面有提到NDK的用途以及现在不配置NDK的原因。如果确实想先配置NDK，也可以直接点NDK后的<code>Download</code>按钮，下载NDK安装包，然后将其解压缩到某个选定的目录。因为NDK无需安装，因此解压完成之后，点击<code>Browse</code>选择NDK的解压路径就好了。</p>
+</blockquote>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image7.png" alt="Unity设置"></p>
+<hr>
+<h2 id="切换平台"><a href="#切换平台" class="headerlink" title="切换平台"></a>切换平台</h2><p>&emsp;&emsp;设置完成之后，选择<code>File-&gt;Build Settings</code>，首先选择<code>Android</code>并点击<code>Switch Platform</code>切换到Android平台。在这里，我们需要大概了解一下在构建Android apk时，Unity为Android提供的两种<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/android-BuildProcess.html">Build System</a>：<code>Internal</code>和<code>Gradle</code>。</p>
+<blockquote>
+<p>Unity Android Build System: </p>
+</blockquote>
+<ul>
+<li><code>Internal</code>：Unity内置的Build System，仅需Android SDK支持；直接生成apk文件，不能导出其他工程项目，适用于仅使用Unity开发的工程。</li>
+<li><code>Gradle</code>：使用<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/android-gradle-overview.html">Gradle</a>进行构建，需要Android SDK与Gradle支持；选择Gradle之后，勾选下面的<code>Export Project</code>可以导出Android Studio工程，适用于Unity与Android交互的项目。</li>
+</ul>
+<p>&emsp;&emsp;因为我们是直接使用Unity打包apk，所以在<code>Build System</code>处我们需要选择<code>Internal</code>。</p>
+<hr>
+<h2 id="修改Player-Settings"><a href="#修改Player-Settings" class="headerlink" title="修改Player Settings"></a>修改Player Settings</h2><p>&emsp;&emsp;完成平台切换后，我们还需要进行其他设置。点击<code>Player Settings</code>按钮，在右侧<code>Inspector</code>窗口下进行设置。首先我们需要修改最上方的<code>Company Name</code>，这是apk的发布者信息，不能使用默认的<code>DefaultCompany</code>，必须修改。然后我们还需要设置下方的<code>ProductName</code>，这是apk安装到手机上之后显示的应用名称，可以使用中文。接着，我们还需要修改<code>Other Settings</code>下的<code>Package Name</code>。我们需要将默认值<code>com.Company.ProductName</code>中的<code>Company</code>修改为我们在<code>DefaultCompany</code>处填写的值，至于<code>ProductName</code>我们可以任意填写，可以填写在上面<code>ProductName</code>处填写的名称，也可以设置成别的。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image8.png" alt="构建设置"></p>
+<p>&emsp;&emsp;完成上面所有的基本设置修改完成之后，点击<code>Build</code>，若构建成功，则环境设置已完成。若构建失败，则需要返回检查哪个步骤出错。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay2/Image9.png" alt="构建成功"></p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://stuff.mit.edu/afs/sipb/project/android/docs/sdk/exploring.html">Exploring the SDK</a></li>
+<li><a href="https://asancai.github.io/game-development/Unity-IL2CPP/">Unity的IL2CPP</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/android-BuildProcess.html">Building apps for Android</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/android-gradle-overview.html">Gradle for Android</a></li>
+</ol>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-02/">https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-02/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/game-development/unity-il2cpp/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="Unity的IL2CPP">
+                        
+                        <span class="card-title">Unity的IL2CPP</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Mono&emsp;&emsp;Unity最大的一个特点是一次制作，多平台部署。在Unity推出IL2CPP的时候，这一核心功能是靠Mono实现的，可以说Mono是Unity跨平台的根本所在。在说Mono之前，我们不得不先提一下C#和其背后
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2018-12-20
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/game-development/" class="post-category">
+                                    游戏开发
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-01/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（一）概述">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（一）概述</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;经过两个多星期的掉坑爬坑，总算是磕磕绊绊地将《PotatoGlory》这个游戏做完了。虽然这个游戏的制作过程十分艰辛，但踩完这么多坑之后，我也收获颇丰，对Unity的使用也有了更深的理解。写这个系列博客的目的，除
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2018-12-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>

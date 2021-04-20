@@ -1,0 +1,1377 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="《土豆荣耀》重构笔记（七）控制角色移动并添加音效, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>《土豆荣耀》重构笔记（七）控制角色移动并添加音效 | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（七）控制角色移动并添加音效</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/tutorial/" class="post-category">
+                                教程
+                            </a>
+                        
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                《土豆荣耀》重构笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2018-12-30
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-20
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.6k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    11 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;为了便于测试，我们会先使用<code>PC端的键盘和鼠标输入</code>来控制人物的移动，等到功能测试完成之后，再将<code>PC端的键盘和鼠标输入</code>换成移动端的<code>虚拟摇杆和按钮输入</code>。这里，我们首先使用<code>PC端的键盘和鼠标输入</code>来实现控制角色进行移动的功能。</p>
+<hr>
+<h2 id="为角色添加Collider和Rigidbody"><a href="#为角色添加Collider和Rigidbody" class="headerlink" title="为角色添加Collider和Rigidbody"></a>为角色添加Collider和Rigidbody</h2><p>&emsp;&emsp;为了让角色具有物理属性，我们需要为角色添加Collider和Rigidbody。此外，为了避免角色出现翻滚的问题，让角色一直保持直立，因此我们需要在<code>Rigidbody2D</code>的<code>Constraints</code>属性里设置勾选<code>Freeze Rotation Z</code>，不让角色在进行物理模拟时，绕Z轴进行旋转。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay7/Image1.png" alt="角色添加的组件信息"></p>
+<hr>
+<h2 id="控制角色移动"><a href="#控制角色移动" class="headerlink" title="控制角色移动"></a>控制角色移动</h2><p>&emsp;&emsp;接下来，我们开始编写脚本来实现让怪物在场景中移动的功能。我们在<code>Assets\Scripts</code>文件夹下创建一个名为<code>Player</code>的文件夹用于保存和角色相关的脚本。创建完毕后，我们在<code>Player</code>文件夹下创建一个名为<code>PlayerController</code>的C#脚本，然后添加以下代码：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Rigidbody2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PlayerController</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色初始朝向是否朝向右边"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> FacingRight <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"移动时角色加速的力大小"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MoveForce <span class="token operator">=</span> <span class="token number">365f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色移动的最大速度"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MaxSpeed <span class="token operator">=</span> <span class="token number">5f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"跳跃时向上加速的力大小"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> JumpForce <span class="token operator">=</span> <span class="token number">1000f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"检测角色是否落地"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> Transform GroundCheck<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 记录角色当前是否处于准备跳跃状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_IsReadyToJump<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 记录角色当前是否正处于跳跃状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_IsJumping<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 记录角色当前是否处于着地状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_GroundedStatus<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 组件引用变量</span>
+    <span class="token keyword">private</span> Rigidbody2D m_Rigidbody2D<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取组件引用</span>
+        m_Rigidbody2D <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 监测变量是否正确赋值</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>GroundCheck <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogError</span><span class="token punctuation">(</span><span class="token string">"请先设置GroundCheck"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 初始化变量</span>
+        m_IsReadyToJump <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        m_IsJumping <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        m_GroundedStatus <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 通过检测角色和groundCheck之间是否存在Ground层的物体来判断当前是否落地</span>
+        m_GroundedStatus <span class="token operator">=</span> Physics2D<span class="token punctuation">.</span><span class="token function">Linecast</span><span class="token punctuation">(</span>
+            transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+            GroundCheck<span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+            LayerMask<span class="token punctuation">.</span><span class="token function">GetMask</span><span class="token punctuation">(</span><span class="token string">"Obstacle"</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 着地时，如果当前不处于跳跃状态且按下了跳跃键，进入准备跳跃状态</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_GroundedStatus <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>m_IsJumping <span class="token operator">&amp;&amp;</span> Input<span class="token punctuation">.</span><span class="token function">GetButtonDown</span><span class="token punctuation">(</span><span class="token string">"Jump"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_IsReadyToJump <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 刚刚落地，退出跳跃状态</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_GroundedStatus <span class="token operator">&amp;&amp;</span> m_IsJumping<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_IsJumping <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">FixedUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//获取水平输入</span>
+        <span class="token keyword">float</span> h <span class="token operator">=</span> Input<span class="token punctuation">.</span><span class="token function">GetAxis</span><span class="token punctuation">(</span><span class="token string">"Horizontal"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 若h * m_Rigidbody2D.velocity.x为正数且小于MaxSpeed，表示需要继续加速</span>
+        <span class="token comment" spellcheck="true">// 若h * m_Rigidbody2D.velocity.x为负数，则表示需要反向加速</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>h <span class="token operator">*</span> m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>x <span class="token operator">&lt;</span> MaxSpeed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Rigidbody2D<span class="token punctuation">.</span><span class="token function">AddForce</span><span class="token punctuation">(</span>Vector2<span class="token punctuation">.</span>right <span class="token operator">*</span> h <span class="token operator">*</span> MoveForce<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//设置物体速度的阈值</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Mathf<span class="token punctuation">.</span><span class="token function">Abs</span><span class="token punctuation">(</span>m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>x<span class="token punctuation">)</span> <span class="token operator">></span> MaxSpeed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Rigidbody2D<span class="token punctuation">.</span>velocity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span>
+                Mathf<span class="token punctuation">.</span><span class="token function">Sign</span><span class="token punctuation">(</span>m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>x<span class="token punctuation">)</span> <span class="token operator">*</span> MaxSpeed<span class="token punctuation">,</span>
+                m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>y
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//判断当前是否需要转向</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>h <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>h <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 跳跃</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_IsReadyToJump<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 进入跳跃状态</span>
+        m_IsJumping <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 设置一个竖直向上的力</span>
+        m_Rigidbody2D<span class="token punctuation">.</span><span class="token function">AddForce</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span><span class="token number">0f</span><span class="token punctuation">,</span> JumpForce<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 退出准备跳跃状态，避免重复跳跃</span>
+        m_IsReadyToJump <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 修改当前朝向</span>
+        FacingRight <span class="token operator">=</span> <span class="token operator">!</span>FacingRight<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 修改scale的x分量实现转向</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale <span class="token operator">=</span> Vector3<span class="token punctuation">.</span><span class="token function">Scale</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">Vector3</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ul>
+<li>Input.GetAxis(“Horizontal”)：Unity提供的默认输入项，能获取键盘上<code>A\D</code>键和<code>&lt;-\-&gt;</code>方向键的输入</li>
+<li>Input.GetButtonDown(“Jump”)：Unity提供的默认输入项，能获取键盘上空格键的输入</li>
+<li>Physics2D.Linecast：来获取场景里两个点之间属于某个Layer的所有Collider</li>
+<li>因为<code>和角色物理模拟有关的操作都应该在FixedUpdate里执行</code>，所以Jump函数需要在FixedUpdate里调用</li>
+<li>我们为了避免出现多次按跳跃键导致Jump函数被多次调用的问题，我们使用变量<code>m_IsJumping</code>来判断当前是否处于跳跃状态</li>
+</ul>
+<hr>
+<h2 id="添加Physics-Material"><a href="#添加Physics-Material" class="headerlink" title="添加Physics Material"></a>添加Physics Material</h2><p>&emsp;&emsp;添加完成后，将<code>PlayerController.cs</code>添加到<code>Hierarchy</code>窗口的<code>Player</code>上，运行游戏，我们发现角色在运动时，会出现很明显的滑动现象。这是因为我们没有为角色和平台上的Collider设置<code>Physics Material</code>，导致角色和平台之间的摩擦力为0。</p>
+<blockquote>
+<p>添加Physics Material的步骤</p>
+</blockquote>
+<ol>
+<li>在<code>Assets</code>目录下新建一个名为<code>Physics Material</code>的文件夹</li>
+<li>在<code>Physics Material</code>的文件夹创建两个<code>Physics Material 2D</code>，并将它们分别命名为<code>Platform</code>和<code>Player</code></li>
+<li>将<code>Platform</code>和<code>Player</code>这两个<code>Physics Material 2D</code>的<code>Friction</code>属性都设置为<code>1</code></li>
+<li>将<code>Platform</code>和<code>Player</code>这两个<code>Physics Material 2D</code>分别设置到所有<code>角色可移动的平台</code>和<code>角色的Rigidbody2D</code>上</li>
+</ol>
+<p>&emsp;&emsp;因为平台数量较多，我们可以批量操作。按住<code>shift</code>键选择多个GameObject，右侧<code>Inspector</code>就会显示它们同时都具备的组件，我们可以同时对它们同时都具备的组件进行编辑。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay7/Image2.png" alt="批量操作"></p>
+<p>&emsp;&emsp;此外，角色在跳跃时，我们发现角色跳跃的高度很高，且下落的速度很慢，游戏体验较差。为了提高游戏体验，我们需要增大游戏角色的重力加速度。将<code>Player</code>下<code>Rigidbody2D</code>组件的<code>Gravity Scale</code>设置为<code>3.1</code>，表示将角色的重力加大至原有的<code>3.1</code>倍。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay7/Image3.png" alt="设置Gravity Scale"></p>
+<p>&emsp;&emsp;从上面的图片可以看到，我将<code>Player</code>这一<code>Physics Material 2D</code>设置到<code>角色的Rigidbody2D</code>上，这表示角色的所有没设置<code>Physics Material 2D</code>的Collider都会使用<code>Player</code>这一<code>Physics Material 2D</code>。</p>
+<p>&emsp;&emsp;设置完成之后，运行游戏，可以看到之前的滑动和下落缓慢的问题都消失了，但是出现了一个新的问题，那就是当我们按住方向键不动的时候，角色会贴在平台边缘。之所以会出现这个问题，是因为角色和平台之间有摩擦力，为了避免这一情况，我们需要创建一个名为<code>Wall</code>的<code>Physics Material 2D</code>，将其<code>Friction</code>属性都设置为<code>0</code>，然后在各个平台的末端处创建一个使用<code>Wall</code>这一<code>Physics Material 2D</code>的Collider。</p>
+<blockquote>
+<p>Foreground添加Collider的情况如下：</p>
+</blockquote>
+<ul>
+<li>env_TowerFull和env_TowerFull (1)：<ul>
+<li>不添加新的Collider</li>
+<li>设置原有Collider的<code>Physics Material 2D</code>为<code>Wall</code></li>
+</ul>
+</li>
+<li>env_PlatformBridge和env_PlatformBridge (1)：<ul>
+<li>新添加一个BoxCollider2D</li>
+<li><code>Material</code>：Wall</li>
+<li><code>Offset</code>：(0.8, 0.8)</li>
+<li><code>Size</code>: (15.5, 0.6)</li>
+</ul>
+</li>
+<li>env_PlatformTop和env_PlatformTop (1):<ul>
+<li>新添加一个BoxCollider2D</li>
+<li><code>Material</code>：Wall</li>
+<li><code>Offset</code>：(4.7, 0.12)</li>
+<li><code>Size</code>: (0.5, 2.6)</li>
+</ul>
+</li>
+<li>env_PlatformUfo:<ul>
+<li>新添加两个CircleCollider2D</li>
+<li><code>Material</code>：都为Wall</li>
+<li><code>Offset</code>：(-15.3, -0.65)和(15.3, -0.65)</li>
+<li><code>Radius</code>: 都为0.5</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;&emsp;添加完毕之后，再次运行游戏，可以看到不再出现角色贴在平台边缘的问题。</p>
+<hr>
+<h2 id="添加音效"><a href="#添加音效" class="headerlink" title="添加音效"></a>添加音效</h2><p>&emsp;&emsp;接着，我们需要为角色添加音效。首先，在<code>PlayerController.cs</code>内加入以下代码，其中<code>...</code>表示原有的代码：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>AudioSource<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PlayerController</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"跳跃音效"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> AudioClip<span class="token punctuation">[</span><span class="token punctuation">]</span> JumpClips<span class="token punctuation">;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token keyword">private</span> AudioSource m_AudioSource<span class="token punctuation">;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        m_AudioSource <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>AudioSource<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token comment" spellcheck="true">//随机在角色当前所处的位置播放一个跳跃的音频</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>JumpClips<span class="token punctuation">.</span>Length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> i <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> JumpClips<span class="token punctuation">.</span>Length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>JumpClips<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<p>&emsp;&emsp;添加完毕之后，我们给Player添加<code>AudioSource</code>组件，并将<code>Assets\Audio\Player\Jumps</code>添加到<code>JumpClips</code>属性上。接着运行游戏，可以听到角色在跳跃的时候已经有了音效。最后，将我们在<code>Player</code>上做的修改<code>Apply</code>到Prefab上，并保存场景产生的修改即可。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay7/Image4.png" alt="设置音效"></p>
+<hr>
+<h2 id="PlayerController-cs完整代码"><a href="#PlayerController-cs完整代码" class="headerlink" title="PlayerController.cs完整代码"></a>PlayerController.cs完整代码</h2><p>&emsp;&emsp;此时，<code>PlayerController.cs</code>完整代码如下：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Rigidbody2D<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token function">RequireComponent</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>AudioSource<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PlayerController</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色初始朝向是否朝向右边"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> FacingRight <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"移动时角色加速的力大小"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MoveForce <span class="token operator">=</span> <span class="token number">365f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"角色移动的最大速度"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MaxSpeed <span class="token operator">=</span> <span class="token number">5f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"跳跃时向上加速的力大小"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> JumpForce <span class="token operator">=</span> <span class="token number">1000f</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"检测角色是否落地"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> Transform GroundCheck<span class="token punctuation">;</span>
+
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"跳跃音效"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> AudioClip<span class="token punctuation">[</span><span class="token punctuation">]</span> JumpClips<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 记录角色当前是否处于准备跳跃状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_IsReadyToJump<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 记录角色当前是否正处于跳跃状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_IsJumping<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 记录角色当前是否处于着地状态</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_GroundedStatus<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 组件引用变量</span>
+    <span class="token keyword">private</span> Rigidbody2D m_Rigidbody2D<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> AudioSource m_AudioSource<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取组件引用</span>
+        m_Rigidbody2D <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Rigidbody2D<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        m_AudioSource <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>AudioSource<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 监测变量是否正确赋值</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>GroundCheck <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogError</span><span class="token punctuation">(</span><span class="token string">"请先设置GroundCheck"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 初始化变量</span>
+        m_IsReadyToJump <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        m_IsJumping <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        m_GroundedStatus <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 通过检测角色和groundCheck之间是否存在Ground层的物体来判断当前是否落地</span>
+        m_GroundedStatus <span class="token operator">=</span> Physics2D<span class="token punctuation">.</span><span class="token function">Linecast</span><span class="token punctuation">(</span>
+            transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+            GroundCheck<span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+            LayerMask<span class="token punctuation">.</span><span class="token function">GetMask</span><span class="token punctuation">(</span><span class="token string">"Obstacle"</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 着地时，如果当前不处于跳跃状态且按下了跳跃键，进入准备跳跃状态</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_GroundedStatus <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>m_IsJumping <span class="token operator">&amp;&amp;</span> Input<span class="token punctuation">.</span><span class="token function">GetButtonDown</span><span class="token punctuation">(</span><span class="token string">"Jump"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_IsReadyToJump <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 刚刚落地，退出跳跃状态</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_GroundedStatus <span class="token operator">&amp;&amp;</span> m_IsJumping<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_IsJumping <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">FixedUpdate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//获取水平输入</span>
+        <span class="token keyword">float</span> h <span class="token operator">=</span> Input<span class="token punctuation">.</span><span class="token function">GetAxis</span><span class="token punctuation">(</span><span class="token string">"Horizontal"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 若h * m_Rigidbody2D.velocity.x为正数且小于MaxSpeed，表示需要继续加速</span>
+        <span class="token comment" spellcheck="true">// 若h * m_Rigidbody2D.velocity.x为负数，则表示需要反向加速</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>h <span class="token operator">*</span> m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>x <span class="token operator">&lt;</span> MaxSpeed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Rigidbody2D<span class="token punctuation">.</span><span class="token function">AddForce</span><span class="token punctuation">(</span>Vector2<span class="token punctuation">.</span>right <span class="token operator">*</span> h <span class="token operator">*</span> MoveForce<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//设置物体速度的阈值</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Mathf<span class="token punctuation">.</span><span class="token function">Abs</span><span class="token punctuation">(</span>m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>x<span class="token punctuation">)</span> <span class="token operator">></span> MaxSpeed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Rigidbody2D<span class="token punctuation">.</span>velocity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span>
+                Mathf<span class="token punctuation">.</span><span class="token function">Sign</span><span class="token punctuation">(</span>m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>x<span class="token punctuation">)</span> <span class="token operator">*</span> MaxSpeed<span class="token punctuation">,</span>
+                m_Rigidbody2D<span class="token punctuation">.</span>velocity<span class="token punctuation">.</span>y
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//判断当前是否需要转向</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>h <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>h <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 跳跃</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_IsReadyToJump<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token function">Jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 进入跳跃状态</span>
+        m_IsJumping <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 设置一个竖直向上的力</span>
+        m_Rigidbody2D<span class="token punctuation">.</span><span class="token function">AddForce</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Vector2</span><span class="token punctuation">(</span><span class="token number">0f</span><span class="token punctuation">,</span> JumpForce<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 退出准备跳跃状态，避免重复跳跃</span>
+        m_IsReadyToJump <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//随机在角色当前所处的位置播放一个跳跃的音频</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>JumpClips<span class="token punctuation">.</span>Length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> i <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> JumpClips<span class="token punctuation">.</span>Length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            AudioSource<span class="token punctuation">.</span><span class="token function">PlayClipAtPoint</span><span class="token punctuation">(</span>JumpClips<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 修改当前朝向</span>
+        FacingRight <span class="token operator">=</span> <span class="token operator">!</span>FacingRight<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 修改scale的x分量实现转向</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale <span class="token operator">=</span> Vector3<span class="token punctuation">.</span><span class="token function">Scale</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">Vector3</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localScale
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&emsp;&emsp;可以看到，目前角色在运动的时候还没有动画。因为给角色加上动画设计到动画状态机的制作，较为复杂，在下一篇文章将会介绍如何给角色添加动画。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay5</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-Rigidbody2D.html">Gravity Scale</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ConventionalGameInput.html">Conventional Game Input</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-PhysicsMaterial2D.html">Physics Material 2D</a></li>
+</ol>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-07/">https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-07/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-08/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（八）给角色添加动画">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（八）给角色添加动画</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;为了提高玩家的游戏体验，我们常常需要在角色运动的时候，根据它的运动状态播放对应的动画。为了能够控制当前播放什么动画，我们首先需要制作动画状态机，再用代码去控制动画状态机切换当前的状态，从而切换当前播放的动画。
+
+
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2018-12-31
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-06/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（六）实现怪物的AI">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（六）实现怪物的AI</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;在游戏里面，为了提高游戏的难度，增加游戏的趣味性，往往会根据游戏的需要实现怪物AI。一般来说，一个最基本的怪物AI需要包括自动巡逻、看到玩家攻击玩家、玩家离开恢复自动巡逻等功能。对于一些状态比较复杂的怪物AI，还
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2018-12-27
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>

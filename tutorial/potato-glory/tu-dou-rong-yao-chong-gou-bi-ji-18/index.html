@@ -1,0 +1,1436 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator, RainbowCyan">
+    <meta name="description" content="RainbowCyan的个人博客">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator | RainbowCyan</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.0.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">RainbowCyan</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle-o" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">RainbowCyan</div>
+        <div class="logo-desc">
+            
+            RainbowCyan的个人博客
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle-o"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/tutorial/" class="post-category">
+                                教程
+                            </a>
+                        
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                《土豆荣耀》重构笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-01-27
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-04-20
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    12 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;到目前为止，我们已经实现了使用<code>Generator</code>来生成<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-14/">怪物</a>、<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-16/">不可交互物体</a>和<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-17/">可拾取道具</a>的功能。但我们发现，现有的<code>Generator</code>只能做到在<code>固定的时刻</code>、在<code>固定的位置</code>随机生成某个Prefab，我们希望能拓展<code>Generator</code>的功能。<code>Generator</code>拓展后的功能需求如下：</p>
+<blockquote>
+<p><code>Generator</code>拓展后的功能需求</p>
+</blockquote>
+<ol>
+<li>能动态地决定是使用<code>固定的时间间隔</code>还是使用<code>随机的时间间隔</code>来实例化预设对象，如果使用<code>固定的时间间隔</code>，那么要设置<code>时间间隔的长度</code>，如果使用<code>随机的时间间隔</code>，那么要设置<code>最短的时间间隔</code>和<code>最长的时间间隔</code></li>
+<li>能动态地决定是在<code>固定位置</code>上还是在<code>随机位置</code>上实例化预设对象，如果选择在<code>随机位置</code>上实例化预设对象，那么需要能分别设置<code>X、Y坐标的随机范围</code></li>
+</ol>
+<hr>
+<h2 id="拓展Generator-cs"><a href="#拓展Generator-cs" class="headerlink" title="拓展Generator.cs"></a>拓展Generator.cs</h2><p>&emsp;&emsp;在知道了<code>Generator</code>拓展后的功能需求之后，我们先根据需求来改写<code>Generator.cs</code></p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 朝向</span>
+<span class="token keyword">public</span> <span class="token keyword">enum</span> Orientation <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    Left<span class="token punctuation">,</span>        <span class="token comment" spellcheck="true">// 固定朝左</span>
+    Right<span class="token punctuation">,</span>        <span class="token comment" spellcheck="true">// 固定朝右</span>
+    Random<span class="token punctuation">,</span>        <span class="token comment" spellcheck="true">// 随机朝向</span>
+    None        <span class="token comment" spellcheck="true">// 不需要考虑朝向</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Generator</span> <span class="token punctuation">:</span> MonoBehaviour <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"多久之后开始实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> GenerateDelay <span class="token operator">=</span> <span class="token number">2f</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"是否使用随机时间间隔来实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> RandomGenerateInterval <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象的最短时间间隔"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MinGenerateInterval<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象的最长时间间隔"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MaxGenerateInterval<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象的固定时间间隔"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> GenerateInterval <span class="token operator">=</span> <span class="token number">3f</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"是否在随机的X坐标上实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> RandomGeneratePositionX <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象时的最小X坐标"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MinGeneratePositionX<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象时的最大X坐标"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MaxGeneratePositionX<span class="token punctuation">;</span>
+
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"是否在随机的Y坐标上实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> RandomGeneratePositionY <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象时的最小Y坐标"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MinGeneratePositionY<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"实例化预设对象时的最大Y坐标"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">float</span> MaxGeneratePositionY<span class="token punctuation">;</span>
+
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"预设对象的朝向"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> Orientation PrefabOrientation <span class="token operator">=</span> Orientation<span class="token punctuation">.</span>Right<span class="token punctuation">;</span>
+    <span class="token punctuation">[</span><span class="token function">Tooltip</span><span class="token punctuation">(</span><span class="token string">"预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> GameObject<span class="token punctuation">[</span><span class="token punctuation">]</span> Prefabs<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> ParticleSystem m_Particle<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Awake</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取引用</span>
+        m_Particle <span class="token operator">=</span> <span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>ParticleSystem<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Prefabs <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> Prefabs<span class="token punctuation">.</span>Length <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Debug<span class="token punctuation">.</span><span class="token function">LogError</span><span class="token punctuation">(</span><span class="token string">"请至少为Prefabs添加一个预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Start</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 开始随机生成的协程</span>
+        <span class="token function">StartCoroutine</span><span class="token punctuation">(</span><span class="token function">RandomGenerate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> IEnumerator <span class="token function">RandomGenerate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">yield</span> <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">WaitForSeconds</span><span class="token punctuation">(</span>GenerateDelay<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token keyword">true</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 确定下一次实例化预设对象的时间间隔</span>
+            <span class="token keyword">float</span> interval <span class="token operator">=</span> GenerateInterval<span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>RandomGenerateInterval<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                interval <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span>MinGenerateInterval<span class="token punctuation">,</span> MaxGenerateInterval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">yield</span> <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">WaitForSeconds</span><span class="token punctuation">(</span>interval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 实例化预设对象</span>
+            <span class="token function">Generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 实例化预设对象</span>
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">Generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 随机选择要实例化的预设的下标</span>
+        <span class="token keyword">int</span> index <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> Prefabs<span class="token punctuation">.</span>Length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 确定生成位置的X坐标</span>
+        <span class="token keyword">float</span> x <span class="token operator">=</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">.</span>x<span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>RandomGeneratePositionX<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            x <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span>MinGeneratePositionX<span class="token punctuation">,</span> MaxGeneratePositionX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 确定生成位置的Y坐标</span>
+        <span class="token keyword">float</span> y <span class="token operator">=</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">.</span>y<span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>RandomGeneratePositionY<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            y <span class="token operator">=</span> Random<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span>MinGeneratePositionY<span class="token punctuation">,</span> MaxGeneratePositionY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 更新位置</span>
+        transform<span class="token punctuation">.</span>position <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vector3</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">.</span>z<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 实例化预设对象</span>
+        GameObject prefab <span class="token operator">=</span> <span class="token function">Instantiate</span><span class="token punctuation">(</span>Prefabs<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">,</span> transform<span class="token punctuation">.</span>position<span class="token punctuation">,</span> Quaternion<span class="token punctuation">.</span>identity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 播放粒子特效</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_Particle <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_Particle<span class="token punctuation">.</span><span class="token function">Play</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 不需要考虑朝向</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>PrefabOrientation <span class="token operator">==</span> Orientation<span class="token punctuation">.</span>None<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>PrefabOrientation <span class="token operator">==</span> Orientation<span class="token punctuation">.</span>Left<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Wander wander <span class="token operator">=</span> prefab<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Wander<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>wander<span class="token punctuation">.</span>FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                wander<span class="token punctuation">.</span><span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> 
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>PrefabOrientation <span class="token operator">==</span> Orientation<span class="token punctuation">.</span>Right<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Wander wander <span class="token operator">=</span> prefab<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Wander<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>wander<span class="token punctuation">.</span>FacingRight<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                wander<span class="token punctuation">.</span><span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>PrefabOrientation <span class="token operator">==</span> Orientation<span class="token punctuation">.</span>Random<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            Wander wander <span class="token operator">=</span> prefab<span class="token punctuation">.</span><span class="token generic-method function">GetComponent<span class="token punctuation">&lt;</span>Wander<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 有一半的概率进行翻转</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>Random<span class="token punctuation">.</span><span class="token keyword">value</span> <span class="token operator">&lt;=</span> <span class="token number">0.5</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                wander<span class="token punctuation">.</span><span class="token function">Flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>代码说明：<br>&emsp;&emsp;这里，我们使用了<code>RandomGenerateInterval</code>、<code>RandomGeneratePositionX</code>和<code>RandomGeneratePositionY</code>这三个bool变量来分别设置是否使用<code>随机的时间间隔</code>来实例化预设对象、是否在<code>随机的X坐标</code>上实例化预设对象和是否在<code>随机的Y坐标</code>上实例化随机对象。</p>
+</blockquote>
+<p>&emsp;&emsp;改写完<code>Generator.cs</code>，我们打开<code>Generator</code>物体下任意一个带有<code>Generator.cs</code>的子物体，可以看到在<code>Inspector</code>窗口多出了很多变量。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay18/Image1.png" alt="默认的Inspector窗口"></p>
+<hr>
+<h2 id="使用自定义Inspector窗口隐藏无关变量"><a href="#使用自定义Inspector窗口隐藏无关变量" class="headerlink" title="使用自定义Inspector窗口隐藏无关变量"></a>使用自定义Inspector窗口隐藏无关变量</h2><p>&emsp;&emsp;我们希望在<code>设置参数</code>的时候，一些<code>无关的变量能被隐藏</code>不显示出来。因此，我们需要来自定义<code>Generator.cs</code>在<code>Inspector</code>窗口的显示规则。首先，我们在<code>Assets\Scripts</code>下新建一个名为<code>Editor</code>的文件夹，然后在<code>Assets\Scripts\Editor</code>下新建一个名为<code>GeneratorEditor</code>的C#脚本：</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEditor<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">CustomEditor</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span>Generator<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">GeneratorEditor</span> <span class="token punctuation">:</span> Editor <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 判断是否显示折叠框</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> m_ShowPrefabs<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Generator的ScriptAble实例对象</span>
+    <span class="token keyword">private</span> Generator m_Generator<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 用于存放Prefab</span>
+    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>GameObject<span class="token operator">></span> m_PrefabList <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token keyword">void</span> <span class="token function">OnInspectorGUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取Generator脚本的ScriptAble实例对象</span>
+        m_Generator <span class="token operator">=</span> <span class="token punctuation">(</span>Generator<span class="token punctuation">)</span>target<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 显示GenerateDelay参数</span>
+        m_Generator<span class="token punctuation">.</span>GenerateDelay <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Generate Delay"</span><span class="token punctuation">,</span> <span class="token string">"多久之后开始实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>GenerateDelay<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 显示RandomGenerateInterval参数</span>
+        m_Generator<span class="token punctuation">.</span>RandomGenerateInterval <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">Toggle</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Random Generate Interval"</span><span class="token punctuation">,</span> <span class="token string">"多久之后开始实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>RandomGenerateInterval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>RandomGenerateInterval<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 显示MinGenerateInterval和MaxGenerateInterval参数</span>
+            m_Generator<span class="token punctuation">.</span>MinGenerateInterval <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Min Generate Interval"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的最短时间间隔"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>MinGenerateInterval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            m_Generator<span class="token punctuation">.</span>MaxGenerateInterval <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Max Generate Interval"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的最长时间间隔"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>MaxGenerateInterval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 确保MaxGenerateInterval的数值比MinGenerateInterval大</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>MaxGenerateInterval <span class="token operator">&lt;</span> m_Generator<span class="token punctuation">.</span>MinGenerateInterval<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                m_Generator<span class="token punctuation">.</span>MaxGenerateInterval <span class="token operator">=</span> m_Generator<span class="token punctuation">.</span>MinGenerateInterval<span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 显示GenerateInterval参数</span>
+            m_Generator<span class="token punctuation">.</span>GenerateInterval <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Generate Interval"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的固定时间间隔"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>GenerateInterval<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 显示RandomGeneratePositionX参数</span>
+        m_Generator<span class="token punctuation">.</span>RandomGeneratePositionX <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">Toggle</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"RandomG enerate PositionX"</span><span class="token punctuation">,</span> <span class="token string">"是否在随机的X坐标上实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>RandomGeneratePositionX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>RandomGeneratePositionX<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 显示MinGeneratePositionX和MaxGeneratePositionX参数</span>
+            m_Generator<span class="token punctuation">.</span>MinGeneratePositionX <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Min Generate PositionX"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的最小X坐标"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>MinGeneratePositionX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            m_Generator<span class="token punctuation">.</span>MaxGeneratePositionX <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Max Generate PositionX"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的最大X坐标"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>MaxGeneratePositionX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 确保MaxGeneratePositionX的数值比MinGeneratePositionX大</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>MaxGeneratePositionX <span class="token operator">&lt;</span> m_Generator<span class="token punctuation">.</span>MinGeneratePositionX<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                m_Generator<span class="token punctuation">.</span>MaxGeneratePositionX <span class="token operator">=</span> m_Generator<span class="token punctuation">.</span>MinGeneratePositionX<span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 显示RandomGeneratePositionY参数</span>
+        m_Generator<span class="token punctuation">.</span>RandomGeneratePositionY <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">Toggle</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"RandomG enerate PositionY"</span><span class="token punctuation">,</span> <span class="token string">"是否在随机的Y坐标上实例化预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>RandomGeneratePositionY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>RandomGeneratePositionY<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 显示MinGeneratePositionY和MaxGeneratePositionY参数</span>
+            m_Generator<span class="token punctuation">.</span>MinGeneratePositionY <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Min Generate PositionY"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的最小Y坐标"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>MinGeneratePositionY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            m_Generator<span class="token punctuation">.</span>MaxGeneratePositionY <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">FloatField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Max Generate PositionY"</span><span class="token punctuation">,</span> <span class="token string">"实例化预设对象的最大Y坐标"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>MaxGeneratePositionY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 确保MaxGeneratePositionY的数值比MaxGeneratePositionY大</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>MaxGeneratePositionY <span class="token operator">&lt;</span> m_Generator<span class="token punctuation">.</span>MinGeneratePositionY<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                m_Generator<span class="token punctuation">.</span>MaxGeneratePositionY <span class="token operator">=</span> m_Generator<span class="token punctuation">.</span>MinGeneratePositionY<span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 显示PrefabOrientation参数</span>
+        m_Generator<span class="token punctuation">.</span>PrefabOrientation <span class="token operator">=</span> <span class="token punctuation">(</span>Orientation<span class="token punctuation">)</span>EditorGUILayout<span class="token punctuation">.</span><span class="token function">EnumPopup</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Prefab Orientation"</span><span class="token punctuation">,</span> <span class="token string">"预设对象的朝向"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>PrefabOrientation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 获取当前有哪些已赋值的Prefab</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_PrefabList <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            m_PrefabList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">List</span><span class="token operator">&lt;</span>GameObject<span class="token operator">></span><span class="token punctuation">(</span>m_Generator<span class="token punctuation">.</span>Prefabs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 绘制折叠框，设置Prefabs参数</span>
+        m_ShowPrefabs <span class="token operator">=</span> EditorGUILayout<span class="token punctuation">.</span><span class="token function">Foldout</span><span class="token punctuation">(</span>m_ShowPrefabs<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Prefabs"</span><span class="token punctuation">,</span> <span class="token string">"预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>m_ShowPrefabs<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 缩进</span>
+            EditorGUI<span class="token punctuation">.</span>indentLevel<span class="token operator">++</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> m_Generator<span class="token punctuation">.</span>Prefabs<span class="token punctuation">.</span>Length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                EditorGUILayout<span class="token punctuation">.</span><span class="token function">BeginHorizontal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 绘制元素赋值框</span>
+                m_Generator<span class="token punctuation">.</span>Prefabs<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span>GameObject<span class="token punctuation">)</span>EditorGUILayout<span class="token punctuation">.</span><span class="token function">ObjectField</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">GUIContent</span><span class="token punctuation">(</span><span class="token string">"Prefab"</span><span class="token punctuation">,</span> <span class="token string">"预设对象"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m_Generator<span class="token punctuation">.</span>Prefabs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">typeof</span><span class="token punctuation">(</span>GameObject<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 删除指定元素</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>GUILayout<span class="token punctuation">.</span><span class="token function">Button</span><span class="token punctuation">(</span><span class="token string">"Remove"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                    m_PrefabList<span class="token punctuation">.</span><span class="token function">RemoveAt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    m_Generator<span class="token punctuation">.</span>Prefabs <span class="token operator">=</span> m_PrefabList<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+                EditorGUILayout<span class="token punctuation">.</span><span class="token function">EndHorizontal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 增加一个元素</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>GUILayout<span class="token punctuation">.</span><span class="token function">Button</span><span class="token punctuation">(</span><span class="token string">"Add"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                m_PrefabList<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                m_Generator<span class="token punctuation">.</span>Prefabs <span class="token operator">=</span> m_PrefabList<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 取消缩进</span>
+            EditorGUI<span class="token punctuation">.</span>indentLevel<span class="token operator">--</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 当值改变时，将target标记为已修改</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>GUI<span class="token punctuation">.</span>changed<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            EditorUtility<span class="token punctuation">.</span><span class="token function">SetDirty</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li>因为<code>GeneratorEditor.cs</code>是用于自定义<code>Inspector</code>窗口脚本，所以必须将<code>GeneratorEditor.cs</code>放在一个名为<code>Editor</code>的文件夹下<code>（Editor文件夹可以位于任意位置）</code></li>
+<li><code>CustomEditor</code>是Unity提供的<code>Attribute</code>，我们需要使用它来<code>标识我们要自定义哪个脚本</code>的<code>Inspector</code>窗口</li>
+<li>由于绘制<code>Inspector窗口</code>的代码是在<code>OnInspectorGUI</code>这一函数里执行的，我们需要让<code>GeneratorEditor</code>这个类继承<code>UnityEditor</code>命名空间下的<code>Editor</code>类，并使用关键字<code>override</code>覆写<code>OnInspectorGUI</code>函数</li>
+<li><code>target</code>是<code>Editor</code>类提供的成员变量，我们可以通过它来获取<code>当前脚本实例对象</code></li>
+<li>由于我们覆写了<code>OnInspectorGUI</code>函数，所以<code>Unity默认的脚本序列化代码</code>不会被执行，我们需要自己使用<code>EditorGUILayout</code>提供的静态函数来<code>序列化各个变量</code>（同理，脚本里面的<code>ToolTip</code>也失效了，如果需要在<code>Inspector</code>窗口提示变量的含义，我们也需要自己编写）</li>
+<li>由于<code>EditorGUILayout</code>没有提供数组的序列化方法，所以我们需要<code>逐一对数组的每个元素</code>进行序列化</li>
+<li>最后，我们使用<code>EditorUtility</code>提供的静态方法<code>SetDirty</code>在我们修改参数之后将<code>target</code>标记为已修改，否则Prefab的实例对象上的<code>参数会被Prefab上的值覆盖</code></li>
+</ol>
+<p>&emsp;&emsp;编写完<code>GeneratorEditor.cs</code>之后，再次打开<code>Generator</code>物体下任意一个带有<code>Generator.cs</code>的子物体，可以看到此时<code>Inspector</code>窗口少了很多变量。而且根据我们的选择，<code>Inspector</code>窗口显示的变量也会动态改变。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay18/Image2.png" alt="自定义的Inspector窗口"></p>
+<hr>
+<h2 id="调整各个Generator的参数"><a href="#调整各个Generator的参数" class="headerlink" title="调整各个Generator的参数"></a>调整各个Generator的参数</h2><p>&emsp;&emsp;有了拓展后的<code>Generator.cs</code>，接下来，我们就要来调整各个<code>Generator</code>的参数了。需要注意的是，因为<code>Generator</code>的<code>Position</code>，<code>需要实例化的Prefab</code>以及<code>实例化Prefab时的朝向</code>都没有改变，所以不再列出。</p>
+<blockquote>
+<p>场景中各个Generator的设置</p>
+</blockquote>
+<ul>
+<li><code>EnemyGenerator</code>:<ul>
+<li><code>Generator Delay</code>: 2</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 2</li>
+<li><code>Max Generate Interval</code>: 8</li>
+<li><code>RandomG enerate PositionX</code>: true</li>
+<li><code>Min Generate PositionX</code>: -17.5</li>
+<li><code>Max Generate PositionX</code>: -6.5</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>EnemyGenerator (1)</code>:<ul>
+<li><code>Generator Delay</code>: 2</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 2</li>
+<li><code>Max Generate Interval</code>: 8</li>
+<li><code>RandomG enerate PositionX</code>: true</li>
+<li><code>Min Generate PositionX</code>: -6</li>
+<li><code>Max Generate PositionX</code>: 6</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>EnemyGenerator (2)</code>:<ul>
+<li><code>Generator Delay</code>: 2</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 2</li>
+<li><code>Max Generate Interval</code>: 8</li>
+<li><code>RandomG enerate PositionX</code>: true</li>
+<li><code>Min Generate PositionX</code>: 6.5</li>
+<li><code>Max Generate PositionX</code>: 17.5</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>CabGenerator</code>:<ul>
+<li><code>Generator Delay</code>: 1</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 5</li>
+<li><code>Max Generate Interval</code>: 15</li>
+<li><code>RandomG enerate PositionX</code>: false</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>CabGenerator (1)</code>:<ul>
+<li><code>Generator Delay</code>: 5</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 5</li>
+<li><code>Max Generate Interval</code>: 15</li>
+<li><code>RandomG enerate PositionX</code>: false</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>BusGenerator</code>:<ul>
+<li><code>Generator Delay</code>: 4</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 5</li>
+<li><code>Max Generate Interval</code>: 15</li>
+<li><code>RandomG enerate PositionX</code>: false</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>BusGenerator (1)</code>:<ul>
+<li><code>Generator Delay</code>: 8</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 5</li>
+<li><code>Max Generate Interval</code>: 15</li>
+<li><code>RandomG enerate PositionX</code>: false</li>
+<li><code>RandomG enerate PositionY</code>: falsealse</li>
+<li><code>Prefab Orientation</code>: Random</li>
+</ul>
+</li>
+<li><code>SwanGenerator</code>:<ul>
+<li><code>Generator Delay</code>: 2</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 5</li>
+<li><code>Max Generate Interval</code>: 15</li>
+<li><code>RandomG enerate PositionX</code>: false</li>
+<li><code>RandomG enerate PositionY</code>: true</li>
+<li><code>Min Generate PositionY</code>: -7</li>
+<li><code>Max Generate PositionY</code>: 2</li>
+</ul>
+</li>
+<li><code>SwanGenerator (1)</code>:<ul>
+<li><code>Generator Delay</code>: 2</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 5</li>
+<li><code>Max Generate Interval</code>: 15</li>
+<li><code>RandomG enerate PositionX</code>: false</li>
+<li><code>RandomG enerate PositionY</code>: true</li>
+<li><code>Min Generate PositionY</code>: -7</li>
+<li><code>Max Generate PositionY</code>: 2</li>
+</ul>
+</li>
+<li><code>PickupGenerator</code>:<ul>
+<li><code>Generator Delay</code>: 5</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 15</li>
+<li><code>Max Generate Interval</code>: 20</li>
+<li><code>RandomG enerate PositionX</code>: true</li>
+<li><code>Min Generate PositionX</code>: -15</li>
+<li><code>Max Generate PositionX</code>: -5</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+<li><code>PickupGenerator (1)</code>:<ul>
+<li><code>Generator Delay</code>: 5</li>
+<li><code>Random Generate Interval</code>: true</li>
+<li><code>Min Generate Interval</code>: 15</li>
+<li><code>Max Generate Interval</code>: 20</li>
+<li><code>RandomG enerate PositionX</code>: true</li>
+<li><code>Min Generate PositionX</code>: 5</li>
+<li><code>Max Generate PositionX</code>: 15</li>
+<li><code>RandomG enerate PositionY</code>: false</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;&emsp;运行游戏，可以发现此时各个<code>Generator</code>能按照我们的设置，在<code>随机的时刻</code>和<code>随机的位置</code>随机生成某个Prefab。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&emsp;&emsp;至此，我们的拓展<code>Generator</code>的工作就全部完成了。需要说明的是，现有的<code>Generator</code>还不是最优的，因为我们没有利用<code>资源池</code>来回收在场景中生成的对象，而是<code>不断地实例化和销毁对象</code>。因为采用<code>资源池</code>的方法来改写<code>Generator</code>，我们需要改造Prefab，使得我们可以重置并回收已生成的资源，工作量较大，所以在这里我们并不提及，感兴趣的读者可以自己进一步拓展。</p>
+<p>&emsp;&emsp;最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay16</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://unity3d.com/cn/learn/tutorials/topics/interface-essentials/building-custom-inspector">Building a Custom Inspector</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/Editor.html">Editor类的说明文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/EditorGUILayout.html">EditorGUILayout的说明文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/EditorUtility.html">EditorUtility的说明文档</a></li>
+</ol>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">RainbowCyan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-18/">https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-18/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">RainbowCyan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-19/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;到目前为止，我们已经能在场景中控制角色进行移动、攻击怪物并拾取道具，但我们还没有做出一个完整的游戏，我们还需要加入游戏的胜负条件。
+
+游戏的胜负条件
+
+
+胜利条件：每击杀一个怪物获得100分，当已获得的分数达到预
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-01-29
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-17/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（十七）随机生成可拾取道具">
+                        
+                        <span class="card-title">《土豆荣耀》重构笔记（十七）随机生成可拾取道具</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言&emsp;&emsp;我们在前面的文章中，已经实现了随机生成足够多的怪物的功能。为了能延长游戏时间，增加游戏的趣味性，我们需要随机生成一些可拾取的道具，来恢复角色的血量或者增加角色可释放的炸弹数。可拾取道具的需求如下：
+
+可拾取道具的
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/tutorial/" class="post-category">
+                                    教程
+                                </a>
+                            
+                            <a href="/categories/tutorial/potato-glory/" class="post-category">
+                                    《土豆荣耀》重构笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Unity/">
+                        <span class="chip bg-color">Unity</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">RainbowCyan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/AsanCai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:969850420@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=969850420" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 969850420" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/unitychan.model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"log":false});</script></body>
+
+</html>
