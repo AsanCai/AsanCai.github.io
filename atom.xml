@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://asancai.github.io/"/>
-  <updated>2021-04-20T15:01:10.681Z</updated>
+  <updated>2021-04-28T17:00:58.566Z</updated>
   <id>https://asancai.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>《土豆荣耀》重构笔记（十二）对怪物造成伤害</title>
-    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-12/"/>
-    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-12/</id>
-    <published>2021-04-19T14:32:04.763Z</published>
-    <updated>2021-04-20T15:01:10.681Z</updated>
+    <title>进程的内存空间分配</title>
+    <link href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/"/>
+    <id>https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/</id>
+    <published>2021-04-27T16:23:58.000Z</published>
+    <updated>2021-04-28T17:00:58.566Z</updated>
     
     <summary type="html">
     
@@ -29,46 +29,18 @@
       
         
         
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+          &lt;p&gt;&amp;emsp;&amp;emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，虚拟内存技术使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间（从低地址到高地址）分为不同的区间用于不同的用途：&lt;br&gt;&lt;img
         
       
     
     </summary>
     
-      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
-    
-      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+      <category term="《C++回顾笔记》" scheme="https://asancai.github.io/categories/cpp-review-notes/"/>
     
     
-      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+      <category term="Notes" scheme="https://asancai.github.io/tags/Notes/"/>
     
-  </entry>
-  
-  <entry>
-    <title>《土豆荣耀》重构笔记（十一）实现发射导弹的功能</title>
-    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-11/"/>
-    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-11/</id>
-    <published>2021-04-19T14:32:04.762Z</published>
-    <updated>2021-04-20T15:01:03.731Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
-    
-      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
-    
-    
-      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+      <category term="C++" scheme="https://asancai.github.io/tags/C/"/>
     
   </entry>
   
@@ -381,6 +353,62 @@
   </entry>
   
   <entry>
+    <title>《土豆荣耀》重构笔记（十二）对怪物造成伤害</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-12/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-12/</id>
+    <published>2019-01-10T13:03:45.000Z</published>
+    <updated>2021-04-21T16:06:26.725Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《土豆荣耀》重构笔记（十一）实现发射导弹的功能</title>
+    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-11/"/>
+    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-11/</id>
+    <published>2019-01-08T12:33:38.000Z</published>
+    <updated>2021-04-21T16:09:11.696Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
+    
+      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
+    
+    
+      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《土豆荣耀》重构笔记（十）实现摄像机跟随角色移动的功能</title>
     <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-10/"/>
     <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-10/</id>
@@ -542,32 +570,6 @@
       <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
     
       <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
-    
-    
-      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity的Animation</title>
-    <link href="https://asancai.github.io/game-development/unity-animation/"/>
-    <id>https://asancai.github.io/game-development/unity-animation/</id>
-    <published>2018-12-25T03:11:15.000Z</published>
-    <updated>2021-04-20T15:04:53.665Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&amp;emsp;&amp;emsp;在Unity中，我们可以使用&lt;code&gt;Animation
-        
-      
-    
-    </summary>
-    
-      <category term="游戏开发" scheme="https://asancai.github.io/categories/game-development/"/>
     
     
       <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
