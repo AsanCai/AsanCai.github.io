@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="《土豆荣耀》重构笔记（二十三）打包游戏, RainbowCyan">
+    <meta name="keywords" content="声明、定义与初始化, RainbowCyan">
     <meta name="description" content="RainbowCyan的个人博客">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>《土豆荣耀》重构笔记（二十三）打包游戏 | RainbowCyan</title>
+    <title>声明、定义与初始化 | RainbowCyan</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -223,12 +223,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">《土豆荣耀》重构笔记（二十三）打包游戏</h1>
+                    <h1 class="description center-align post-title">声明、定义与初始化</h1>
                 </div>
             </div>
         </div>
@@ -345,8 +345,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Unity/">
-                                <span class="chip bg-color">Unity</span>
+                            <a href="/tags/Notes/">
+                                <span class="chip bg-color">Notes</span>
+                            </a>
+                        
+                            <a href="/tags/C/">
+                                <span class="chip bg-color">C++</span>
                             </a>
                         
                     </div>
@@ -357,12 +361,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/tutorial/" class="post-category">
-                                教程
-                            </a>
-                        
-                            <a href="/categories/tutorial/potato-glory/" class="post-category">
-                                《土豆荣耀》重构笔记
+                            <a href="/categories/cpp-review-notes/" class="post-category">
+                                《C++回顾笔记》
                             </a>
                         
                     </div>
@@ -374,28 +374,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-02-03
+                    2021-04-25
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-04-20
+                    2021-04-29
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    857
+                    1.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    4 分
                 </div>
                 
 
@@ -410,31 +410,140 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;在<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-22/">上篇文章</a>中，我们实现了虚拟摇杆和按钮，完成了游戏所有的开发工作，是时候对游戏进行打包，在手机上进行测试了。</p>
+                <h2 id="声明（Declaration）"><a href="#声明（Declaration）" class="headerlink" title="声明（Declaration）"></a>声明（Declaration）</h2><p>&emsp;&emsp;所谓声明，是告诉编译器某个东西的名称和类型，但略去某些细节。在程序中，允许重复声明多次。下面的都是声明式：</p>
+<pre class=" language-c++"><code class="language-c++">extern int x;                         /// 声明一个变量
+
+class Widget;                         /// 声明一个类
+
+std::size_t numDigits(int number);    /// 声明一个函数
+
+class A&#123;
+public:
+    static int a;                     /// 声明一个静态变量
+&#125;</code></pre>
+<blockquote>
+<ul>
+<li><code>extern</code>关键字表示声明某个变量，但如果在使用<code>extern</code>关键字的时候，执行了赋值操作，那么编译器会认为这是一个定义：<pre class=" language-c++"><code class="language-c++">extern int x = 0;                   /// 定义了一个变量，其类型为int</code></pre>
+</li>
+<li>此外，只有当<code>extern</code>声明位于函数外部时，才能执行赋值操作。</li>
+</ul>
+</blockquote>
 <hr>
-<h2 id="修改Player-Settings"><a href="#修改Player-Settings" class="headerlink" title="修改Player Settings"></a>修改Player Settings</h2><p>&emsp;&emsp;在进行打包前，我们需要修改一下游戏的<code>Player Settings</code>。首先，我们在顶部菜单栏选择<code>File-&gt;Build Setting</code>，然后点击<code>Player Settings...</code>按钮打开<code>Player Settings</code>窗口。</p>
-<p>&emsp;&emsp;首先我们需要修改最上方的<code>Company Name</code>，这是apk的发布者信息，不能使用默认的<code>DefaultCompany</code>，必须修改，这里我们设置为<code>RainbowCyan</code>。</p>
-<p>&emsp;&emsp;设置完<code>Company Name</code>后，我们还需要设置<code>ProductName</code>，这是apk安装到手机上之后显示的应用名称，可以使用中文，这里我们设置为<code>PotatoGloryTutorial</code>。然后，我们还需要设置<code>Default Icon</code>，这是apk安装到手机上之后显示的引用图标，这里我们设置为<code>Assets\Sprites</code>下的<code>title</code>图片，</p>
-<p>&emsp;&emsp;接着，我们还需要修改<code>Resolution and Presentation</code>下的<code>Allowed Orentations for Auto Rotation</code>，因为我们的游戏是横屏游戏，因此我们需要取消<code>Portrait</code>和<code>Portrait Upside Down</code>的勾选。</p>
-<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay23/Image1.png" alt="Player Settings-Part1"></p>
-<p>&emsp;&emsp;修改完<code>Resolution and Presentation</code>下的<code>Allowed Orentations for Auto Rotation</code>，我们还需要修改<code>Other Settings</code>下的<code>Package Name</code>。我们需要将默认值<code>com.Company.ProductName</code>中的<code>Company</code>修改为我们在<code>DefaultCompany</code>处填写的值，至于<code>ProductName</code>我们可以任意填写，可以填写在上面<code>ProductName</code>处填写的名称，也可以设置成别的。这里，我们将<code>Package Name</code>设置为<code>com.RainbowCyan.PotatoGloryTutorial</code>。</p>
-<p>&emsp;&emsp;至于<code>Version</code>，这个是应用的版本号，我们可以自己随意填写，这里我们设置为<code>1.0</code>。</p>
-<p>&emsp;&emsp;最后，我们还可以选择修改<code>Script Backend</code>。Unity默认的<code>Script Backend</code>为<code>Mono</code>，我们可以将其设置为<code>IL2CPP</code>，但如果设置为<code>IL2CPP</code>，我们需要配置<code>NDK</code>。这两种<code>Script Backend</code>的区别，可以参考<a target="_blank" rel="noopener" href="https://www.rainbowcyan.com/game-development/Unity-IL2CPP/">Unity的IL2CPP</a>。如何配置<code>NDK</code>可以参考<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-2/">Unity的安装以及安卓环境的配置</a>这里我们使用默认的<code>Mono</code>即可。</p>
-<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay23/Image2.png" alt="Player Settings-Part2"></p>
+<h2 id="定义（Definition）"><a href="#定义（Definition）" class="headerlink" title="定义（Definition）"></a>定义（Definition）</h2><p>&emsp;&emsp;定义的任务是，为编译器提供声明所遗漏的细节。对于对象而言，定义的任务是为此对象分配内存；对函数或者模板函数而言，定义提供了函数的实现；而对类或者模板类来说，定义列出其成员变量和成员函数。在程序中，只允许定义一次。下面的都是定义式：</p>
+<pre class=" language-c++"><code class="language-c++">int x;                                /// 定义一个变量
+
+class Widget                          /// 定义一个类
+&#123;
+public:
+    Widget();
+    ~Widget();
+&#125;
+
+std::size_t numDigits(int number)     /// 定义一个函数
+&#123;
+    std::size_t digit = 1;
+    return digit;
+&#125;    
+
+int A::a = 0;                         /// 定义一个静态变量并初始化</code></pre>
+<blockquote>
+<p>大多数情况下，定义也完成了声明的工作，不需要再额外声明。但以下两种情况，定义只是定义：</p>
+<ul>
+<li>在类定义之外，定义并初始化一个静态数据成员</li>
+<li>在类外定义非内联成员函数</li>
+</ul>
+</blockquote>
 <hr>
-<h2 id="构建apk并测试"><a href="#构建apk并测试" class="headerlink" title="构建apk并测试"></a>构建apk并测试</h2><p>&emsp;&emsp;<code>Player Settings</code>设置完毕之后，我们开始构建apk。在顶部菜单栏选择<code>File-&gt;Build Setting</code>，然后点击<code>Build</code>按钮打开apk文件的保存窗口，这里我们将apk文件命名为<code>PotatoGloryTutorial.apk</code>，随意选择一个文件夹进行保存，可以看到Unity编辑器出现apk文件的构建进度条。</p>
-<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay23/Image3.png" alt="apk构建进度条"></p>
-<p>&emsp;&emsp;构建完成之后，我们将apk文件发送至用于测试的Android手机，安装之后即可进行测试。</p>
-<p>&emsp;&emsp;需要注意的是，如果我们有开启<code>开发者模式</code>的Android手机，我们也可以先开启<code>USB调试模式</code>，然后使用USB线将手机连接到电脑，并点击<code>Build And Run</code>让Unity为我们构建apk并将构建好的apk直接安装到手机上。</p>
-<p>&emsp;&emsp;当然，有兴趣的读者可以点击<a target="_blank" rel="noopener" href="https://gitee.com/AsanCai/Download/raw/master/apk/PotatoGloryTutorial.apk">安装包下载链接</a>下载体验我构建出来的安装包，也可以使用手机扫描二维码进行下载安装。</p>
-<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay23/Image4.png" alt="安装包下载二维码"></p>
-<hr>
-<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&emsp;&emsp;至此，我们的游戏就打包完成啦，快把安装包发给朋友们体验下吧。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay21</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
-<hr>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://www.rainbowcyan.com/game-development/Unity-IL2CPP/">Unity的IL2CPP</a></li>
-<li><a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-2/">Unity的安装以及安卓环境的配置</a></li>
+<h2 id="初始化（Initialization）"><a href="#初始化（Initialization）" class="headerlink" title="初始化（Initialization）"></a>初始化（Initialization）</h2><p>&emsp;&emsp;初始化是指<code>给予已定义的对象初值</code>的过程。如果定义变量时候没有初始化，则变量将会被<code>默认初始化（隐式初始化，由编译器按照一定的规则自动完成）</code>。一般来说，默认初始化的规则如下：</p>
+<ul>
+<li>栈中的变量<code>（函数内定义的变量）</code>和堆中的变量<code>（动态内存）</code>会有不确定的值</li>
+<li>全局变量和静态变量<code>（包括局部静态变量）</code>会被初始化为该变量的类型中<code>0</code>这个概念对应的值<blockquote>
+<p>C++11: If no initializer is specified for an object, the object is default-initialized; if no initialization is performed, an object with automatic or dynamic storage duration has indeterminate value. Note: Objects with static or thread storage duration are zero-initialized.</p>
+</blockquote>
+</li>
+</ul>
+<p>&emsp;&emsp;之所以对不同类型的变量，默认初始化的行为会不一致，是因为编译器存储它们的内存空间不同。关于编译器存储变量的内存空间分配，可以参阅<a target="_blank" rel="noopener" href="https://www.rainbowcyan.com/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/">进程的内存空间分配</a>。</p>
+<p>&emsp;&emsp;值得注意的是，如果变量的类型是<code>自定义的类</code>，那么该变量在被默认初始化的时候，将会调用其默认构造函数。倘若该类找不到默认构造函数，或者没有带缺省参数的构造函数，编译器将会报错。</p>
+<blockquote>
+<p>对于自定义的类来说，其没有初始化的成员变量的值是否为一个不确定的值，取决于其所在对象的存储方式<code>（对象也没被初始化）</code>：</p>
+<ol>
+<li>如果对象为全局变量或者静态变量（存于BSS段），那么其成员变量的值将会被初始化为0</li>
+<li>如果对象为动态对象或者局部变量（存于堆或者栈上），那么其成员变量的值将是一个不确定的值</li>
 </ol>
+</blockquote>
+<pre class=" language-c++"><code class="language-c++">#include <stdlib.h>
+#include <iostream>
+
+using namespace std;
+
+class Test 
+&#123;
+public:
+    Test() 
+    &#123;
+        cout << "Test(): a = " << a << endl;
+    &#125;
+
+    int a;
+&#125;;
+
+class StaticTest
+&#123;
+public:
+    StaticTest()
+    &#123;
+        cout << "StaticTest(): a = " << a << endl;
+    &#125;
+
+    int a;
+&#125;;
+
+class TestPtr
+&#123;
+public:
+    TestPtr()
+    &#123;
+        cout << "TestPtr(): a = " << a << endl;
+    &#125;
+
+    int a;
+&#125;;
+
+Test GlobalTest;                                          /// 对象存于BSS段，成员变量a的值会被初始化为0，并调用默认构造函数
+static StaticTest StaticGlobalTest;                       /// 对象存于BSS段，成员变量a的值会被初始化为0，并调用默认构造函数
+
+TestPtr* GlobalTestPtr = new TestPtr();                   /// 对象存于堆上，成员变量a的值为不确定值，不会被初始化为0，并调用默认构造函数
+TestPtr* GlobalTestPtr2;                                  /// 指针GlobalTestPtr2存于BSS段，因此其值会被初始化为0，也就是nullptr
+
+int main()
+&#123;
+
+    cout << "--------------------Initialization of local variable --------------------" << endl;
+
+    Test LocalTest;                                         /// 对象存于栈上，成员变量a的值为不确定值，不会被初始化为0，并调用默认构造函数
+
+    static StaticTest StaticLocalTest;                      /// 对象存于BSS段，成员变量a的值会被初始化为0，并调用默认构造函数
+
+    TestPtr* LocalTestPtr = new TestPtr();                  /// 对象存于堆上，成员变量a的值为不确定值，不会被初始化为0，并调用默认构造函数
+    TestPtr* LocalTestPtr2;
+
+    cout << "GlobalTestPtr2 = " << GlobalTestPtr2 << endl;  
+    // cout << "LocalTestPtr2 = " << LocalTestPtr2 << endl; /// 将会报错，不允许使用未初始化的变量
+
+    system("pause");
+    return 0;
+&#125;</code></pre>
+<p>&emsp;&emsp;根据默认初始化的规则，不难得到上述事例程序的输出为：</p>
+<pre><code>Test(): a = 0
+StaticTest(): a = 0
+TestPtr(): a = -842150451
+--------------------Initialization of local variable --------------------
+Test(): a = -858993460
+StaticTest(): a = 0
+TestPtr(): a = -842150451
+GlobalTestPtr2 = 00000000
+LocalTestPtr2 = 00000000
+请按任意键继续. . .</code></pre>
 
             </div>
             <hr/>
@@ -460,7 +569,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/">https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/</a>
+                    <a href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-sheng-ming-ding-yi-yu-chu-shi-hua/">https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-sheng-ming-ding-yi-yu-chu-shi-hua/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -498,8 +607,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Unity/">
-                                    <span class="chip bg-color">Unity</span>
+                                <a href="/tags/Notes/">
+                                    <span class="chip bg-color">Notes</span>
+                                </a>
+                            
+                                <a href="/tags/C/">
+                                    <span class="chip bg-color">C++</span>
                                 </a>
                             
                         </div>
@@ -671,25 +784,25 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/cpp-review-notes/c-hui-gu-bi-ji-sheng-ming-ding-yi-yu-chu-shi-hua/">
+                <a href="/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="声明、定义与初始化">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="进程的内存空间分配">
                         
-                        <span class="card-title">声明、定义与初始化</span>
+                        <span class="card-title">进程的内存空间分配</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            声明（Declaration）&emsp;&emsp;所谓声明，是告诉编译器某个东西的名称和类型，但略去某些细节。在程序中，允许重复声明多次。下面的都是声明式：
-extern int x;                         /
+                            &emsp;&emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，虚拟内存技术使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间（从低地址到高地址）分为不同的区间用于不同的用途：
+&emsp;&e
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-25
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-28
                         </span>
                         <span class="publish-author">
                             
@@ -725,19 +838,21 @@ extern int x;                         /
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-22/">
+                <a href="/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="《土豆荣耀》重构笔记（二十三）打包游戏">
                         
-                        <span class="card-title">《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮</span>
+                        <span class="card-title">《土豆荣耀》重构笔记（二十三）打包游戏</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言&emsp;&emsp;到目前为止，我们已经实现了游戏的所有功能。但目前，我们仍然使用键盘和鼠标来操作角色的移动和攻击。为了能让游戏在手机上正常运行，我们需要实现虚拟摇杆和按钮，来替换键盘和鼠标输入。此外，为了减少代码的修改，且同时兼容
+                            前言&emsp;&emsp;在上篇文章中，我们实现了虚拟摇杆和按钮，完成了游戏所有的开发工作，是时候对游戏进行打包，在手机上进行测试了。
+
+修改Player Settings&emsp;&emsp;在进行打包前，我们需要修改一下游戏的Pla
                         
                     </div>
                     <div class="publish-info">

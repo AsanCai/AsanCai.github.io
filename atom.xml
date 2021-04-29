@@ -45,6 +45,34 @@
   </entry>
   
   <entry>
+    <title>声明、定义与初始化</title>
+    <link href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-sheng-ming-ding-yi-yu-chu-shi-hua/"/>
+    <id>https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-sheng-ming-ding-yi-yu-chu-shi-hua/</id>
+    <published>2021-04-25T15:38:43.000Z</published>
+    <updated>2021-04-29T15:47:13.222Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;声明（Declaration）&quot;&gt;&lt;a href=&quot;#声明（Declaration）&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="《C++回顾笔记》" scheme="https://asancai.github.io/categories/cpp-review-notes/"/>
+    
+    
+      <category term="Notes" scheme="https://asancai.github.io/tags/Notes/"/>
+    
+      <category term="C++" scheme="https://asancai.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《土豆荣耀》重构笔记（二十三）打包游戏</title>
     <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/"/>
     <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/</id>
@@ -526,34 +554,6 @@
     <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-06/</id>
     <published>2018-12-27T10:53:16.000Z</published>
     <updated>2021-04-20T15:00:09.726Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
-    
-      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
-    
-    
-      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《土豆荣耀》重构笔记（五）创建角色以及怪物的动画</title>
-    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-05/"/>
-    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-05/</id>
-    <published>2018-12-26T12:35:22.000Z</published>
-    <updated>2021-04-20T15:00:35.994Z</updated>
     
     <summary type="html">
     
