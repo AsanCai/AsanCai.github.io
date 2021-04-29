@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://asancai.github.io/"/>
-  <updated>2021-04-28T17:00:58.566Z</updated>
+  <updated>2021-04-29T13:56:50.411Z</updated>
   <id>https://asancai.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/"/>
     <id>https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/</id>
     <published>2021-04-27T16:23:58.000Z</published>
-    <updated>2021-04-28T17:00:58.566Z</updated>
+    <updated>2021-04-29T13:56:50.411Z</updated>
     
     <summary type="html">
     
@@ -29,7 +29,7 @@
       
         
         
-          &lt;p&gt;&amp;emsp;&amp;emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，虚拟内存技术使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间（从低地址到高地址）分为不同的区间用于不同的用途：&lt;br&gt;&lt;img
+          &lt;p&gt;&amp;emsp;&amp;emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，&lt;code&gt;虚拟内存技术&lt;/code&gt;使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间&lt;code&gt;（从低地址到高地址）&lt;/code&gt;分为不同的区间用于不同的用途：
         
       
     

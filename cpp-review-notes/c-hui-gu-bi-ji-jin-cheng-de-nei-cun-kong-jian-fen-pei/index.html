@@ -410,8 +410,8 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>&emsp;&emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，虚拟内存技术使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间（从低地址到高地址）分为不同的区间用于不同的用途：<br><img src="https://github.com/AsanCai/BlogImage/raw/master/C++ReviewNotes/memory.png" alt="进程的内存区间"></p>
-<p>&emsp;&emsp;如上图所示，一般来讲，进程会将其虚拟内存地址空间分为六个部分，它们的用途分别如下：</p>
+                <p>&emsp;&emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，<code>虚拟内存技术</code>使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间<code>（从低地址到高地址）</code>分为不同的区间用于不同的用途：<br><img src="https://github.com/AsanCai/BlogImage/raw/master/C++ReviewNotes/memory.png" alt="进程的内存区间"></p>
+<p>&emsp;&emsp;如上图所示，一般来讲，进程会将其虚拟内存地址空间分为<strong>六个部分</strong>，它们的用途分别如下：</p>
 <ol>
 <li><strong><em>TEXT段（代码段）</em></strong>：代码段用来存放程序执行代码和<code>所有常量</code>的区域。代码段的大小在<code>程序运行前</code>就已经确定，是固定大小且只读的区域<code>(这也是为什么常量不允许修改的原因)</code>。</li>
 <li><strong><em>DATA段，又称GVAR段（数据段）</em></strong>：数据段通常是指用来存放程序中<code>已初始化的全局变量和静态变量</code>的一块内存区域。DATA段的内存属于<code>静态内存分配</code>。</li>
@@ -424,8 +424,8 @@
 <p>值得注意的是：</p>
 <ul>
 <li><code>DATA段</code>和<code>BSS段</code>的区别在于，如果一个全局变量（或者静态变量）在定义后没有被初始化，那么它会被存在BSS段，一旦该全局变量（或者静态变量）被初始化，那么它就会被存到DATA段。</li>
-<li>BSS段的字节值全为0，因为未初始化的全局变量和静态变量都会被在BSS段中，所以可以认为它们都会被默认初始化为0（包括类的成员变量）</li>
-<li>HEAP和STACK这两个区域的字节值不一定为0，所以对于存在这个区域的变量来说，如果不对它们进行初始化，那么它们将会得到一个不确定的值（变量所处内存的残留值）。</li>
+<li><code>BSS段的字节值全为0</code>，因为未初始化的全局变量和静态变量都会被在BSS段中，所以可以认为它们都会被默认初始化为0（包括类的成员变量）</li>
+<li>HEAP和STACK这两个区域的字节值不一定为0，所以对于存在这个区域的变量来说，如果不对它们进行初始化，那么它们将会得到一个<code>不确定的值（变量所处内存的残留值）</code>。</li>
 </ul>
 </blockquote>
 
