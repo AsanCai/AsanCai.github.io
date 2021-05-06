@@ -73,6 +73,34 @@
   </entry>
   
   <entry>
+    <title>《重构--改善既有代码的设计》读书笔记（一）重构的原则</title>
+    <link href="https://asancai.github.io/refactoring-notes/chong-gou-du-shu-bi-ji-01/"/>
+    <id>https://asancai.github.io/refactoring-notes/chong-gou-du-shu-bi-ji-01/</id>
+    <published>2021-04-18T15:16:44.000Z</published>
+    <updated>2021-05-06T15:47:33.231Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="《重构--改善既有代码的设计》读书笔记" scheme="https://asancai.github.io/categories/refactoring-notes/"/>
+    
+    
+      <category term="Refactoring" scheme="https://asancai.github.io/tags/Refactoring/"/>
+    
+      <category term="Notes" scheme="https://asancai.github.io/tags/Notes/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《土豆荣耀》重构笔记（二十三）打包游戏</title>
     <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/"/>
     <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-23/</id>
@@ -526,34 +554,6 @@
     <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-07/</id>
     <published>2018-12-30T13:04:08.000Z</published>
     <updated>2021-04-20T15:00:20.375Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
-    
-      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
-    
-    
-      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《土豆荣耀》重构笔记（六）实现怪物的AI</title>
-    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-06/"/>
-    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-06/</id>
-    <published>2018-12-27T10:53:16.000Z</published>
-    <updated>2021-04-20T15:00:09.726Z</updated>
     
     <summary type="html">
     
