@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="进程的内存空间分配, RainbowCyan">
+    <meta name="keywords" content="《C++回顾笔记》取模运算与取余运算, RainbowCyan">
     <meta name="description" content="RainbowCyan的个人博客">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>进程的内存空间分配 | RainbowCyan</title>
+    <title>《C++回顾笔记》取模运算与取余运算 | RainbowCyan</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -223,12 +223,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">进程的内存空间分配</h1>
+                    <h1 class="description center-align post-title">《C++回顾笔记》取模运算与取余运算</h1>
                 </div>
             </div>
         </div>
@@ -374,28 +374,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-04-28
+                    2021-05-18
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-04-29
+                    2021-05-18
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    852
+                    467
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    1 分
                 </div>
                 
 
@@ -410,24 +410,24 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>&emsp;&emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，<code>虚拟内存技术</code>使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间<code>（从低地址到高地址）</code>分为不同的区间用于不同的用途：<br><img src="https://github.com/AsanCai/BlogImage/raw/master/C++ReviewNotes/memory.png" alt="进程的内存区间"></p>
-<p>&emsp;&emsp;如上图所示，一般来讲，进程会将其虚拟内存地址空间分为<strong>六个部分</strong>，它们的用途分别如下：</p>
+                <p>&emsp;&emsp;对于整型数a，b来说，取模运算和取余运算的计算方法是一样的：</p>
 <ol>
-<li><strong><em>TEXT段（代码段）</em></strong>：代码段用来存放程序执行代码和<code>所有常量</code>的区域。代码段的大小在<code>程序运行前</code>就已经确定，是固定大小且只读的区域<code>(这也是为什么常量不允许修改的原因)</code>。</li>
-<li><strong><em>DATA段，又称GVAR段（数据段）</em></strong>：数据段通常是指用来存放程序中<code>已初始化的全局变量和静态变量</code>的一块内存区域。DATA段的内存属于<code>静态内存分配</code>。</li>
-<li><strong><em>BSS段（Block Started by Symbol）</em></strong>：BSS段通常用来存放程序中<code>未初始化的全局变量和静态变量</code>的一块内存区域，这个区域的内存属于<code>静态内存分配</code>。BSS段的内存属于<code>静态内存分配</code>。</li>
-<li><strong><em>HEAP（堆空间）</em></strong>：堆空间是用于存放进程运行中被<code>动态分配</code>的内存段，它的大小并不固定，可动态扩张或缩减。当进程调用<code>malloc</code>或者<code>new</code>等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张）；当利用<code>free</code>或者<code>delete</code>等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）。堆空间的内存属于<code>动态内存分配</code>。</li>
-<li><strong><em>Unused Memory（未使用的内存）</em></strong>：处于堆空间和栈空间中间的、未被使用的区域。堆空间和栈空间的大小是可变的，堆空间从下往上增长，栈空间从上往下增长。堆空间和栈空间增长的时候会消耗未使用的内存区域，直至其被耗尽为止。</li>
-<li><strong><em>STACK（栈空间）</em></strong>：栈空间用于存放函数的参数、返回值和函数体内定义的局部变量。在函数被调用时，其参数和函数体内定义的局部变量会被压入栈空间中。等到函数调用结束后，函数的返回值会被存放回栈中，且被压入栈中的参数和局部变量也会依次出栈。栈空间的内存属于<code>自动内存分配</code>。</li>
+<li>求整数商：c = a/b;</li>
+<li>取余和取模：r = a - c * b;</li>
 </ol>
+<p>&emsp;&emsp;取模运算和取余运算的区别在于第一步对计算结果舍入的方式不同：取模运算在计算c的值时，会将结果<code>向负无穷方向舍入</code>，而取余运算在取c的值时，<code>向0方向舍入</code>。</p>
 <blockquote>
-<p>值得注意的是：</p>
-<ul>
-<li><code>DATA段</code>和<code>BSS段</code>的区别在于，如果一个全局变量（或者静态变量）在定义后没有被初始化，那么它会被存在BSS段，一旦该全局变量（或者静态变量）被初始化，那么它就会被存到DATA段。</li>
-<li><code>BSS段的字节值全为0</code>，因为未初始化的全局变量和静态变量都会被在BSS段中，所以可以认为它们都会被默认初始化为0（包括类的成员变量）</li>
-<li>HEAP和STACK这两个区域的字节值不一定为0，所以对于存在这个区域的变量来说，如果不对它们进行初始化，那么它们将会得到一个<code>不确定的值（变量所处内存的残留值）</code>。</li>
-</ul>
+<p>例如-1对256取模和取余时：</p>
+<ol>
+<li>求整数商c，取模将结果向负无穷方向舍入得到-1，而取余则将结果向0方向舍入得到0；</li>
+<li>将算出的整数商c代入计算r的公式，得到取模的结果为255，而取余的结果为-1；</li>
+</ol>
 </blockquote>
+<p>&emsp;&emsp;当整数a和b的符号一致时，易知其整数商必大于或者等于0，取模运算和取余运算对其舍入后的结果也一致，所以此时取模运算和取余运算的结果是一样的。</p>
+<p>&emsp;&emsp;当整数a和b的符号不一致时，易知其整数商必小于或者等于0，因此可以得到：</p>
+<pre><code>r = a + |a| * sign(b) * s</code></pre>
+<p>&emsp;&emsp;其中，<code>sign(b)</code>表示b的符号<code>(b大于0时，其为1；小于0时其为-1)</code>。而<code>s</code>表示舍入后整数商对原始商的变化倍数。易知对于取模运算来说，<code>s</code>必大于1，而对于取模运算来说，<code>s</code>必小于1。也就是说，<code>当a和b的符号不一致时，求模运算结果的符号和b一致，而求余运算结果的符号和a一致</code>。</p>
+<p>&emsp;&emsp;最后，需要注意的是，在不同的语言里，运算符<code>%</code>表示的含义不一致，有的语言认为%表示取模运算<code>(如Python)</code>，但在C/C++里，<code>%</code>表示取余运算。</p>
 
             </div>
             <hr/>
@@ -453,7 +453,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/">https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/</a>
+                    <a href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/">https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -664,9 +664,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/">
                     <div class="card-image">
@@ -689,9 +690,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-05-18
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-18
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -704,6 +705,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -726,25 +728,25 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/cpp-review-notes/c-hui-gu-bi-ji-sheng-ming-ding-yi-yu-chu-shi-hua/">
+                <a href="/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="声明、定义与初始化">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="进程的内存空间分配">
                         
-                        <span class="card-title">声明、定义与初始化</span>
+                        <span class="card-title">进程的内存空间分配</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            声明（Declaration）&emsp;&emsp;所谓声明，是告诉编译器某个东西的名称和类型，但略去某些细节。在程序中，允许重复声明多次。下面的都是声明式：
-extern int x;                         /
+                            &emsp;&emsp;现代操作系统会为每个进程都分配一个虚拟内存地址空间，虚拟内存技术使得每个进程都可以独占整个内存空间，地址从零开始，直到内存上限。进程会把整个地址空间（从低地址到高地址）分为不同的区间用于不同的用途：
+&emsp;&e
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-25
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-28
                             </span>
                         <span class="publish-author">
                             

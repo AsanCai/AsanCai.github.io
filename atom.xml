@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://asancai.github.io/"/>
-  <updated>2021-04-29T13:56:50.411Z</updated>
+  <updated>2021-05-18T15:35:40.676Z</updated>
   <id>https://asancai.github.io/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《C++回顾笔记》取模运算与取余运算</title>
+    <link href="https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/"/>
+    <id>https://asancai.github.io/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/</id>
+    <published>2021-05-18T14:54:47.000Z</published>
+    <updated>2021-05-18T15:35:40.676Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&amp;emsp;&amp;emsp;对于整型数a，b来说，取模运算和取余运算的计算方法是一样的：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;求整数商：c = a/b;&lt;/li&gt;
+&lt;li&gt;取余和取模：r = a - c *
+        
+      
+    
+    </summary>
+    
+      <category term="《C++回顾笔记》" scheme="https://asancai.github.io/categories/cpp-review-notes/"/>
+    
+    
+      <category term="Notes" scheme="https://asancai.github.io/tags/Notes/"/>
+    
+      <category term="C++" scheme="https://asancai.github.io/tags/C/"/>
+    
+  </entry>
   
   <entry>
     <title>进程的内存空间分配</title>
@@ -526,34 +557,6 @@
     <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-08/</id>
     <published>2018-12-31T03:20:03.000Z</published>
     <updated>2021-04-20T15:00:00.142Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="教程" scheme="https://asancai.github.io/categories/tutorial/"/>
-    
-      <category term="《土豆荣耀》重构笔记" scheme="https://asancai.github.io/categories/tutorial/potato-glory/"/>
-    
-    
-      <category term="Unity" scheme="https://asancai.github.io/tags/Unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《土豆荣耀》重构笔记（七）控制角色移动并添加音效</title>
-    <link href="https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-07/"/>
-    <id>https://asancai.github.io/tutorial/potato-glory/tu-dou-rong-yao-chong-gou-bi-ji-07/</id>
-    <published>2018-12-30T13:04:08.000Z</published>
-    <updated>2021-04-20T15:00:20.375Z</updated>
     
     <summary type="html">
     

@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>《C++回顾笔记》取模运算与取余运算</title>
+      <link href="/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/"/>
+      <url>/cpp-review-notes/c-hui-gu-bi-ji-qu-mo-yun-suan-yu-qu-yu-yun-suan/</url>
+      
+        <content type="html"><![CDATA[<p>&emsp;&emsp;对于整型数a，b来说，取模运算和取余运算的计算方法是一样的：</p><ol><li>求整数商：c = a/b;</li><li>取余和取模：r = a - c * b;</li></ol><p>&emsp;&emsp;取模运算和取余运算的区别在于第一步对计算结果舍入的方式不同：取模运算在计算c的值时，会将结果<code>向负无穷方向舍入</code>，而取余运算在取c的值时，<code>向0方向舍入</code>。</p><blockquote><p>例如-1对256取模和取余时：</p><ol><li>求整数商c，取模将结果向负无穷方向舍入得到-1，而取余则将结果向0方向舍入得到0；</li><li>将算出的整数商c代入计算r的公式，得到取模的结果为255，而取余的结果为-1；</li></ol></blockquote><p>&emsp;&emsp;当整数a和b的符号一致时，易知其整数商必大于或者等于0，取模运算和取余运算对其舍入后的结果也一致，所以此时取模运算和取余运算的结果是一样的。</p><p>&emsp;&emsp;当整数a和b的符号不一致时，易知其整数商必小于或者等于0，因此可以得到：</p><pre><code>r = a + |a| * sign(b) * s</code></pre><p>&emsp;&emsp;其中，<code>sign(b)</code>表示b的符号<code>(b大于0时，其为1；小于0时其为-1)</code>。而<code>s</code>表示舍入后整数商对原始商的变化倍数。易知对于取模运算来说，<code>s</code>必大于1，而对于取模运算来说，<code>s</code>必小于1。也就是说，<code>当a和b的符号不一致时，求模运算结果的符号和b一致，而求余运算结果的符号和a一致</code>。</p><p>&emsp;&emsp;最后，需要注意的是，在不同的语言里，运算符<code>%</code>表示的含义不一致，有的语言认为%表示取模运算<code>(如Python)</code>，但在C/C++里，<code>%</code>表示取余运算。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 《C++回顾笔记》 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Notes </tag>
+            
+            <tag> C++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>进程的内存空间分配</title>
       <link href="/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/"/>
       <url>/cpp-review-notes/c-hui-gu-bi-ji-jin-cheng-de-nei-cun-kong-jian-fen-pei/</url>
