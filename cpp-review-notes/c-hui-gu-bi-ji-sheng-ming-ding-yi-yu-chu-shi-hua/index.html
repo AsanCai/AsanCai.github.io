@@ -381,21 +381,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-05-18
+                    2021-06-01
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.2k
+                    1.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    5 分
                 </div>
                 
 
@@ -423,7 +423,7 @@ public:
 &#125;</code></pre>
 <blockquote>
 <ul>
-<li><code>extern</code>关键字表示声明某个变量，但如果在使用<code>extern</code>关键字的时候，执行了赋值操作，那么编译器会认为这是一个定义：<pre class=" language-c++"><code class="language-c++">extern int x = 0;                   /// 定义了一个变量，其类型为int</code></pre>
+<li>任何包含了显式初始化的声明即成为定义，可以给由<code>extern</code>关键字标记的变量赋一个初始值，但是这么做也就抵消了extern的作用，也就不再是声明，而变成定义了：<pre class=" language-c++"><code class="language-c++">extern int x = 0;                   /// 定义了一个变量，其类型为int</code></pre>
 </li>
 <li>此外，只有当<code>extern</code>声明位于函数外部时，才能执行赋值操作。</li>
 </ul>
@@ -454,7 +454,16 @@ int A::a = 0;                         /// 定义一个静态变量并初始化</
 </ul>
 </blockquote>
 <hr>
-<h2 id="初始化（Initialization）"><a href="#初始化（Initialization）" class="headerlink" title="初始化（Initialization）"></a>初始化（Initialization）</h2><p>&emsp;&emsp;初始化是指<code>给予已定义的对象初值</code>的过程。如果定义变量时候没有初始化，则变量将会被<code>默认初始化（隐式初始化，由编译器按照一定的规则自动完成）</code>。一般来说，默认初始化的规则如下：</p>
+<h2 id="声明和定义的关系"><a href="#声明和定义的关系" class="headerlink" title="声明和定义的关系"></a>声明和定义的关系</h2><p>&emsp;&emsp;为了允许把程序拆分成多个逻辑部分来编写，C++语言支持<code>分离式编译(separate compilation)</code>机制，该机制允许将程序分割为若干个文件，每个文件可被独立编译。为了支持分离式编译，C++语言将声明和定义区分开来。声明告诉程序一个名字，一个文件如果想使用别处定义的变量则必须包含对那个名字的声明，而定义负责创建与名字关联的实体。</p>
+<blockquote>
+<ul>
+<li>程序使用到的每个名字都会指向一个特定的实体：<code>变量</code>、<code>函数</code>和<code>类型</code>等</li>
+<li>变量声明规定了变量的类型和名字，在这一点上定义与之相同。但是除此之外，定义还申请存储空间，也可能会为变量赋一个初始值。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;声明和定义的区别看起来也许微不足道，但实际上却非常重要。如果要在多个文件中使用同一个变量，就必须将声明和定义分离。此时，变量的定义<code>必须出现在且只能出现在一个文件中</code>，而其他用到该变量的文件必须对其进行声明，却绝对不能重复定义。</p>
+<hr>
+<h2 id="初始化（Initialization）"><a href="#初始化（Initialization）" class="headerlink" title="初始化（Initialization）"></a>初始化（Initialization）</h2><p>&emsp;&emsp;初始化是指<code>给予已定义的对象初始值</code>的过程。如果定义变量时候没有初始化，则变量将会被<code>默认初始化（隐式初始化，由编译器按照一定的规则自动完成）</code>。一般来说，默认初始化的规则如下：</p>
 <ul>
 <li>栈中的变量<code>（函数内定义的变量）</code>和堆中的变量<code>（动态内存）</code>会有不确定的值</li>
 <li>全局变量和静态变量<code>（包括局部静态变量）</code>会被初始化为该变量的类型中<code>0</code>这个概念对应的值<blockquote>
@@ -544,6 +553,8 @@ TestPtr(): a = -842150451
 GlobalTestPtr2 = 00000000
 LocalTestPtr2 = 00000000
 请按任意键继续. . .</code></pre>
+<hr>
+<h2 id="赋值与初始化"><a href="#赋值与初始化" class="headerlink" title="赋值与初始化"></a>赋值与初始化</h2><p>&emsp;&emsp;在C++中，可以使用<code>=</code>来完成初始化，因此这很容易让人认为初始化是赋值的一种。然而，事实上，在C++语言中，赋值和初始化是两个完全不同的操作，只是它们两者的区别在很多情况下可以忽略不计。需要强调的是，初始化不是赋值，初始化的含义是创建变量的时候赋予其一个初始值，而赋值的含义则是把变量的当前值擦除，并使用一个新值来替代。</p>
 
             </div>
             <hr/>
