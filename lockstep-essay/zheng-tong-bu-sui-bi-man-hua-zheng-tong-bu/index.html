@@ -381,7 +381,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-06-16
+                    2021-06-17
                 </div>
                 
 
@@ -429,7 +429,7 @@
 <p>&emsp;&emsp;当然，也正因为<code>状态同步</code>和<code>帧同步</code>只是两个广义上的分类，所以在为某个具体的游戏来选择同步方案的时候，需要开发团队做一些<code>更加细节、更加具体的抉择和优化</code>。</p>
 </blockquote>
 <p>&emsp;&emsp;一般来讲，状态同步泛指<code>允许各个客户端的外在表现不同，只确保它们内部的逻辑状态统一</code>的<code>弱同步方案</code>，典型的状态同步方案便是客户端将<code>玩家操作</code>或者<code>局部状态</code>交给服务器，由<code>服务器</code>来运算出游戏内的<code>全局状态</code>，最后由服务器把游戏内的全局状态分发给所有客户端，让客户端根据这些状态渲染出对应的画面。</p>
-<p>&emsp;&emsp;与之相对的，帧同步则泛指<code>保证各个客户端在每个逻辑帧输入一致，并得到相同的结果</code>的<code>强同步方案</code>，典型的帧同步方案便是客户端将<code>玩家操作</code>交给服务器，而服务器只负责将在<code>单个逻辑帧</code>内收集到的<code>所有客户端的玩家操作</code>转发给所有客户端，由客户端自己运算出游戏内的全局状态，再渲染出对y应的画面。</p>
+<p>&emsp;&emsp;与之相对的，帧同步则泛指<code>保证各个客户端在每个逻辑帧输入一致，并得到相同的结果</code>的<code>强同步方案</code>，典型的帧同步方案便是客户端将<code>玩家操作</code>交给服务器，而服务器只负责将在<code>单个逻辑帧</code>内收集到的<code>所有客户端的玩家操作</code>转发给所有客户端，由客户端自己运算出游戏内的全局状态，再渲染出对应的画面。</p>
 <blockquote>
 <p>&emsp;&emsp;文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/165293116">关于“帧同步”说法的历史由来</a>中提到了一个很有趣的说法：因为帧同步强调的是<code>每个逻辑帧运算结束后</code>都得到<code>相同的结果</code>，所以<code>帧同步</code>应该叫<code>帧间同步</code>。</p>
 </blockquote>
@@ -450,14 +450,14 @@
 <li>先针对要发送的明文信息进行加密，生成<code>预提交哈希值</code>并发送给其他客户端；</li>
 <li>待本地客户端接收到<code>所有其他客户端</code>的第K步预提交哈希值之后，再发送自己第K步的<code>明文信息</code>；</li>
 <li>收到<code>所有其他客户端</code>的第K步<code>明文信息</code>后，本地客户端会为所有明文信息逐个生成<code>明文哈希值</code>并和<code>预提交哈希值</code>对比；</li>
-<li>如果发现有客户端的<code>明文哈希值</code>和<code>预提交哈希值</code>不同，则可以判定该客户端是外挂，若没有发现异常，则游戏正常向前推进；<br><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/LockstepProtocol.png" alt="Lockstep Protocolp"></li>
+<li>如果发现有客户端的<code>明文哈希值</code>和<code>预提交哈希值</code>不同，则可以判定该客户端是外挂，若没有发现异常，则游戏正常向前推进；<br><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/LockstepProtocol.png" alt="Lockstep Protocol"></li>
 </ol>
 </blockquote>
-<p>&emsp;&emsp;因为Lockstep Protocol是通过对玩家的操作进行二次校验的方式来对抗外挂，所以会浪费大量网络带宽，且网络条件好的客户端会时刻受到网络差的客户端的影响。因此，后来有人对Bucket synchronization、Lockstep protocol等方法进一步分析并针对存在的缺点进行优化，并提出了<code>Pipelined Lockstep Protocol</code>。Pipelined Lockstep Protocol的核心思路是，当前玩家的指令行为<code>不与其他人产生冲突</code>，就可以<code>连续发送</code>的自己的指令而<code>不需要等待其他人</code>的指令。当然，为了防止<code>Lookahead Cheats</code>外挂同样需要提前发送Hash。</p>
+<p>&emsp;&emsp;因为Lockstep Protocol是通过对玩家的操作进行二次校验的方式来对抗外挂，所以会浪费大量网络带宽，且网络条件好的客户端会时刻受到网络差的客户端的影响。因此，后来有人对Bucket synchronization、Lockstep protocol等方法进一步分析并针对存在的缺点进行优化，并提出了<a target="_blank" rel="noopener" href="http://www.ekozlowski.com/assets/multiplayer-game-cheating-prevention.pdf">Pipelined Lockstep Protocol</a>。Pipelined Lockstep Protocol的核心思路是，当前玩家的指令行为<code>不与其他人产生冲突</code>，就可以<code>连续发送</code>的自己的指令而<code>不需要等待其他人</code>的指令。当然，为了防止<code>Lookahead Cheats</code>外挂同样需要提前发送Hash。</p>
 <blockquote>
 <p><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/PipelinedLockstepProtocol.png" alt="Pipelined Lockstep Protocol"><br>&emsp;&emsp;如果<code>假设玩家接下来的三个操作</code>都必然不会和其他玩家产生冲突，那么可以看到Pipelined Lockstep Protocol允许客户端在没收到其他玩家的预提交哈希时，连续发送自己后面三个指令的预提交哈希值，而并不需要去等待网络较差的玩家。</p>
 </blockquote>
-<p>&emsp;&emsp;自<code>Pipelined Lockstep Protocol</code>出现之后，<code>操作同步</code>、<code>不等待超时玩家</code>的特性逐渐成为帧同步的标准，被广泛应用于使用帧同步开发的网络中。但值得一提的是，现在大部分使用帧同步的网络游戏并非用的<code>Pipelined Lockstep Protocol</code>，而是在<code>Bucket Synchronization</code>的基础上，让每个客户端在相同的时机将本地的关键数据计算成Hash，然后上报服务器，由服务器判断是否有人作弊。网上大部分讲帧同步实现细节的文章，也基本是按照<code>Bucket Synchronization</code>的基本原理来实现的。</p>
+<p>&emsp;&emsp;自<code>Pipelined Lockstep Protocol</code>出现之后，<code>操作同步</code>、<code>不等待超时玩家</code>的特性逐渐成为帧同步的标准，被广泛应用于使用帧同步开发的网络中。但值得一提的是，现在大部分使用帧同步的网络游戏并非用的<code>Pipelined Lockstep Protocol</code>，而是在<code>Bucket Synchronization</code>的基础上，让每个客户端在相同的时机将本地的<code>关键数据</code>计算成Hash，然后上报服务器，由服务器判断是否有人作弊。网上大部分讲帧同步实现细节的文章，也基本是按照<code>Bucket Synchronization</code>的基本原理来实现的。</p>
 <hr>
 <h2 id="帧同步的技术要点"><a href="#帧同步的技术要点" class="headerlink" title="帧同步的技术要点"></a>帧同步的技术要点</h2><p>&emsp;&emsp;如果充分理解了状态同步和帧同步的定义，那么就不难知道状态同步和帧同步的最大区别在于：状态同步的游戏逻辑在<code>服务端</code>，帧同步的游戏逻辑在<code>客户端</code>。游戏逻辑就是所谓的GamePlay，它包括了实体相关的逻辑（移动、碰撞、攻击、AI和属性等），还包括了具体的玩法逻辑（如胜利失败的条件和关卡流程等）。</p>
 <blockquote>
@@ -482,7 +482,7 @@
 <blockquote>
 <ul>
 <li>一个常见的错误是直接在表现层中处理游戏逻辑：例如<code>点击UI执行一些影响游戏结果的操作</code>：点击UI这一逻辑，显然应该被归到<code>表现层</code>，但很多人会直接在UI的点击回调方法里直接去调用<code>逻辑层</code>的接口去执行影响游戏结果的操作。如果将<code>逻辑层</code>命名为<code>服务器层</code>，将<code>表现层</code>命名为<code>客户端层</code>，那么显然所有人都会意识到，直接在客户端上操作服务器的逻辑是非常不科学的行为；</li>
-<li>另外一个常见的分层错误是将一些表现层的逻辑放进逻辑层里：例如<code>在攻击时产生攻击特效</code>，攻击这一操作显然是需要放进逻辑层里的，但很多时候为了方便，会有人将产生攻击特效这一操作也放在攻击的逻辑里。如果将<code>逻辑层</code>命名为<code>服务器层</code>，那么显然所有人都知道，在<code>服务器上创建一个特效</code>是极其不合理的行为；</li>
+<li>另外一个常见的分层错误是将一些表现层的逻辑放进逻辑层里：例如<code>在攻击时产生攻击特效</code>，攻击这一操作显然是需要放进逻辑层里的，但很多时候为了方便，会有人将产生攻击特效这一操作也放在攻击的逻辑里。如果将<code>逻辑层</code>命名为<code>服务器层</code>，那么显然所有人都知道，<code>在服务器上创建一个特效</code>是极其不合理的行为；</li>
 <li>如果将<code>逻辑层</code>命名为<code>服务器层</code>，将<code>表现层</code>命名为<code>客户端层</code>，那么显而易见的是，<code>表现层直接从逻辑层取用数据</code>是非常合理的，这个过程就类似于<code>客户端向服务器请求数据</code>，只是服务器位于本地，并不需要网络传输；</li>
 </ul>
 </blockquote>
@@ -524,7 +524,7 @@
 </blockquote>
 <hr>
 <h2 id="帧同步的优缺点"><a href="#帧同步的优缺点" class="headerlink" title="帧同步的优缺点"></a>帧同步的优缺点</h2><p>&emsp;&emsp;帧同步的同步方式是通过服务器收集、转发所有客户端的操作来确保各个客户端的游戏状态一致，当玩家数量增多书，服务器需要收集和转发的数据量也会大大增加，且无法像状态同步一样只同步玩家周围的玩家的数据。因此，帧同步并不适合有许多玩家的游戏。</p>
-<p>&emsp;&emsp;但帧同步的优势则在于，所有的游戏结果都是客户端根据服务器转发的玩家输入计算得出，因此，客户端可以<code>任意地获取当前的游戏数据</code>，只需要调用<code>逻辑层（或者说服务器层）的接口</code>获取数据即可，而不需要设计复杂的网络协议去同步数据。对于那些<code>角色状态极为复杂的游戏（如动作游戏，有复杂的buff和攻击、受击状态）</code>，用帧同步则极为合适。</p>
+<p>&emsp;&emsp;但帧同步的优势则在于，所有的游戏结果都是客户端根据服务器转发的玩家输入计算得出，因此，客户端可以<code>任意地获取当前的游戏状态</code>，只需要调用<code>逻辑层（或者说服务器层）的接口</code>获取数据即可，而不需要设计复杂的网络协议去同步数据。对于那些<code>角色状态极为复杂的游戏（如动作游戏，有复杂的buff和攻击、受击状态）</code>，用帧同步则极为合适。</p>
 <p>&emsp;&emsp;当然，帧同步适合什么游戏、不适合什么游戏，只是出于性能和开发效率的考虑之后得出来的一种经验性总结。如果不考虑性能和开发效率，理论上任何游戏都能采用帧同步实现。</p>
 <hr>
 <h2 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a>拓展阅读</h2><ul>
