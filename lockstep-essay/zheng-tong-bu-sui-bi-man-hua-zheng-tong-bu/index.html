@@ -381,21 +381,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-06-15
+                    2021-06-16
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    6.2k
+                    6.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    21 分
+                    22 分
                 </div>
                 
 
@@ -410,7 +410,9 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="网络游戏究竟在同步什么"><a href="#网络游戏究竟在同步什么" class="headerlink" title="网络游戏究竟在同步什么"></a>网络游戏究竟在同步什么</h2><p>&emsp;&emsp;对于一个电子游戏来说，其最重要的要素可以粗略地分为三个部分：<code>玩家输入</code>、<code>游戏逻辑</code>和<code>画面反馈</code>。当玩家通过UI交互或者其他方式产生游戏输入的时候，游戏逻辑会执行相应的运算产生游戏结果，然后再交给游戏引擎的渲染模块渲染成相应的画面，给予玩家反馈。如果是网络游戏，那么玩家除了希望看到自己输入产生的画面反馈外，他必定也想看到其他玩家的输入产生的画面反馈。<br>&emsp;&emsp;因此，不难知道，网络游戏除了需要<code>同步游戏结果(数据同步)</code>，还需要<code>同步游戏画面(表现同步)</code>。数据同步是<code>服务器端</code>的操作，而表现同步就是让<code>客户端</code>对<code>服务器端</code>同步过来的数据进行进一步的处理从而达到游戏画面上的一致。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;帧同步作为网络游戏经常使用的一种同步方案，网络上介绍帧同步原理和具体实现的技术文章俯拾皆是。因此，本文也不再班门弄斧，而只是将一些写得很好的文章加以归纳整理，并结合自己在实际应用中对帧同步的一些理解对一些观点进行补充，以期达到让没接触过帧同步的人在看完本文章之后能快速了解帧同步的相关知识。</p>
+<hr>
+<h2 id="网络游戏究竟在同步什么"><a href="#网络游戏究竟在同步什么" class="headerlink" title="网络游戏究竟在同步什么"></a>网络游戏究竟在同步什么</h2><p>&emsp;&emsp;对于一个电子游戏来说，其最重要的要素可以粗略地分为三个部分：<code>玩家输入</code>、<code>游戏逻辑</code>和<code>画面反馈</code>。当玩家通过UI交互或者其他方式产生游戏输入的时候，游戏逻辑会执行相应的运算产生游戏结果，然后再交给游戏引擎的渲染模块渲染成相应的画面，给予玩家反馈。如果是网络游戏，那么玩家除了希望看到自己输入产生的画面反馈外，他必定也想看到其他玩家的输入产生的画面反馈。<br>&emsp;&emsp;因此，不难知道，网络游戏除了需要<code>同步游戏结果(数据同步)</code>，还需要<code>同步游戏画面(表现同步)</code>。数据同步是<code>服务器端</code>的操作，而表现同步就是让<code>客户端</code>对<code>服务器端</code>同步过来的数据进行进一步的处理从而达到游戏画面上的一致。</p>
 <hr>
 <h2 id="状态同步和帧同步"><a href="#状态同步和帧同步" class="headerlink" title="状态同步和帧同步"></a>状态同步和帧同步</h2><p>&emsp;&emsp;文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/130702310">细谈网络同步在游戏历史中的发展变化（上）</a>详细地谈到了网络游戏的发展历程。从把每个玩家把自己操作数据同步给其他玩家再分别运算出游戏结果的<code>P2P架构</code>，再到采用<code>专有服务器</code>来收集、处理、转发玩家请求的<code>CS架构</code>，后面很自然地就出现了以某个玩家作为Host主机的CS架构，这样每个玩家都可以作为服务器，不需要维护专门的服务器，节省服务器的运行和开发成本，这种方式被其为<code>Packet Server</code>。不过，虽说叫CS架构，但这种架构本质上还是P2P模型，依旧存在<code>P2P模型的缺点（Host主机如果网络不好会影响到所有玩家；所有的逻辑都在Host主机上执行，存在Host主机作弊对其他玩家不公平的风险）</code>。</p>
 <p>&emsp;&emsp;在网络游戏刚出现的时候，大部分网络游戏都属于<code>弱交互游戏（对操作的实时性要求不高）</code>， 可以将它们简单理解为一种<code>回合制游戏</code>：在<code>每个回合开始</code>时，所有玩家一同思考并把相关操作指令信息发送给其他玩家，其他玩家收到了别人的消息后就会在本地处理然后<code>结束当前回合</code>，如果没有收到就会进入<code>无限期的等待</code>。由于每个回合有<code>比较长的思考和操作时间</code>，所以<code>网络延迟</code>可以忽略不计，只要保证在<code>回合结束</code>的时候，<code>所有玩家的状态和数据保持一致</code>即可。这种游戏采用的同步方式是一种很自然也很简单的同步模型，但随着游戏的种类和玩法复杂性的提升，其面对的问题也接踵而来：</p>
@@ -427,9 +429,9 @@
 <p>&emsp;&emsp;当然，也正因为<code>状态同步</code>和<code>帧同步</code>只是两个广义上的分类，所以在为某个具体的游戏来选择同步方案的时候，需要开发团队做一些<code>更加细节、更加具体的抉择和优化</code>。</p>
 </blockquote>
 <p>&emsp;&emsp;一般来讲，状态同步泛指<code>允许各个客户端的外在表现不同，只确保它们内部的逻辑状态统一</code>的<code>弱同步方案</code>，典型的状态同步方案便是客户端将<code>玩家操作</code>或者<code>局部状态</code>交给服务器，由<code>服务器</code>来运算出游戏内的<code>全局状态</code>，最后由服务器把游戏内的全局状态分发给所有客户端，让客户端根据这些状态渲染出对应的画面。</p>
-<p>&emsp;&emsp;与之相对的，帧同步则泛指<code>保证各个客户端在每个逻辑帧输入一致，并得到相同的结果</code>的<code>强同步方案</code>，典型的帧同步方案便是客户端将<code>玩家操作</code>交给服务器，而服务器只负责将在<code>单个逻辑帧</code>内收集到的<code>所有客户端的玩家操作</code>转发给所有客户端，由客户端自己运算出游戏内的全局状态，再渲染出对于的画面。</p>
+<p>&emsp;&emsp;与之相对的，帧同步则泛指<code>保证各个客户端在每个逻辑帧输入一致，并得到相同的结果</code>的<code>强同步方案</code>，典型的帧同步方案便是客户端将<code>玩家操作</code>交给服务器，而服务器只负责将在<code>单个逻辑帧</code>内收集到的<code>所有客户端的玩家操作</code>转发给所有客户端，由客户端自己运算出游戏内的全局状态，再渲染出对y应的画面。</p>
 <blockquote>
-<p>&emsp;&emsp;文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/165293116">关于“帧同步”说法的历史由来</a>中提到了一个很有趣的说法：因为帧同步强调的是<code>每个逻辑帧运算完</code>都得到<code>相同的结果</code>，所以<code>帧同步</code>应该叫<code>帧间同步</code>。</p>
+<p>&emsp;&emsp;文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/165293116">关于“帧同步”说法的历史由来</a>中提到了一个很有趣的说法：因为帧同步强调的是<code>每个逻辑帧运算结束后</code>都得到<code>相同的结果</code>，所以<code>帧同步</code>应该叫<code>帧间同步</code>。</p>
 </blockquote>
 <hr>
 <h2 id="帧同步和Lockstep"><a href="#帧同步和Lockstep" class="headerlink" title="帧同步和Lockstep"></a>帧同步和Lockstep</h2><p>&emsp;&emsp;一个常见的误解是，许多人会将<code>Lockstep</code>翻译成帧同步，其实这并不准确。严格来说，Lockstep应该翻译成<code>锁定步进算法</code>。Lockstep这个术语由军事语境引入，用来表示队伍中的所有人都执行一致的动作步伐向前行军。</p>
@@ -437,7 +439,7 @@
 <blockquote>
 <p><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/Lockstep.png" alt="Deterministic Lockstep"><br>&emsp;&emsp;从上图可以明显看到，在第二个Turn的时候，因为Player1有延迟，而导致Player2也停下来等待，从而延迟了往下推进下一个Turn的时间。</p>
 </blockquote>
-<p>&emsp;&emsp;显而易见，这种同步算法最大的缺点就是，当一个玩家网络很差的时候，其他玩家也将陷入无尽的等待中。因此，后期为了解决这个问题，有人提出了<code>Bucket同步算法(Bucket Synchronization)</code>。Bucket同步算法是一个<code>Lockstep的改良算法</code>，服务器会把时间按固定时长划分为多个<code>Bucket</code>，在每个Bucket时间节点，服务器会将收集到的所有指令同步给所有玩家，而不需要严格等待收集齐所有玩家的命令再处理，因此网络好的玩家也就不会受到网络差的玩家限制。Bucket同步算法<code>不严格要求每个玩家以同样的进度推进游戏</code>，可以认为是常说的<code>乐观帧锁定</code>算法。</p>
+<p>&emsp;&emsp;显而易见，这种同步算法最大的缺点就是，当一个玩家网络很差的时候，其他玩家也将陷入无尽的等待中。因此，后期为了解决这个问题，有人提出了<code>Bucket同步算法(Bucket Synchronization)</code>。Bucket同步算法是一个<code>Lockstep的改良算法</code>，服务器会把时间按固定时长划分为多个<code>Bucket</code>，在每个Bucket时间节点，服务器会将收集到的所有指令同步给所有玩家，而不需要严格等待收集齐所有玩家的命令再处理，因此网络好的玩家也就不会受到网络差的玩家限制。Bucket同步算法<code>不严格要求每个玩家以同样的进度推进游戏</code>，也就是常说的<code>乐观帧锁定</code>算法。</p>
 <blockquote>
 <p><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/BucketSynchronization.png" alt="Bucket Synchronizationp"><br>&emsp;&emsp;从上图可以知道，网络较好的PlayerA并不需要停下来等待PlayerB。</p>
 </blockquote>
@@ -451,10 +453,11 @@
 <li>如果发现有客户端的<code>明文哈希值</code>和<code>预提交哈希值</code>不同，则可以判定该客户端是外挂，若没有发现异常，则游戏正常向前推进；<br><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/LockstepProtocol.png" alt="Lockstep Protocolp"></li>
 </ol>
 </blockquote>
-<p>&emsp;&emsp;因为Lockstep Protocol是通过对玩家的操作进行二次校验的方式来对抗外挂，所以会浪费大量网络带宽，且网络条件好的客户端会时刻受到网络差的客户端的影响。因此，后来有人对Bucket synchronization、Lockstep protocol等方法进一步分析并针对存在的缺点进行优化，并提出了<code>Pipelined Lockstep Protocol</code>。Pipelined Lockstep Protocol的核心思路是，当前玩家的指令行为<code>不与其他人产生冲突</code>，就可以<code>连续发送</code>的自己的指令而<code>不需要等待其他人</code>的指令。当然，为了防止<code>Lookahead Cheats</code>外挂同样需要提前发送Hash。尽管现在大部分帧同步算法并非用的<code>Pipelined Lockstep Protocol</code>，但自<code>Pipelined Lockstep Protocol</code>出现之后，<code>操作同步</code>、<code>不等待超时玩家</code>的特性逐渐成为帧同步的标准，被广泛应用于网络同步中。</p>
+<p>&emsp;&emsp;因为Lockstep Protocol是通过对玩家的操作进行二次校验的方式来对抗外挂，所以会浪费大量网络带宽，且网络条件好的客户端会时刻受到网络差的客户端的影响。因此，后来有人对Bucket synchronization、Lockstep protocol等方法进一步分析并针对存在的缺点进行优化，并提出了<code>Pipelined Lockstep Protocol</code>。Pipelined Lockstep Protocol的核心思路是，当前玩家的指令行为<code>不与其他人产生冲突</code>，就可以<code>连续发送</code>的自己的指令而<code>不需要等待其他人</code>的指令。当然，为了防止<code>Lookahead Cheats</code>外挂同样需要提前发送Hash。</p>
 <blockquote>
 <p><img src="https://raw.githubusercontent.com/AsanCai/BlogImage/master/Lockstep/PipelinedLockstepProtocol.png" alt="Pipelined Lockstep Protocol"><br>&emsp;&emsp;如果<code>假设玩家接下来的三个操作</code>都必然不会和其他玩家产生冲突，那么可以看到Pipelined Lockstep Protocol允许客户端在没收到其他玩家的预提交哈希时，连续发送自己后面三个指令的预提交哈希值，而并不需要去等待网络较差的玩家。</p>
 </blockquote>
+<p>&emsp;&emsp;自<code>Pipelined Lockstep Protocol</code>出现之后，<code>操作同步</code>、<code>不等待超时玩家</code>的特性逐渐成为帧同步的标准，被广泛应用于使用帧同步开发的网络中。但值得一提的是，现在大部分使用帧同步的网络游戏并非用的<code>Pipelined Lockstep Protocol</code>，而是在<code>Bucket Synchronization</code>的基础上，让每个客户端在相同的时机将本地的关键数据计算成Hash，然后上报服务器，由服务器判断是否有人作弊。网上大部分讲帧同步实现细节的文章，也基本是按照<code>Bucket Synchronization</code>的基本原理来实现的。</p>
 <hr>
 <h2 id="帧同步的技术要点"><a href="#帧同步的技术要点" class="headerlink" title="帧同步的技术要点"></a>帧同步的技术要点</h2><p>&emsp;&emsp;如果充分理解了状态同步和帧同步的定义，那么就不难知道状态同步和帧同步的最大区别在于：状态同步的游戏逻辑在<code>服务端</code>，帧同步的游戏逻辑在<code>客户端</code>。游戏逻辑就是所谓的GamePlay，它包括了实体相关的逻辑（移动、碰撞、攻击、AI和属性等），还包括了具体的玩法逻辑（如胜利失败的条件和关卡流程等）。</p>
 <blockquote>
@@ -501,7 +504,7 @@
 <p>可靠UDP一般分为两种：</p>
 <ol>
 <li><code>基于可靠传输的UDP(Reliable UDP)</code>，指在UDP上加一层封装，在<code>传输层</code>实现重传等类似TCP的特性，保证<code>上层逻辑</code>在处理数据包的时候，不需要考虑数据丢失和重传等细节，如Enet，KCP等；</li>
-<li><code>冗余信息的UDP</code>，指的是直接使用原始的UDP，然后在<code>上层逻辑</code>处理数据丢包、乱序和重传等问题，常见的实现方式就是在数据里插入<code>确认信息</code>，一旦客户端没收到服务端已确认其发送的数据，就会一直重传直到服务端确认为止；</li>
+<li><code>冗余信息的UDP</code>，指的是直接使用原始的UDP，然后在<code>上层逻辑</code>处理数据丢包、乱序和重传等问题，常见的实现方式就是在数据里插入<code>确认信息</code>，一旦客户端没收到服务端已确认其发送的数据，就会一直重传直到服务端确认为止。文章<a target="_blank" rel="noopener" href="https://gameinstitute.qq.com/community/detail/127640">动作手游实时PVP帧同步方案（客户端）</a>详细地介绍了如何实现<code>冗余信息的UDP</code>；</li>
 </ol>
 </blockquote>
 <p>&emsp;&emsp;除了网络协议的对比，文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/336869551">细谈网络同步在游戏历史中的发展变化（下）</a>还提到了许多优化的要点，其中一个最重要的点就是<code>帧率稳定</code>。为了对抗网络波动的影响，让游戏的渲染帧率保持稳定，传统的帧同步框架加入了<code>缓冲</code>的概念，也就是在接收到服务器同步过来的数据之后，并不立即执行，而是延后几帧再执行。但显而易见的是，使用缓冲会极大地<code>降低游戏响应玩家操作的实时性</code>，所以大部分帧同步游戏<code>（如《王者荣耀》和《火影忍者手游》）</code>都<code>不采用缓冲策略</code>，而是通过加入<code>预表现</code>来减轻网络波动所造成的帧率不稳。</p>
@@ -525,12 +528,14 @@
 <p>&emsp;&emsp;当然，帧同步适合什么游戏、不适合什么游戏，只是出于性能和开发效率的考虑之后得出来的一种经验性总结。如果不考虑性能和开发效率，理论上任何游戏都能采用帧同步实现。</p>
 <hr>
 <h2 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a>拓展阅读</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.codingnow.com/2018/08/lockstep.html">lockstep 网络游戏同步方案</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/130702310">细谈网络同步在游戏历史中的发展变化（上）</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/336869551">细谈网络同步在游戏历史中的发展变化（下）</a></li>
 <li><a target="_blank" rel="noopener" href="https://blog.uwa4d.com/archives/USparkle_frame-alignment.html">帧同步优化难点及解决方案</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/165293116">关于“帧同步”说法的历史由来</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.igiven.com/dotnet-2019-11-01-lock-step/">帧同步的相关问题</a></li>
 <li><a target="_blank" rel="noopener" href="http://www.ekozlowski.com/assets/multiplayer-game-cheating-prevention.pdf">Multiplayer Game Cheating Prevention With Pipelined Lockstep Protocol</a></li>
+<li><a target="_blank" rel="noopener" href="https://gameinstitute.qq.com/community/detail/127640">动作手游实时PVP帧同步方案（客户端）</a></li>
 </ul>
 
             </div>
