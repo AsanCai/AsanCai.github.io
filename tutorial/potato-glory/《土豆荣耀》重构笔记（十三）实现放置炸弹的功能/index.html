@@ -1,0 +1,831 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;在上篇文章，我们已经实现了对怪物造成伤害的功能，但此时我们只有发射导弹一种攻击方式。为了增加游戏的可玩性，我们将制作炸弹，玩家可以通过放置炸弹来对范围内的怪物造成伤害。在开始制作炸弹之前，我们先梳理一下和炸弹有关的需求。  和炸弹有关的需求：   炸弹会对爆炸半径内的怪物和角色造成一定的伤害 炸弹会对爆炸半径内的怪物和角色产生一个冲击力 炸弹被释放后，会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《土豆荣耀》重构笔记（十三）实现放置炸弹的功能">
+<meta property="og:url" content="https://asancai.github.io/tutorial/potato-glory/%E3%80%8A%E5%9C%9F%E8%B1%86%E8%8D%A3%E8%80%80%E3%80%8B%E9%87%8D%E6%9E%84%E7%AC%94%E8%AE%B0%EF%BC%88%E5%8D%81%E4%B8%89%EF%BC%89%E5%AE%9E%E7%8E%B0%E6%94%BE%E7%BD%AE%E7%82%B8%E5%BC%B9%E7%9A%84%E5%8A%9F%E8%83%BD/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;在上篇文章，我们已经实现了对怪物造成伤害的功能，但此时我们只有发射导弹一种攻击方式。为了增加游戏的可玩性，我们将制作炸弹，玩家可以通过放置炸弹来对范围内的怪物造成伤害。在开始制作炸弹之前，我们先梳理一下和炸弹有关的需求。  和炸弹有关的需求：   炸弹会对爆炸半径内的怪物和角色造成一定的伤害 炸弹会对爆炸半径内的怪物和角色产生一个冲击力 炸弹被释放后，会">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image1.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image2.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image3.png">
+<meta property="article:published_time" content="2019-01-13T02:39:01.000Z">
+<meta property="article:modified_time" content="2023-05-29T07:00:11.944Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image1.png">
+  
+  
+  
+  <title>《土豆荣耀》重构笔记（十三）实现放置炸弹的功能 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="《土豆荣耀》重构笔记（十三）实现放置炸弹的功能"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-01-13 10:39" pubdate>
+          2019年1月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          76 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">《土豆荣耀》重构笔记（十三）实现放置炸弹的功能</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;在<a href="https://asancai.github.io/tutorial/potato-glory/PotatoGloryTutorial-12/">上篇文章</a>，我们已经实现了对怪物造成伤害的功能，但此时我们只有<code>发射导弹</code>一种攻击方式。为了增加游戏的可玩性，我们将制作<code>炸弹</code>，<code>玩家可以通过放置炸弹来对范围内的怪物造成伤害</code>。在开始制作<code>炸弹</code>之前，我们先梳理一下和<code>炸弹</code>有关的需求。</p>
+<blockquote>
+<p>和<code>炸弹</code>有关的需求：</p>
+</blockquote>
+<ol>
+<li><code>炸弹</code>会对<code>爆炸半径</code>内的<code>怪物</code>和<code>角色</code>造成<code>一定的伤害</code></li>
+<li><code>炸弹</code>会对<code>爆炸半径</code>内的<code>怪物</code>和<code>角色</code>产生一个<code>冲击力</code></li>
+<li><code>炸弹</code>被释放后，<code>会先燃烧一段时间引信</code>，然后再爆炸</li>
+<li>角色可以在原地释放<code>炸弹</code>、也可以通过火箭筒向前发射<code>炸弹</code></li>
+<li><code>炸弹</code>属于大威力道具，因此<code>炸弹</code>的放置有<code>冷却时间</code>限制，且<code>炸弹</code>的数量是有限的</li>
+</ol>
+<hr>
+<h2 id="制作炸弹Prefab"><a href="#制作炸弹Prefab" class="headerlink" title="制作炸弹Prefab"></a>制作炸弹Prefab</h2><p>&amp;emsp;&amp;emsp;清楚了<code>炸弹</code>的需求之后，我们先来制作<code>炸弹</code>并实现<code>炸弹</code>爆炸对<code>怪物</code>和<code>角色</code>造成伤害的功能。首先，我们将<code>Assets\Sprites\Props</code>下的<code>prop_bomb</code>拖拽到<code>Hierarchy</code>窗口中，然后将其重命名为<code>Bomb</code>。此时，可以看到场景里面出现了一个<code>炸弹</code>，但尺寸比较大。这里，我们需要先将<code>Assets\Sprites\Props</code>下的<code>prop_bomb</code>的<code>Pixel Per Unit</code>改为<code>500</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image1.png" srcset="/img/loading.gif" lazyload alt="设置Pixel Per Unit"></p>
+<p>&amp;emsp;&amp;emsp;接着，因为<code>炸弹</code>能对角色造成伤害，为了在检测时提高效率，我们不能将<code>Player</code>的<code>Layer</code>设置为<code>Default</code>，因为<code>Layer</code>为<code>Default</code>的物体很多，这会让我们增加很多不必要的判断。我们首先新建一个名为<code>Player</code>的<code>Layer</code>，然后在<code>Layer Collision Matrix</code>中取消<code>Player-Setting</code>项的勾选，不让<code>Player</code>和<code>Setting</code>这两个<code>Layer</code>的物体产生任何物理交互。最后，我们将物体<code>Player</code>的<code>Layer</code>设置为<code>Player</code>，并将其修改<code>Apply</code>至<code>Player</code>的Prefab上。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image2.png" srcset="/img/loading.gif" lazyload alt="设置Layer Collision Matrix"></p>
+<p>&amp;emsp;&amp;emsp;接着，我们在<code>Assets\Scripts\Weapons</code>新建一个名为<code>Bomb</code>的C#脚本，然后编辑<code>Bomb.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>Bomb.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">RequireComponent(typeof(AudioSource))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Bomb</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;炸弹产生的伤害值&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> DamageAmount = <span class="hljs-number">50f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;爆炸半径&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> BombRadius = <span class="hljs-number">10f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;爆炸时产生的冲击力&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> BombForce = <span class="hljs-number">800f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;炸弹爆炸时的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip BoomClip;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;引信燃烧的时间&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> FuseTime = <span class="hljs-number">1.5f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;燃烧引信的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip FuseClip;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;炸弹爆炸时的特效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> GameObject BombExplosion;<br><br>    <span class="hljs-keyword">private</span> LayerMask m_LayerMask;<br>    <span class="hljs-keyword">private</span> AudioSource m_AudioSource;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 获取引用</span><br>        m_AudioSource = GetComponent&lt;AudioSource&gt;();<br>        <span class="hljs-comment">// 取消默认播放</span><br>        m_AudioSource.playOnAwake = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-comment">// 设置LayerMask检测Enemy和Player这两个Layer</span><br>        m_LayerMask = <span class="hljs-number">1</span> &lt;&lt; LayerMask.NameToLayer(<span class="hljs-string">&quot;Enemy&quot;</span>) | <span class="hljs-number">1</span> &lt;&lt; LayerMask.NameToLayer(<span class="hljs-string">&quot;Player&quot;</span>);<br><br>        <span class="hljs-keyword">if</span> (transform.root == transform)&#123;<br>            <span class="hljs-comment">// 如果不是附着在其他物体上，就开始执行燃烧引信的协程</span><br>            StartCoroutine(BombDetonation());<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 燃烧引信的协程</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> IEnumerator <span class="hljs-title">BombDetonation</span>()</span> &#123;<br>        <span class="hljs-comment">// 设置燃烧引信的音效并播放</span><br>        <span class="hljs-keyword">if</span>(FuseClip != <span class="hljs-literal">null</span>) &#123;<br>            m_AudioSource.clip = FuseClip;<br>            m_AudioSource.Play();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogWarning(<span class="hljs-string">&quot;请设置FuseClip&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 等待FuseTime时间</span><br>        <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title">WaitForSeconds</span>(<span class="hljs-params">FuseTime</span>)</span>;<br><br>        <span class="hljs-comment">// 等待FuseTime时间之后，执行爆炸函数</span><br>        Explode();<br>    &#125;<br><br>    <span class="hljs-comment">// 爆炸函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Explode</span>()</span> &#123;<br>        <span class="hljs-comment">// 获取一定范围内的所有Layer为Enemy或者Player物体</span><br>        Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, BombRadius, m_LayerMask);<br><br>        <span class="hljs-keyword">foreach</span>(Collider2D obj <span class="hljs-keyword">in</span> objects) &#123;<br>            <span class="hljs-comment">// 对怪物造成伤害</span><br>            <span class="hljs-keyword">if</span>(obj.tag == <span class="hljs-string">&quot;Enemy&quot;</span>) &#123;<br>                obj.GetComponent&lt;Enemy&gt;().TakeDamage(<span class="hljs-keyword">this</span>.transform, BombForce, DamageAmount);<br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br><br>            <span class="hljs-comment">// 对角色造成伤害</span><br>            <span class="hljs-keyword">if</span>(obj.CompareTag(<span class="hljs-string">&quot;Player&quot;</span>)) &#123;<br>                obj.GetComponent&lt;PlayerHealth&gt;().TakeDamage(<span class="hljs-keyword">this</span>.transform, BombForce, DamageAmount);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// 实例化爆炸特效</span><br>        <span class="hljs-keyword">if</span>(BombExplosion != <span class="hljs-literal">null</span>) &#123;<br>            Instantiate(BombExplosion, <span class="hljs-keyword">this</span>.transform.position, Quaternion.identity);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogWarning(<span class="hljs-string">&quot;请设置BombExplosion&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 播放爆炸音效</span><br>        <span class="hljs-keyword">if</span>(BoomClip != <span class="hljs-literal">null</span>) &#123;<br>            AudioSource.PlayClipAtPoint(BoomClip, transform.position);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogWarning(<span class="hljs-string">&quot;请设置BoomClip&quot;</span>);<br>        &#125;<br><br>        Destroy(gameObject);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ul>
+<li><code>m_LayerMask</code>: 为了让大家能理解<code>LayerMask</code>的本质，我这里没有使用<code>LayerMask.GetMask</code>这个静态方法来获取<code>Layer Mask</code>，而是直接使用了<code>位运算</code></li>
+<li><code>StartCoroutine</code>：用于开始执行一个<code>Coroutines（协程）</code>，<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/Coroutines.html">Unity中的协程</a>是基于C#提供的<code>IEnumerator（迭代器）</code>实现的。<code>Unity的协程</code>功能非常强大，使用起来也比较简单。我们只需要先定义一个<code>返回类型为IEnumerator的方法</code>，然后在这个方法里面使用<code>yield语句</code>来设置协程等待的条件，并使用<code>StartCoroutine</code>来执行该方法。那么当程序执行到<code>yield语句</code>这里的时候，就会停止执行后面的代码，然后<code>每帧检查是否满足条件</code>，一旦满足条件就继续往下执行。</li>
+<li><code>Physics2D.OverlapCircleAll</code>：Unity提供的api，用于获取在某个圆形范围内的所有<code>Collider2D</code>。</li>
+</ul>
+<p>&amp;emsp;&amp;emsp;编辑完毕之后，我们将<code>Bomb.cs</code>添加到<code>Hierarchy</code>窗口的<code>Bomb</code>物体上，可以看到Unity自动帮我们在<code>Bomb</code>物体上添加了<code>AudioSource</code>组件。为了让<code>炸弹</code>具有物理属性，能和场景里其他物体发生物理碰撞，我们还需要为<code>Bomb</code>物体添加<code>Rigidbody2D</code>和<code>Circle Collider2D</code>组件。然后，我们对每个组件进行以下的设置：</p>
+<blockquote>
+<p><code>Bomb</code>物体的组件设置：</p>
+</blockquote>
+<ol>
+<li><code>Sprite Renderer</code>:<ul>
+<li><code>Sorting Layer</code>: Weapons</li>
+<li><code>Order In Layer</code>: 0</li>
+</ul>
+</li>
+<li><code>Bomb</code>:<ul>
+<li><code>DamageAmount</code>: 50</li>
+<li><code>BombRadius</code>: 10</li>
+<li><code>BombForce</code>: 800</li>
+<li><code>BoomClip</code>: <code>Assets\Audio\FX</code>下的<code>bigboom</code></li>
+<li><code>FuseTime</code>: 1.5f</li>
+<li><code>FuseClip</code>: <code>Assets\Audio\FX</code>下的<code>bombfuse</code></li>
+</ul>
+</li>
+<li><code>Circle Collider2D</code>:<ul>
+<li><code>Is Trigger</code>: false</li>
+<li><code>Offset</code>: (0, 0)</li>
+<li><code>Radius</code>: 0.5</li>
+</ul>
+</li>
+<li><code>Rigidbody2D</code><ul>
+<li><code>Gravity Scale</code>: 3.1</li>
+</ul>
+</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;设置完毕之后，保存修改，然后将<code>Bomb</code>物体从<code>Hierarchy</code>窗口拖拽至<code>Assets\Prefabs\Weapons</code>下将其做成Pfefab。接着，我们运行游戏，可以听到<code>炸弹</code>燃烧引信和爆炸的音效，也能看到角色和怪物被炸弹炸飞并受到伤害的效果。但<code>炸弹</code>在<code>燃烧引信</code>和<code>爆炸</code>的时候，没有任何的特效，无法让玩家直观地意识到<code>炸弹在燃烧引信</code>和<code>炸弹爆炸了</code>。因此，我们还需要为<code>炸弹</code>添加<code>引信燃烧特效</code>和<code>爆炸特效</code>。</p>
+<hr>
+<h2 id="为炸弹添加爆炸特效"><a href="#为炸弹添加爆炸特效" class="headerlink" title="为炸弹添加爆炸特效"></a>为炸弹添加爆炸特效</h2><p>&amp;emsp;&amp;emsp;接下来，我们首先为<code>炸弹</code>添加<code>爆炸</code>特效。首先，我们将<code>Assets\Sprites\FX</code>下的<code>Circle</code>拖拽到<code>Hierarchy</code>窗口中，并将<code>Circle</code>物体重命名为<code>BombExplosion</code>。接着，我们将<code>Assets\Scripts\Utility</code>下的<code>Destroyer.cs</code>添加到<code>BombExplosion</code>物体上，并修改<code>Destroyer.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>Destroyer.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Destroyer</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;是否在Awake时执行销毁操作&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> DestroyOnAwake = <span class="hljs-literal">false</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;销毁延迟时间&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> AwakeDestroyDelay = <span class="hljs-number">0f</span>;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span>(DestroyOnAwake) &#123;<br>            Destroy(<span class="hljs-keyword">this</span>.gameObject, AwakeDestroyDelay);<br>        &#125;<br>    &#125;<br><br>	<span class="hljs-comment">// 销毁自身</span><br>	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">DestroyGameObject</span>()</span> &#123;<br>        Destroy(gameObject);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;接着，我们设置<code>BombExplosion</code>物体的组件如下：</p>
+<blockquote>
+<p><code>BombExplosion</code>物体的组件设置：</p>
+</blockquote>
+<ol>
+<li><code>Sprite Renderer</code>:<ul>
+<li><code>Sorting Layer</code>: Weapons</li>
+<li><code>Order In Layer</code>: 3</li>
+</ul>
+</li>
+<li><code>Destroyer</code>:<ul>
+<li><code>Destroy On Awake</code>: true</li>
+<li><code>Awake Destroy Delay</code>: 0.1</li>
+</ul>
+</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;修改完成之后，我们将<code>BombExplosion</code>物体拖拽至<code>Assets\Prefabs\Weapons</code>文件夹下将其制作为Prefab。然后我们删除场景中的<code>BombExplosion</code>物体，选中<code>Bomb</code>的Prefab，将其<code>Bomb.cs</code>下的<code>Bomb Explosion</code>属性设置为<code>BombExplosion</code>的Prefab。最后保存修改，运行游戏，可以看到炸弹爆炸时产生了爆炸特效。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay13/Image3.png" srcset="/img/loading.gif" lazyload alt="设置爆炸特效"></p>
+<hr>
+<h2 id="为炸弹添加引信燃烧特效"><a href="#为炸弹添加引信燃烧特效" class="headerlink" title="为炸弹添加引信燃烧特效"></a>为炸弹添加引信燃烧特效</h2><p>&amp;emsp;&amp;emsp;为<code>炸弹</code>添加完<code>爆炸</code>特效之后，我们为<code>炸弹</code>添加<code>引信燃烧</code>特效。首先，我们在<code>Bomb</code>物体下创建一个名为<code>Sparks</code>的<code>Empty Gameobject</code>，然后我们为其添加<code>Particle System</code>组件。</p>
+<blockquote>
+<p><code>Sparks</code>物体的<code>Particle System</code>组件设置：</p>
+</blockquote>
+<ul>
+<li>Main Module:<ul>
+<li><code>Start Lifetime</code>: 0.5</li>
+<li><code>Start Size(Random Between Two Constants)</code>: (0.2, 1)</li>
+<li><code>Start Rotation(Random Between Two Constants)</code>: (0, 360)</li>
+<li><code>Gravity Modefier</code>: 1</li>
+<li><code>Simulation Space</code>: World</li>
+<li><code>Scaling Mode</code>: Shape</li>
+<li><code>Max Particles</code>: 100</li>
+</ul>
+</li>
+<li>Emission:<ul>
+<li><code>Rate Over Time</code>: 40</li>
+</ul>
+</li>
+<li>Shape:<ul>
+<li><code>Angle</code>: 36</li>
+<li><code>Radius</code>: 0.01</li>
+<li><code>Arc</code>: 0.01</li>
+<li><code>Randomize Direction</code>: 1</li>
+</ul>
+</li>
+<li>Size over Lifetime:<ul>
+<li><code>Size(Random Between Two Constants)</code>: (0.4, 0.6)</li>
+</ul>
+</li>
+<li>Rotation over Lifetime:<ul>
+<li><code>Angular Velocity(Random Between Two Constants)</code>: (0, 180)</li>
+</ul>
+</li>
+<li>Texture Sheet Animation<ul>
+<li><code>Tiles</code>: (2, 2)</li>
+</ul>
+</li>
+<li>Render<ul>
+<li><code>Material</code>: <code>Assets\Materials</code>下的<code>ExplosionParticle</code></li>
+<li><code>Sorting Layer</code>: Weapons</li>
+<li><code>Order In Layer</code>: 4</li>
+</ul>
+</li>
+</ul>
+<p>&amp;emsp;&amp;emsp;修改完成之后，我们还需要调整<code>Sparks</code>的<code>Transform</code>组件。</p>
+<blockquote>
+<p><code>Sparks</code>物体的<code>Transform</code>组件设置：</p>
+</blockquote>
+<ul>
+<li><code>Position</code>: (0.47, 0.53, 0)</li>
+<li><code>Rotation</code>: (0, 90, 0)</li>
+</ul>
+<p>&amp;emsp;&amp;emsp;最后，我们将<code>Bomb</code>物体上的修改<code>Apply</code>至其Prefab上，然后运行游戏，可以看到<code>炸弹</code>已经有了<code>引信燃烧</code>特效了。</p>
+<hr>
+<h2 id="释放炸弹"><a href="#释放炸弹" class="headerlink" title="释放炸弹"></a>释放炸弹</h2><p>&amp;emsp;&amp;emsp;为<code>炸弹</code>添加好<code>引信燃烧</code>和<code>炸弹爆炸</code>特效之后，我们需要让角色能够释放炸弹。首先，我们删除场景中的<code>Bomb</code>物体。接着，我们修改<code>PlayerAttack.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>PlayerAttack.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-comment">// [RequireComponent(typeof(Animator))]</span><br>[<span class="hljs-meta">RequireComponent(typeof(PlayerController))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PlayerAttack</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;导弹Prefab&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Missile MissilePrefab;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;导弹发射点&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Transform ShootingPoint;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;发射导弹的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip ShootEffect;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;炸弹Prefab&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Rigidbody2D BombPrefab;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;炸弹的初始数量&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> InitBombNumber = <span class="hljs-number">4</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;使用火箭筒抛射炸弹的力&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> ProjectileBombForce = <span class="hljs-number">1000f</span>;<br><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> m_CurrentBombNumber;<br><br>    <span class="hljs-comment">// private Animator m_Animator;</span><br>    <span class="hljs-keyword">private</span> PlayerController m_PlayerCtrl;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 获取引用</span><br>        <span class="hljs-comment">// m_Animator = GetComponent&lt;Animator&gt;();</span><br>        m_PlayerCtrl = GetComponent&lt;PlayerController&gt;();<br><br>        <span class="hljs-comment">// 检查关键属性是否赋值</span><br>        <span class="hljs-keyword">if</span>(MissilePrefab == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置MissilePrefab&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(ShootingPoint == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置ShootingPoint&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(BombPrefab == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置BombPrefab&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        m_CurrentBombNumber = InitBombNumber;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Fire1&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 发射导弹</span><br>            Fire();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Fire2&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 放置炸弹</span><br>            LayBomb();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Fire3&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 抛射炸弹</span><br>            ProjectileBomb();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 发射导弹</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Fire</span>()</span> &#123;<br>        <span class="hljs-comment">// // 播放射击动画</span><br>        <span class="hljs-comment">// m_Animator.SetTrigger(&quot;Shoot&quot;);</span><br><br>        <span class="hljs-comment">// 播放射击音效</span><br>        AudioSource.PlayClipAtPoint(ShootEffect, ShootingPoint.position);<br><br>        <span class="hljs-comment">// 创建导弹</span><br>        Missile instance = Instantiate(MissilePrefab, ShootingPoint.position, Quaternion.identity) <span class="hljs-keyword">as</span> Missile;<br><br>        <span class="hljs-comment">// 如果角色跟导弹的朝向不一致，就翻转导弹</span><br>        <span class="hljs-keyword">if</span>(m_PlayerCtrl.FacingRight ^ instance.FacingRight) &#123;<br>            instance.Flip();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 放置炸弹</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LayBomb</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_CurrentBombNumber &lt;= <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// 放置炸弹</span><br>        Instantiate(BombPrefab, <span class="hljs-keyword">this</span>.transform.position, Quaternion.identity);<br><br>        <span class="hljs-comment">// 减少炸弹数量</span><br>        m_CurrentBombNumber --;<br>    &#125;<br><br>    <span class="hljs-comment">// 抛射炸弹</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ProjectileBomb</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_CurrentBombNumber &lt;= <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// 抛射炸弹</span><br>        Rigidbody2D body = Instantiate(BombPrefab, ShootingPoint.position, Quaternion.identity) <span class="hljs-keyword">as</span> Rigidbody2D;<br>        <span class="hljs-keyword">if</span>(m_PlayerCtrl.FacingRight) &#123;<br>            body.AddForce(Vector2.right * ProjectileBombForce);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            body.AddForce(Vector2.left * ProjectileBombForce);<br>        &#125;<br><br>        <span class="hljs-comment">// 减少炸弹数量</span><br>        m_CurrentBombNumber --;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;修改完成之后，我们将<code>BombPrefab</code>设置为<code>Bomb</code>的Prefab，运行游戏，此时我们可以通过<code>单击鼠标右键</code>来在<code>原地释放炸弹</code>以及通过<code>单击鼠标滚轮</code>来<code>向前抛射炸弹</code>。最后，我们将<code>Player</code>的修改<code>Apply</code>至其Prefab上，保存场景的修改。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;至此，我们已完成实现放置炸弹的功能的所有工作。本篇文章涉及到的一些数值参数，大家可以根据自己的喜好进行修改。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay11</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/Coroutines.html">Unity的Coroutines</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ExecutionOrder.html">yield语句的检查时机</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.ienumerator?redirectedfrom=MSDN&view=netframework-4.7.2">C#的IEnumerator</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tutorial/" class="category-chain-item">教程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/tutorial/potato-glory/" class="category-chain-item">《土豆荣耀》重构笔记</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Unity/">#Unity</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>《土豆荣耀》重构笔记（十三）实现放置炸弹的功能</div>
+      <div>https://asancai.github.io/tutorial/potato-glory/《土豆荣耀》重构笔记（十三）实现放置炸弹的功能/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年1月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/tutorial/potato-glory/%E3%80%8A%E5%9C%9F%E8%B1%86%E8%8D%A3%E8%80%80%E3%80%8B%E9%87%8D%E6%9E%84%E7%AC%94%E8%AE%B0%EF%BC%88%E5%8D%81%E5%9B%9B%EF%BC%89%E9%9A%8F%E6%9C%BA%E7%94%9F%E6%88%90%E6%9B%B4%E5%A4%9A%E7%9A%84%E6%80%AA%E7%89%A9/" title="《土豆荣耀》重构笔记（十四）随机生成更多的怪物">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（十四）随机生成更多的怪物</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/tutorial/potato-glory/%E3%80%8A%E5%9C%9F%E8%B1%86%E8%8D%A3%E8%80%80%E3%80%8B%E9%87%8D%E6%9E%84%E7%AC%94%E8%AE%B0%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E5%AF%B9%E6%80%AA%E7%89%A9%E9%80%A0%E6%88%90%E4%BC%A4%E5%AE%B3/" title="《土豆荣耀》重构笔记（十二）对怪物造成伤害">
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（十二）对怪物造成伤害</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

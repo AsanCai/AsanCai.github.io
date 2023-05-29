@@ -1,0 +1,794 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;在2D游戏中，游戏背景常常由一张、或者多张图片构成。而图片是静态的，为了不让游戏背景那么一成不变，显得更有动感一点，我们通常需要加入一些不能与游戏内的元素发生交互的背景动画，本篇文章的主要内容，就是讲述如何使用Unity制作一些简单的2D动画。  Animation Editor&amp;emsp;&amp;emsp;Unity专门提供了Animatio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《土豆荣耀》重构笔记（四）创建背景动画">
+<meta property="og:url" content="https://asancai.github.io/tutorial/potato-glory/%E3%80%8A%E5%9C%9F%E8%B1%86%E8%8D%A3%E8%80%80%E3%80%8B%E9%87%8D%E6%9E%84%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%E5%88%9B%E5%BB%BA%E8%83%8C%E6%99%AF%E5%8A%A8%E7%94%BB/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;在2D游戏中，游戏背景常常由一张、或者多张图片构成。而图片是静态的，为了不让游戏背景那么一成不变，显得更有动感一点，我们通常需要加入一些不能与游戏内的元素发生交互的背景动画，本篇文章的主要内容，就是讲述如何使用Unity制作一些简单的2D动画。  Animation Editor&amp;emsp;&amp;emsp;Unity专门提供了Animatio">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image1.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image2.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image3.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image4.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image5.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image6.png">
+<meta property="article:published_time" content="2018-12-24T03:28:54.000Z">
+<meta property="article:modified_time" content="2023-05-29T07:00:11.935Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image1.png">
+  
+  
+  
+  <title>《土豆荣耀》重构笔记（四）创建背景动画 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="《土豆荣耀》重构笔记（四）创建背景动画"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-12-24 11:28" pubdate>
+          2018年12月24日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">《土豆荣耀》重构笔记（四）创建背景动画</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;在2D游戏中，游戏背景常常由一张、或者多张图片构成。而图片是静态的，为了不让游戏背景那么一成不变，显得更有动感一点，我们通常需要加入一些不能与游戏内的元素发生交互的背景动画，本篇文章的主要内容，就是讲述如何使用Unity制作一些简单的2D动画。</p>
+<hr>
+<h2 id="Animation-Editor"><a href="#Animation-Editor" class="headerlink" title="Animation Editor"></a>Animation Editor</h2><p>&amp;emsp;&amp;emsp;Unity专门提供了<code>Animation Editor</code>让开发者来制作动画。选中Unity顶部菜单栏的<code>Window</code>，然后点击<code>Animation</code>即可打开<code>Animation</code>窗口。当然，也可以使用快捷键<code>Ctrl+6</code>打开。关于<code>Animation Editor</code>的使用，可以参考Unity的关于<code>Animation Editor</code>的介绍<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/AnimationEditorGuide.html">Animation Window Guide</a>。</p>
+<hr>
+<h2 id="添加素材"><a href="#添加素材" class="headerlink" title="添加素材"></a>添加素材</h2><p>&amp;emsp;&amp;emsp;首先，我们在<code>Hierarchy</code>窗口中右击<code>Background</code>并选择<code>Create Empty</code>创建空物体<code>RiverMid</code>、<code>RiverTop</code>、<code>Clouds</code>和<code>Fog</code>，然后分别将<code>env_RiverMid</code>、<code>env_RiverTop</code>、<code>env_Clouds</code>和<code>env_Fog</code>拖到<code>RiverMid</code>、<code>RiverTop</code>、<code>Clouds</code>和<code>Fog</code>下成为其子物体。完成之后，<code>Hierarchy</code>窗口中的场景结构如图所示：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image1.png" srcset="/img/loading.gif" lazyload alt="场景结构"></p>
+<blockquote>
+<p>它们的属性设置如下:</p>
+</blockquote>
+<ul>
+<li>RiverMid: <ul>
+<li><code>Position</code>: (0, -11, 0)</li>
+</ul>
+</li>
+<li>env_RiverMid:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 4</li>
+</ul>
+</li>
+<li>env_RiverMid (1):<ul>
+<li><code>Position</code>: (48, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 4</li>
+</ul>
+</li>
+<li>RiverTop:<ul>
+<li><code>Position</code>: (0, -11, 0)</li>
+</ul>
+</li>
+<li>env_RiverTop:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 5</li>
+</ul>
+</li>
+<li>env_RiverTop (1)<ul>
+<li><code>Position</code>: (48, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 5</li>
+</ul>
+</li>
+<li>Clouds:<ul>
+<li><code>Position</code>: (0, -2, 0)</li>
+</ul>
+</li>
+<li>env_Clouds:<ul>
+<li><code>Position</code>: (-40, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 2</li>
+</ul>
+</li>
+<li>env_Clouds (1):<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 2</li>
+</ul>
+</li>
+<li>env_Fog:<ul>
+<li><code>Position</code>: (-48, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 3</li>
+</ul>
+</li>
+<li>env_Fog (1):<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>: Background, <code>Order In Layer</code>: 3</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="创建动画的基本步骤"><a href="#创建动画的基本步骤" class="headerlink" title="创建动画的基本步骤"></a>创建动画的基本步骤</h2><p>&amp;emsp;&amp;emsp;接着，我们在<code>Project</code>窗口的<code>Assets</code>文件夹下创建一个名为<code>Animation</code>的文件夹，然后在<code>Animation</code>文件夹下再创建一个名为<code>Environment</code>的文件夹，用于保存背景动画。接着打开<code>Animation Editor</code>，在<code>Hierarchy</code>窗口中选中<code>RiverMid</code>并点击<code>Animation Editor</code>中的<code>Create</code>按钮在<code>Assets\Animation\Environment</code>文件夹下创建一个名为<code>RiverMid.anim</code>的文件。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image2.png" srcset="/img/loading.gif" lazyload alt="创建动画"></p>
+<p>&amp;emsp;&amp;emsp;创建完成后，我们可以看到在<code>Environment</code>下生成了两个文件，分别是<code>RiverMid.anim</code>和<code>RiverMid.controller</code>。<code>RiverMid.anim</code>是我们要的动画，而<code>RiverMid.controller</code>则是用于控制动画播放的状态机。当我们在使用<code>Animation Editor</code>创建动画的时候，Unity自动帮我们创建了一个以我们创建的动画作为默认动画的状态机，并将其附加在我们选择的物体上。此时在<code>Hierarchy</code>窗口下选中<code>RiverMid</code>，可以看到多了一个<code>Animator</code>组件。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image3.png" srcset="/img/loading.gif" lazyload alt="RiverMid"></p>
+<p>&amp;emsp;&amp;emsp;为了有序地管理资源文件，我们需要将<code>controller</code>文件分开存放。在<code>Assets</code>文件夹下创建一个名为<code>Animator</code>的文件夹，然后在<code>Animator</code>文件夹下再创建一个名为<code>Environment</code>的文件夹，用于保存背景动画的状态机文件。创建完成之后，在<code>Project</code>窗口中，将<code>RiverMid.controller</code>拖动到<code>Assets\Animator\Environment</code>下。<code>为了避免丢失资源引用，我们应该尽量在Unity中移动资源文件</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image4.png" srcset="/img/loading.gif" lazyload alt="文件结构"></p>
+<p>&amp;emsp;&amp;emsp;接着，我们点击<code>Animation Editor</code>中的<code>Add Property</code>按钮，然后点击<code>Transform</code>下<code>Position</code>属性右边的<code>+</code>号将<code>RiverMid</code>的<code>Position</code>作为动画要改变的属性。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image5.png" srcset="/img/loading.gif" lazyload alt="选择动画控制的属性"></p>
+<p>&amp;emsp;&amp;emsp;选择好动画控制的属性之后，我们开始录制动画。首先，我们使用鼠标右击<code>Animation Editor</code>生成的默认结尾帧，然后选择<code>Delete Keys</code>删除该帧。此外，我们还需要鼠标单击初始帧，并使用鼠标右击选择该关键帧的<code>切线类型</code>为<code>Auto</code>。关于几种<code>切线类型</code>的详细说明，详见<a href="https://asancai.github.io/game-development/Unity-Animation/">Unity的Animation</a>。</p>
+<p>&amp;emsp;&amp;emsp;接着，点击<code>Animation Editor</code>左上角的<code>圆形按钮</code>进入录制模式。然后，我们在右边方框内输入<code>1500</code>后按回车键确认，表示我们想在<code>第1500帧</code>处记录一个关键帧。此时，因为<code>Sample</code>的值为<code>60</code>，因此我们可以认为经过60帧以后，就经过了1s。<code>当然，我们这里也可以使用鼠标左右拖动来选择我们要在哪里记录关键帧</code>。最后，我们设置该关键帧下<code>RiverMid</code>的<code>Position</code>属性的值为<code>(-24, 0, 0)</code>。设置完成后，可以看到<code>Animation Editor</code>在<code>第25秒</code>处生成了一个关键帧。点击<code>Animation Editor</code>的<code>三角形按钮</code>可以播放我们生成的动画以便预览效果。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay4/Image6.png" srcset="/img/loading.gif" lazyload alt="录制关键帧"></p>
+<hr>
+<h2 id="创建剩下的动画"><a href="#创建剩下的动画" class="headerlink" title="创建剩下的动画"></a>创建剩下的动画</h2><p>&amp;emsp;&amp;emsp;创建好<code>RiverMid</code>的动画之后，我们使用相同的步骤为<code>RiverTop</code>、<code>Clouds</code>和<code>Fog</code>创建动画。</p>
+<blockquote>
+<p><code>RiverTop</code>、<code>Clouds</code>和<code>Fog</code>的动画关键帧信息如下：</p>
+</blockquote>
+<ul>
+<li>RiverTop<ul>
+<li><code>关键帧位置</code>: 0, <code>Position</code>: (0, -11, 0), <code>切点类型</code>: Auto</li>
+<li><code>关键帧位置</code>: 2500, <code>Position</code>: (-24, -11, 0), <code>切点类型</code>: Auto</li>
+</ul>
+</li>
+<li>Clouds<ul>
+<li><code>关键帧位置</code>: 0, <code>Position</code>: (0, -2, 0), <code>切点类型</code>: Auto</li>
+<li><code>关键帧位置</code>: 3600, <code>Position</code>: (40, -2, 0), <code>切点类型</code>: Auto</li>
+</ul>
+</li>
+<li>Fog<ul>
+<li><code>关键帧位置</code>: 0, <code>Position</code>: (0, 1.5, 0), <code>切点类型</code>: Auto</li>
+<li><code>关键帧位置</code>: 7200, <code>Position</code>: (48, 1.5, 0), <code>切点类型</code>: Auto</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;所有的动画都创建完成之后，点击Unity编辑器界面的<code>Play</code>按钮运行游戏，可以看到动画在游戏中实际播放的效果。如果觉得效果不符合自己想要的，读者可以返回上一步设置自定义的值。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay2</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/AnimationEditorGuide.html">Animation Window Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/animeditor-UsingAnimationEditor.html">Using the Animation view</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/animeditor-CreatingANewAnimationClip.html">Creating a New Animation Clip</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/animeditor-AnimatingAGameObject.html">Animating a GameObject</a></li>
+<li><a href="https://asancai.github.io/game-development/Unity-Animation/">Unity的Animation</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tutorial/" class="category-chain-item">教程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/tutorial/potato-glory/" class="category-chain-item">《土豆荣耀》重构笔记</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Unity/">#Unity</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>《土豆荣耀》重构笔记（四）创建背景动画</div>
+      <div>https://asancai.github.io/tutorial/potato-glory/《土豆荣耀》重构笔记（四）创建背景动画/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年12月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/game-development/unity%E7%9A%84animation/" title="Unity的Animation">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Unity的Animation</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/tutorial/potato-glory/%E3%80%8A%E5%9C%9F%E8%B1%86%E8%8D%A3%E8%80%80%E3%80%8B%E9%87%8D%E6%9E%84%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89%E5%88%9B%E5%BB%BA%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF/" title="《土豆荣耀》重构笔记（三）创建游戏场景">
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（三）创建游戏场景</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

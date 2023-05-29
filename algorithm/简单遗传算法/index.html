@@ -1,0 +1,987 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;遗传算法(Genetic Algorithm, GA)是模拟基于达尔文进化论的自然选择和孟德尔遗传理论的生物进化过程的计算模型，是一种通过模拟自然进化过程搜索最优解的方法。本文介绍的遗传算法是J.Holland教授提出的简单遗传算法(Simple Genetic Algorithm)，该算法由编解码、个体适应度评估和遗传运算三大模块构成，是现有遗传算法的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简单遗传算法">
+<meta property="og:url" content="https://asancai.github.io/algorithm/%E7%AE%80%E5%8D%95%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;遗传算法(Genetic Algorithm, GA)是模拟基于达尔文进化论的自然选择和孟德尔遗传理论的生物进化过程的计算模型，是一种通过模拟自然进化过程搜索最优解的方法。本文介绍的遗传算法是J.Holland教授提出的简单遗传算法(Simple Genetic Algorithm)，该算法由编解码、个体适应度评估和遗传运算三大模块构成，是现有遗传算法的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/GeneticAlgorithm/Image1.jpg">
+<meta property="article:published_time" content="2018-01-11T07:29:16.000Z">
+<meta property="article:modified_time" content="2023-05-29T07:00:11.956Z">
+<meta property="article:author" content="RainbowCyan">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/GeneticAlgorithm/Image1.jpg">
+  
+  
+  
+  <title>简单遗传算法 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="简单遗传算法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-01-11 15:29" pubdate>
+          2018年1月11日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          46 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">简单遗传算法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;遗传算法(Genetic Algorithm, GA)是模拟基于达尔文进化论的<code>自然选择</code>和<code>孟德尔遗传理论</code>的生物进化过程的<code>计算模型</code>，是一种通过模拟自然进化过程搜索最优解的方法。本文介绍的遗传算法是J.Holland教授提出的<code>简单遗传算法</code>(Simple Genetic Algorithm)，该算法由<code>编解码</code>、<code>个体适应度评估</code>和<code>遗传运算</code>三大模块构成，是现有<code>遗传算法</code>的基础。</p>
+<h2 id="生物学基础"><a href="#生物学基础" class="headerlink" title="生物学基础"></a>生物学基础</h2><p>&amp;emsp;&amp;emsp;假设将一群羊和一头长生不老的狼同时被放在一个封闭的山谷里。在这群羊中，跑得比较快的羊被狼吃掉的可能性比较小，更容易生存下来并繁殖后代；而跑得比较慢的羊更容易被狼吃掉，很难生存，也就很难繁殖后代。根据达尔文的自然选择学说，我们可以知道经过长时间的繁衍、进化，这群羊跑得快的羊会越来越多。<br>&amp;emsp;&amp;emsp;在这个例子中，一开始被放到山谷中的那群羊，我们可以视为这个种群进化的<code>初始种群</code>，而那头长生不老的狼则可以看成是用来<code>评估个体适应度</code>的<code>评估函数</code>。跑得越快的个体，<code>适应度</code>越高，它们的<code>基因</code>传递给下一代的<code>概率</code>也就越大。假设羊奔跑的速度有一个取值区间[a, b]，每个奔跑速度<code>(表现型)</code>对应着一种<code>基因</code>，我们可以通过<code>编解码</code>来模拟<code>基因</code>和<code>表现型</code>的对应关系，通过<code>遗传运算</code>来模拟生物进化学说的<code>基因突变</code>和<code>基因变异</code>等过程。</p>
+<hr>
+<h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><h3 id="编解码"><a href="#编解码" class="headerlink" title="编解码"></a>编解码</h3><p>&amp;emsp;&amp;emsp;遗传算法的编码有<code>浮点编码</code>和<code>二进制编码</code>两种方式。因为二进制编码既符合计算机处理信息的原理，又方便理解对基因编码序列进行遗传、编译和突变等操作，所以本文只介绍二进制编码。<br>&amp;emsp;&amp;emsp;使用二进制编码，就是使用二进制数串来表示变量。为了确定二进制数串的长度，我们需要知道运算所要求的<code>精度</code>。例如，变量x的取值区间为<code>[L, U]</code>，要求的精度是<code>p</code>，那么变量x就有$\frac{U - L}{p}$种取值，每个取值都要对应一个二进制编码<code>(变量x的取值为表现型，对应的二进制编码为基因型)</code>，假设二进制数串的长度为<code>k</code>，则可根据下列的式子求出k<br>$$2^{k-1} &lt; \frac{U - L}{0.0001} &lt;&#x3D; 2^k - 1$$</p>
+<blockquote>
+<p>不妨假设我们现在有一个取值区间为[2, 4]的变量<code>x</code>，要求的精度为0.1，那么可以得到一共有20种取值范围，因为$2^4 &lt; 20 &lt; 2^5 - 1$，因此我们可以得到我们需要的二进制数串长度<code>k=5</code></p>
+</blockquote>
+<p>&amp;emsp;&amp;emsp;确定了二进制数串之后，我们需要找到对应的<code>解码</code>公式，将不直观的二进制数值转换成十进制数值，方便计算<code>适应度</code>。确定了二进制长度，我们可以得到对应的编码公式：</p>
+<center>
+$00...00 = 0 &rarr; L$
+$00...01 = 2 &rarr; L+\delta$
+$00...10 = 2 &rarr; L+2\delta$
+$...$
+$11...11 = 2^k-1 &rarr; U$
+</center>
+
+<p>根据上面的式子，易知$\delta &#x3D; \frac{U - L}{2^k-1}$。假设某一个体的二进制编码为$b_kb_{k-1}…b_3b_2b_1$，那么对应的<code>解码公式</code>为<br>$$x &#x3D; L + (\sum_{i&#x3D;1}^k b_i 2^{i-1}) \frac{U-L}{2^k-1}$$</p>
+<blockquote>
+<p>继续上面的例子，对于$x_{22}&#x3D;10101(x_1 &#x3D; 00000)$，容易知道它对应的十进制值为21，将其代入解码公式，可以得到对应的<code>参数值</code>为<br>$$x &#x3D; 2 + 21 * \frac{4 - 2}{2^5 - 1} &#x3D; 3.3548$$</p>
+</blockquote>
+<hr>
+<h3 id="得到初始种群"><a href="#得到初始种群" class="headerlink" title="得到初始种群"></a>得到初始种群</h3><p>&amp;emsp;&amp;emsp;完成编解码的工作之后，我们还需要确定进行遗传运算的<code>种群规模</code>。当种群规模太小时，很明显会出现近亲交配的情况，出现<code>病态基因</code>的可能性大大增加，难以产生<code>优质基因</code>，也就是难以在进化过程中，出现符合预期的<code>有效解</code>(可以理解成，在一个<code>较差解</code>的基础上，随机生成的<code>随机解</code>是较优解的概率很小，是较差解的概率很大。而当种群中<code>适应度很低的个体</code>占了大部分时，被选择复制到新种群的个体中也会掺杂着大量<code>适应度低的个体</code>，产生的新种群是一个<code>平均适应度较差</code>的种群，<code>新种群的选择</code>没有起到<code>优胜劣汰</code>的效果。久而久之出现进化过程中出现的个体都集中在一个<code>适应度很低</code>的取值区间内的情况)；当种群规模太大时，又会出现计算量太大，浪费资源的问题。因此种群规模的建议值为<code>0~100(个人对这个范围存疑)</code>。<br>&amp;emsp;&amp;emsp;选定种群规模之后，假设种群规模为<code>size</code>，那么我们就需要随机生成<code>size</code>个二进制字符串$U_1$，$U_2$，…，$U_{size}$，作为<code>初始种群</code>进行后续的进化操作。</p>
+<blockquote>
+<p>继续上面的例子，假设我们选定的<code>种群规模</code>为10，那我们随机生成10个长度为5的二进制数串，如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">$U_i$</th>
+<th align="center">二进制编码</th>
+<th align="center">$U_i$</th>
+<th align="center">二进制编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$U_1$</td>
+<td align="center">00111</td>
+<td align="center">$U_2$</td>
+<td align="center">01111</td>
+</tr>
+<tr>
+<td align="center">$U_3$</td>
+<td align="center">10011</td>
+<td align="center">$U_4$</td>
+<td align="center">00101</td>
+</tr>
+<tr>
+<td align="center">$U_5$</td>
+<td align="center">01011</td>
+<td align="center">$U_6$</td>
+<td align="center">10111</td>
+</tr>
+<tr>
+<td align="center">$U_7$</td>
+<td align="center">10001</td>
+<td align="center">$U_8$</td>
+<td align="center">10110</td>
+</tr>
+<tr>
+<td align="center">$U_9$</td>
+<td align="center">11111</td>
+<td align="center">$U_{10}$</td>
+<td align="center">00110</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="评价种群个体适应度"><a href="#评价种群个体适应度" class="headerlink" title="评价种群个体适应度"></a>评价种群个体适应度</h3><p>&amp;emsp;&amp;emsp;评价种群个体适应度主要包括以下三个步骤：</p>
+<ul>
+<li>将个体对应的二进制编码进行<code>解码</code>，得到真实值$x_i$；</li>
+<li>计算<code>目标函数值</code>$f(x_i)$；</li>
+<li>将目标函数值转换为<code>适应度</code>$eval(U_i)$，对于<code>最大值</code>问题，目标函数值可作为适应度使用<br>$$f(x_i) &#x3D; eval(U_i)$$假如目标函数值可正可负，往往需要给目标函数值加上或者减去一个合适的常数，确保得到的适应度的所有可能取值<code>符号一致</code>；</li>
+</ul>
+<blockquote>
+<p>继续上面的例子，不妨假设<code>目标函数</code>为$f(x) &#x3D; -(x-2.5)^2 + 2$，为了保证得到的<code>适应度值</code>符号一致，我们可以给目标函数加上一个合适的正数3，得到<code>适应度函数</code>$f(x) &#x3D; -(x-2.5)^2 + 5$，每个个体的适应度值如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">$U_i$</th>
+<th align="center">二进制编码</th>
+<th align="center">实际值</th>
+<th align="center">适应度值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$U_1$</td>
+<td align="center">00111</td>
+<td align="center">2.4516</td>
+<td align="center">4.9977</td>
+</tr>
+<tr>
+<td align="center">$U_2$</td>
+<td align="center">01111</td>
+<td align="center">2.9678</td>
+<td align="center">4.7812</td>
+</tr>
+<tr>
+<td align="center">$U_3$</td>
+<td align="center">10011</td>
+<td align="center">3.2258</td>
+<td align="center">4.4732</td>
+</tr>
+<tr>
+<td align="center">$U_4$</td>
+<td align="center">00101</td>
+<td align="center">2.3226</td>
+<td align="center">4.9685</td>
+</tr>
+<tr>
+<td align="center">$U_5$</td>
+<td align="center">01011</td>
+<td align="center">2.7097</td>
+<td align="center">4.9560</td>
+</tr>
+<tr>
+<td align="center">$U_6$</td>
+<td align="center">10111</td>
+<td align="center">3.4839</td>
+<td align="center">4.0319</td>
+</tr>
+<tr>
+<td align="center">$U_7$</td>
+<td align="center">10001</td>
+<td align="center">3.0968</td>
+<td align="center">4.6438</td>
+</tr>
+<tr>
+<td align="center">$U_8$</td>
+<td align="center">10110</td>
+<td align="center">3.4194</td>
+<td align="center">4.1547</td>
+</tr>
+<tr>
+<td align="center">$U_9$</td>
+<td align="center">11110</td>
+<td align="center">3.9355</td>
+<td align="center">2.9393</td>
+</tr>
+<tr>
+<td align="center">$U_{10}$</td>
+<td align="center">00110</td>
+<td align="center">2.3871</td>
+<td align="center">4.9873</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="产生新种群"><a href="#产生新种群" class="headerlink" title="产生新种群"></a>产生新种群</h3><p>&amp;emsp;&amp;emsp;依照父代种群个体的适应度进行新种群的复制，步骤如下：</p>
+<ul>
+<li>计算父代种群所有个体的<code>适应度总和</code>$F&#x3D;\sum_{i&#x3D;1}^{size} eval(U_i)$;</li>
+<li>计算父代每个个体<code>适应度占比</code>，也就是每个个体的<code>复制概率</code>$P_i &#x3D; \frac{eval(U_i)}{F}$;</li>
+<li>计算父代每个个体被复制的<code>累积概率</code>$Q_i&#x3D;\sum_{j&#x3D;1}^{k} eval(P_k)$;</li>
+<li>使用<code>轮盘选择法</code>，转动轮盘<code>size</code>次，每次选择一个父代个体作为新种群的个体;</li>
+</ul>
+<blockquote>
+<p>继续上面的例子，使用计算机模拟<code>转盘选择法</code>，假设计算机随机生成的10个随机数如下：<br>&amp;emsp;&amp;emsp;0.3014&amp;emsp;0.1976&amp;emsp;0.7665&amp;emsp;0.8819&amp;emsp;0.3508<br>&amp;emsp;&amp;emsp;0.5884&amp;emsp;0.1776&amp;emsp;0.3432&amp;emsp;0.0369&amp;emsp;0.3221<br>接着根据上面的计算方法算出种群中每个个体的<code>概率</code>和<code>累积概率</code>，结果如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">$U_i$</th>
+<th align="center">适应度值</th>
+<th align="center">$P_k$</th>
+<th align="center">$Q_k$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$U_1$</td>
+<td align="center">4.9977</td>
+<td align="center">0.1112</td>
+<td align="center">0.1112</td>
+</tr>
+<tr>
+<td align="center">$U_2$</td>
+<td align="center">4.7812</td>
+<td align="center">0.1064</td>
+<td align="center">0.2176</td>
+</tr>
+<tr>
+<td align="center">$U_3$</td>
+<td align="center">4.4732</td>
+<td align="center">0.0996</td>
+<td align="center">0.3172</td>
+</tr>
+<tr>
+<td align="center">$U_4$</td>
+<td align="center">4.9685</td>
+<td align="center">0.1106</td>
+<td align="center">0.4278</td>
+</tr>
+<tr>
+<td align="center">$U_5$</td>
+<td align="center">4.9560</td>
+<td align="center">0.1102</td>
+<td align="center">0.5380</td>
+</tr>
+<tr>
+<td align="center">$U_6$</td>
+<td align="center">4.0319</td>
+<td align="center">0.0898</td>
+<td align="center">0.6218</td>
+</tr>
+<tr>
+<td align="center">$U_7$</td>
+<td align="center">4.6438</td>
+<td align="center">0.1034</td>
+<td align="center">0.7312</td>
+</tr>
+<tr>
+<td align="center">$U_8$</td>
+<td align="center">4.1547</td>
+<td align="center">0.0925</td>
+<td align="center">0.8237</td>
+</tr>
+<tr>
+<td align="center">$U_9$</td>
+<td align="center">2.9393</td>
+<td align="center">0.0654</td>
+<td align="center">0.8891</td>
+</tr>
+<tr>
+<td align="center">$U_{10}$</td>
+<td align="center">4.9873</td>
+<td align="center">0.1109</td>
+<td align="center">1.0000</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>第一个随机数0.3014，大于$Q_2$小于$Q_3$，所以个体$U_3$被选中<br>第二个随机数0.1976，大于$Q_1$小于$Q_2$，所以个体$U_2$被选中<br>…<br>第十个随机数0.3221，大于$Q_3$小于$Q_4$，所以个体$U_4$被选中<br>得到的新种群如下所示：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">$U_i$</th>
+<th align="center">二进制编码</th>
+<th align="center">$U_i$</th>
+<th align="center">二进制编码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$U_1$</td>
+<td align="center">10011</td>
+<td align="center">$U_2$</td>
+<td align="center">01111</td>
+</tr>
+<tr>
+<td align="center">$U_3$</td>
+<td align="center">10110</td>
+<td align="center">$U_4$</td>
+<td align="center">11111</td>
+</tr>
+<tr>
+<td align="center">$U_5$</td>
+<td align="center">00101</td>
+<td align="center">$U_6$</td>
+<td align="center">10111</td>
+</tr>
+<tr>
+<td align="center">$U_7$</td>
+<td align="center">01111</td>
+<td align="center">$U_8$</td>
+<td align="center">00101</td>
+</tr>
+<tr>
+<td align="center">$U_9$</td>
+<td align="center">00111</td>
+<td align="center">$U_{10}$</td>
+<td align="center">00101</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>上述<code>轮盘选择法</code>的机理是，个体$U_k$的适应度越大，代表[$U_{k-1}$, $U_k$]的区间跨度也越大，生成的随机数落在这个区间内的概率也就越大，个体$U_k$的二进制编码被复制到新种群中的概率也越大</p>
+</blockquote>
+<hr>
+<h3 id="新种群交配"><a href="#新种群交配" class="headerlink" title="新种群交配"></a>新种群交配</h3><p>&amp;emsp;&amp;emsp;<code>交配运算</code>是使用<code>单点</code>或者<code>多点</code>进行交叉的<code>算子</code>。首先使用随机数产生一个或者多个<code>交配点</code>，然后在两个个体的交配点位置互换部分二进制编码，形成两个子个体。<br>&amp;emsp;&amp;emsp;新种群交配操作需要先给定种群的交配概率$P_c$<code>(范围一般是0.6~1)</code>，基本步骤如下：</p>
+<ul>
+<li>将产生的新个体两两配对($U_1$和$U_2$，…，$U_9$和$U_10$)，作为进行交配的父代；</li>
+<li>随机生成一个随机数<code>rand</code>，当$rand &lt; P_c$时，让父代进行交配；反之不进行交配；</li>
+<li>交配得到新个体，交配的种类有<code>单点交配</code>和<code>多点交配</code>，这里使用单点交配<code>(将k作为另外一个默认交配点)</code>，<code>交配点</code>的选择以随机数的方式产生；</li>
+</ul>
+<blockquote>
+<p>继续上面的例子，现在给定交配概率$P_c&#x3D;0.25$，对于个体$U_1$和$U_2$，计算机随机生成的随机数为0.5644，需要进行交配。然后让计算机随机生成一个介于1~5的随机数，称为<code>交配点</code>。假设生成的交配点为2，那么$U_1$和$U_2$从二进制编码的第二位开始，交换右端的编码，即</p>
+</blockquote>
+<center>
+$U\_1$ = 1\`0011\`
+$U\_2$ = 0\`1111\`
+&dArr;
+$U\_1^{\*}$ = 1\`1111\`
+$U\_2^{\*}$ = 0\`0011\`
+</center>
+
+<hr>
+<h3 id="基因突变"><a href="#基因突变" class="headerlink" title="基因突变"></a>基因突变</h3><p>&amp;emsp;&amp;emsp;<code>突变运算</code>是使用二进制基本位进行运算的<code>算子</code>。为了避免在算法迭代后期出现种群过早收敛的情况，将种群个体的二进制编码进行小概率翻转，将原二进制编码<code>1置为0</code>，<code>0置为1</code>。<br>&amp;emsp;&amp;emsp;基因突变操作需要先给定种群基因突变概率$P_m$<code>(通常是0~0.1)</code>，步骤如下：</p>
+<ul>
+<li>随机生成一个随机数<code>rand</code>，当$rand &lt; P_m$时，让个体发生基因突变；反之不进行突变操作；</li>
+<li>通过随机数的方式确定<code>突变点</code>，产生突变之后的新个体</li>
+</ul>
+<blockquote>
+<p>继续上面的例子，假设给定的突变概率$P_m &#x3D; 0.01$，对于个体$U_10$，使用计算机生成的随机数为0.0037，需要进行突变操作。随机生成一个介于<code>1~5</code>的<code>突变点</code>，假设生成的突变点为<code>3</code>，那么有</p>
+</blockquote>
+<center>
+$U\_10$ = 00\`1\`01
+&dArr;
+$U\_{10}^{\*}$ = 00\`0\`01
+</center>
+
+<hr>
+<h3 id="进化迭代"><a href="#进化迭代" class="headerlink" title="进化迭代"></a>进化迭代</h3><p>&amp;emsp;&amp;emsp;至此，我们以及完成遗传算法的第一代操作。然后根据我们确定的进化代数<code>Generation</code>，回到<code>评价种群个体适应度</code>这一步骤，依次迭代<code>Generation</code>次之后停止迭代，并在<code>最后一代</code>得到对应<code>最大目标函数值</code>的个体。<br>&amp;emsp;&amp;emsp;需要注意的是，迭代次数太小时，种群还没有成熟，<code>较优解</code>个体尚未出现；迭代次数太大时，种群已经成熟，<code>较优解</code>个体早已出现，继续进化没有意义，且浪费资源呢。因此建议的进化代数为<code>100~500</code>。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="算法流程图"><a href="#算法流程图" class="headerlink" title="算法流程图"></a>算法流程图</h3><p><img src="https://github.com/AsanCai/BlogImage/raw/master/GeneticAlgorithm/Image1.jpg" srcset="/img/loading.gif" lazyload alt="遗传算法流程图"></p>
+<hr>
+<h3 id="伪代码"><a href="#伪代码" class="headerlink" title="伪代码"></a>伪代码</h3><figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs excel">BEGIN<br>  <span class="hljs-built_in">t</span> = <span class="hljs-number">0</span>;<br>  初始化p(<span class="hljs-built_in">t</span>);<br>  计算p(<span class="hljs-built_in">t</span>)的适应值;<br>  while(不满足迭代停止条件)<br>    begin<br>      <span class="hljs-built_in">t</span> = <span class="hljs-built_in">t</span> + <span class="hljs-number">1</span>;<br>      从p(<span class="hljs-built_in">t</span> -<span class="hljs-number">1</span>)中选择p(<span class="hljs-built_in">t</span>);<br>      对p(<span class="hljs-built_in">t</span>)进行交配操作;<br>      对p(<span class="hljs-built_in">t</span>)进行基因突变操作;<br>      计算p(<span class="hljs-built_in">t</span>)的适应值;<br>    end<br>END<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>&amp;emsp;&amp;emsp;遗传算法本质上是一种<code>启发式</code>的随机算法。根据<code>我个人的理解</code>，遗传算法的基本思路是在一个<code>较优解</code>的基础上，通过<code>交配</code>、<code>变异</code>等操作随机生成一个新的<code>随机解</code>，以期能通过一个较优解生成一个<code>更优解</code>。这也是种群规模太小出现近亲交配时，难以出现比较优的解的原因。<br>&amp;emsp;&amp;emsp;但是我感到比较奇怪的是，为什么最终的最优解是最后一代中适应度最高的个体，而不是历史上所有出现过的个体中，适应度最高的个体？这个还没理解。</p>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+</script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/algorithm/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>简单遗传算法</div>
+      <div>https://asancai.github.io/algorithm/简单遗传算法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年1月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/algorithm/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/" title="模拟退火算法">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">模拟退火算法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/grammar/markdown%E8%AF%AD%E6%B3%95/" title="Markdown语法">
+                        <span class="hidden-mobile">Markdown语法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;自然界中的一些生物行为特征呈现群体特征，而人工生命的主要研究领域之一是通过一些简单的规则给个体的行为建模，从而在计算机上构建其群体模型。生物学家Craig Reynolds在1987年提出了一个非常有影响的鸟群聚集模型，Boid模型。在这个模型中，Reynolds使用了以下三个简单的行为准则，利用这三个简单的规则，就可以非常接近的模拟出鸟群飞行的现象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="粒子群算法">
+<meta property="og:url" content="https://asancai.github.io/algorithm/%E7%B2%92%E5%AD%90%E7%BE%A4%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;自然界中的一些生物行为特征呈现群体特征，而人工生命的主要研究领域之一是通过一些简单的规则给个体的行为建模，从而在计算机上构建其群体模型。生物学家Craig Reynolds在1987年提出了一个非常有影响的鸟群聚集模型，Boid模型。在这个模型中，Reynolds使用了以下三个简单的行为准则，利用这三个简单的规则，就可以非常接近的模拟出鸟群飞行的现象">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/ParticleSwarmOptimizationAlgorithm/Image1.jpg">
+<meta property="article:published_time" content="2018-01-20T10:42:10.000Z">
+<meta property="article:modified_time" content="2023-05-29T07:00:11.957Z">
+<meta property="article:author" content="RainbowCyan">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/ParticleSwarmOptimizationAlgorithm/Image1.jpg">
+  
+  
+  
+  <title>粒子群算法 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="粒子群算法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-01-20 18:42" pubdate>
+          2018年1月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">粒子群算法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;自然界中的一些生物行为特征呈现群体特征，而人工生命的主要研究领域之一是通过一些简单的规则给<code>个体的行为建模</code>，从而在计算机上构建其群体模型。生物学家Craig Reynolds在1987年提出了一个非常有影响的鸟群聚集模型，<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/">Boid模型</a>。在这个模型中，Reynolds使用了以下三个简单的行为准则，利用这三个简单的规则，就可以非常接近的模拟出鸟群飞行的现象</p>
+<ol>
+<li>冲突避免(collision avoidance)：群体在一定空间内移动，个体有自己的移动意志，但不能影响其他个体的移动，避免碰撞和冲突</li>
+<li>速度匹配(velocity matching)：个体必须配合中心移动速度，在方向、距离和速率上都必须相互配合</li>
+<li>群体中心(flock centering)：个体将会向群体中心移动，配合群体中心向前移动</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;依托这个模型，Kennedy和Eberhart通过<code>模拟鸟群觅食过程中的迁徙和群聚行为</code>提出了一个基于群体智能的<code>全局随机搜索算法</code>——粒子群优化(Particle Swarm Optimization, PSO)算法。</p>
+<hr>
+<h2 id="群鸟觅食模型"><a href="#群鸟觅食模型" class="headerlink" title="群鸟觅食模型"></a>群鸟觅食模型</h2><p>&amp;emsp;&amp;emsp;为了理解PSO算法的过程，我们需要先理解<code>群鸟觅食模型</code>中鸟群觅食的过程。可以知道，鸟群在一定范围内搜索食物是一个<code>最佳决策</code>的过程。与人类的决策过程相似，鸟群觅食的过程综合了两个重要的信息：</p>
+<ol>
+<li>个体经验：根据自身以往的经验和尝试，得出哪个选择更好的结论</li>
+<li>群体经验：从其他个体的经验中得出哪个选择更好的结论</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;在群鸟觅食的过程中，每只鸟的初始状态都处于随机位置，且飞翔的方向也是随机的。每只鸟都不知道食物在哪里，但是每只鸟能够估计目前所处位置对于找到食物有多大价值，即有多大的<code>适应度</code>（食物所在位置适应度最大）。此外，每只鸟能记住自己找过的最好位置<code>（局部最优）</code>以及鸟群中所有个体已经找到的最好位置<code>（全局最优）</code>。随着时间的推移<code>（也就是不断地迭代）</code>，这些初始处于随机位置的鸟通过个体不断积累寻觅食物的经验、共享个体信息和群内互相学习<code>（也就是不断综合局部最优和全局最优信息）</code>，逐渐朝群体共同的方向，也就是食物的位置前进，使得整个鸟群的觅食中心都趋向于全局最优移动。</p>
+<hr>
+<h2 id="基本理论"><a href="#基本理论" class="headerlink" title="基本理论"></a>基本理论</h2><p>&amp;emsp;&amp;emsp;PSO从这种模型中得到启示并用于解决优化问题。在PSO中，搜索空间中的一只鸟，称之为粒子(particle)，整个鸟群被称为粒子群(particle swarm)。每个粒子所处的位置为优化问题的<code>潜在解</code>，每个位置找到食物的概率称为由<code>目标函数</code>决定的适应度值(fitness value)。此外，每个粒子还有一个速度决定它们飞翔的方向和距离来模拟随机觅食的过程。<br>&amp;emsp;&amp;emsp;现在我们不妨假设在一个$D$维的搜索空间(优化问题有$D$个自变量)中，有$m$个粒子组成一个群体，其中第$i$个粒子在$D$维搜索空间中的位置表示为$X_i&#x3D;(x_i^1,x_i^2,…x_i^D)$。将$X_i$代入目标函数我们可以得到该粒子在$X_i$处的适应度值，并根据得到的适应度值来衡量其优劣。粒子个体找过的最优位置记为$P_i&#x3D;(p_i^1,p_i^2,…,p_i^D)$，粒子群中所有粒子找过的最佳位置记为$P_g&#x3D;(p_g^1,p_g^2,…,p_g^D)$。粒子$i$的速度记为$V_i&#x3D;(v_i^1,v_i^2,…,v_i^D)$。<br>&amp;emsp;&amp;emsp;为了模拟个体随机觅食的过程，PSO采用下列公式不断迭代更新粒子所在的位置：<br>$$v_i^d &#x3D; w v_i^d + c_1r_1(p_i^d - x_i^d) + c_2r_2(p_g^d - x_i^d)$$<br>$$x_i^d &#x3D; x_i^d + \alpha v_i^d$$<br>其中，$i&#x3D;1,2,…,m$，$d&#x3D;1,2,…,D$。&amp;w&amp;是非负数，称为<code>惯性因子</code>，<code>加速常数</code>$c_1$和$c_2$是非负常数，$r_1$和$r_2$是$[0, 1]$范围内变化的随机数，$\alpha$称为<code>约束因子</code>，目的是控制速度的权重。此外，$v_i^d \in [-v_{max}^d, v_{max}^d]$，即粒子的速度$V_i^d$被一个最大速度$V_{max}&#x3D;(v_{max}^1,v_{max}^2,…,v_{max}^D)$所限制，从而保证保证粒子在任何一维上的速度不会超出这个限制。</p>
+<hr>
+<h2 id="算法步骤"><a href="#算法步骤" class="headerlink" title="算法步骤"></a>算法步骤</h2><ol>
+<li><p>初始化粒子群的数量$m$，确定每个粒子的速度$V$和位置$X$，确定惯性因子$w$、加速常数$c_1$和$c_2$、最大迭代次数和算法终止的最小允许误差</p>
+<blockquote>
+<ul>
+<li><code>粒子数</code>$m$一般取$20~40$，$m$越大，越容易找到全局最优解，运行的时间越长。对于大多数问题，粒子数为$30$足够用了。</li>
+<li><code>惯性因子</code>$w$影响算法的收敛性。$w$越大，粒子飞翔的幅度越大，跳出局部范围的能力越强，粒子在较大程度上能跳离原先的寻优轨道，有可能增大搜索空间，发现新的解域，进而增加全局搜索能力，但降低局部寻优能力；$w$太小，则跳出局部范围的能力较弱，粒子在较大程度上会按照原先的寻优轨道继续搜索，进而增强了局部寻优能力，但全局搜索效果差。若$w$是变量，那么可以在迭代初期将$w$设置得很大，在迭代过程中逐渐减小$w$的值；若$w$是定值，那么$w$一般取$[0.6, 0.75]$内的值</li>
+<li><code>加速常数</code>$c_1$和$c_2$用于调整<code>自身经验</code>和<code>群体经验</code>在其运动过程中所起的作用的权重。当$c_1 &#x3D; 0$的时候，粒子没有自身经验，运动只受<code>全局最优解</code>的影响；当$c_2 &#x3D; 0$的时候，粒子没有全局经验，运动只受<code>局部最优解</code>的影响；当$c_1 &#x3D; c_2 &#x3D; 0$的时候，粒子既没有个体经验，也没有群体经验，将杂乱地在边界寻找，很难找到最优解。对于一般的问题，一般取$c_1 &#x3D; c_2 &#x3D; 2.0$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>评价每个粒子的初始适应度值</p>
+</li>
+<li><p>将初始适应度值作为每个粒子的<code>局部最优值</code>，并将初始位置作为每个粒子的<code>局部最优解</code>；将当前群体中，最大的个体初始适应度作为群体的<code>全局最优值</code>，并将其对应的位置作为<code>全局最优解</code></p>
+</li>
+<li><p>根据公式$v_i^d &#x3D; w v_i^d + c_1r_1(p_i^d - x_i^d) + c_2r_2(p_g^d - x_i^d)$更新每个粒子的飞行速度</p>
+</li>
+<li><p>确定粒子的最大速度$V_{max}$，对每个粒子的飞行速度进行限速处理，使之保持在预设的范围$[-V_{max}, V_{max}]$内</p>
+<blockquote>
+<p>PSO是通过调整每一次迭代时每一个粒子在每一维上移动的距离(也就是粒子的速度)来实现的。粒子速度的改变是随机的，为了避免搜索空间无意义地发散，我们需要使用$V_{max}$对粒子的速度进行限制。此外，$V_{max}$还限制了粒子每次移动的最大步长，一般来说，我们希望在粒子的步长<code>在搜索初期足够大</code>，以让粒子能跳出局部最优；又希望粒子的步长在<code>接近全局最优解时足够小</code>，以精确地搜索全局最优解。如果$V_{max}$的取值是固定不变的，通常设置$V_{max}$为每维变化范围的$10%$ ~ $20%$</p>
+</blockquote>
+</li>
+<li><p>比较当前每个粒子所处位置的适应度是否高于粒子的局部最优值，如果是，则更新粒子的<code>局部最优值</code>和<code>局部最优解</code></p>
+</li>
+<li><p>更新粒子群的<code>全局最优值</code>和<code>全局最优解</code></p>
+</li>
+<li><p>重复步骤$4~7$，知道满足预先设定的终止条件</p>
+<blockquote>
+<p>PSO的终止条件根据具体问题而定，一般达到预定最大迭代次数或者粒子群目前位置搜索的最优位置满足目标函数的最小容许误差。</p>
+</blockquote>
+</li>
+<li><p>输出粒子群的<code>全局最优值</code>和<code>全局最优解</code></p>
+</li>
+</ol>
+<hr>
+<h2 id="算法流程图"><a href="#算法流程图" class="headerlink" title="算法流程图"></a>算法流程图</h2><p><img src="https://github.com/AsanCai/BlogImage/raw/master/ParticleSwarmOptimizationAlgorithm/Image1.jpg" srcset="/img/loading.gif" lazyload alt="粒子群算法流程图"></p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;通过前面的介绍我们可以知道，粒子群算法是一种随机算法，它通过不断随机改变粒子的位置来实现全局随机搜索的目的。和粒子群算法相似的是，遗传算法是通过随机改变个体的编码来实现全局随机搜索的目的，不同的是遗传算法的个体编码受父代个体的影响，而粒子群算法的粒子位置不受其他粒子的影响。此外，粒子群算法不涉及到复杂的编解码，实现起来也比遗传算法简单。</p>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+</script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/algorithm/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>粒子群算法</div>
+      <div>https://asancai.github.io/algorithm/粒子群算法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年1月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/game-engine/%E4%BD%BF%E7%94%A8vs2017%E7%BC%96%E8%AF%91ogre/" title="使用VS2017编译OGRE">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用VS2017编译OGRE</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/algorithm/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/" title="模拟退火算法">
+                        <span class="hidden-mobile">模拟退火算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
