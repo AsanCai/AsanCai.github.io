@@ -1,0 +1,1016 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;到目前为止，我们已经实现了游戏的所有功能。但目前，我们仍然使用键盘和鼠标来操作角色的移动和攻击。为了能让游戏在手机上正常运行，我们需要实现虚拟摇杆和按钮，来替换键盘和鼠标输入。此外，为了减少代码的修改，且同时兼容PC端和手机端的使用，我们希望虚拟摇杆和按钮的输入值的获取方式和Unity提供的Input类类似。 &amp;emsp;&amp;emsp;注意">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮">
+<meta property="og:url" content="https://asancai.github.io/posts/240d846e.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;到目前为止，我们已经实现了游戏的所有功能。但目前，我们仍然使用键盘和鼠标来操作角色的移动和攻击。为了能让游戏在手机上正常运行，我们需要实现虚拟摇杆和按钮，来替换键盘和鼠标输入。此外，为了减少代码的修改，且同时兼容PC端和手机端的使用，我们希望虚拟摇杆和按钮的输入值的获取方式和Unity提供的Input类类似。 &amp;emsp;&amp;emsp;注意">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay22/Image1.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay22/Image2.png">
+<meta property="article:published_time" content="2019-02-03T09:55:44.000Z">
+<meta property="article:modified_time" content="2023-05-29T12:02:02.915Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="Unity,教程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay22/Image1.png">
+  
+  
+  
+  <title>《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-02-03 17:55" pubdate>
+          2019年2月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          23k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          192 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;到目前为止，我们已经实现了游戏的所有功能。但目前，我们仍然使用键盘和鼠标来操作角色的移动和攻击。为了能让游戏在手机上正常运行，我们需要实现<code>虚拟摇杆</code>和<code>按钮</code>，来替换键盘和鼠标输入。此外，为了减少代码的修改，且同时兼容PC端和手机端的使用，我们希望<code>虚拟摇杆</code>和<code>按钮</code>的输入值的获取方式和Unity提供的<code>Input类</code>类似。</p>
+<p>&amp;emsp;&amp;emsp;注意到Unity提供的<a target="_blank" rel="noopener" href="https://assetstore.unity.com/packages/essentials/asset-packs/standard-assets-32351">Standard Asstes</a>下面有一个名为<code>CrossPlatformInput</code>的插件，这个插件的作用是<code>进行跨平台输入适配</code>，因此我们可以参考<code>CrossPlatformInput</code>插件来实现我们的虚拟摇杆和按钮。</p>
+<hr>
+<h2 id="框架设计"><a href="#框架设计" class="headerlink" title="框架设计"></a>框架设计</h2><p>&amp;emsp;&amp;emsp;Unity提供的<code>Input</code>类为静态类，因此我们也需要提供一个用于管理<code>虚拟摇杆</code>和<code>按钮</code>输入的静态类，我们不妨将这个静态类命名为<code>InputManager</code>。此外，因为<code>虚拟摇杆</code>和<code>按钮</code>需要根据<code>玩家对UI进行的操作</code>来获得<code>输入</code>，所以我们需要先实现只用于处理输入的<code>VirtualAxis</code>和<code>VirtualButton</code>，然后在<code>VirtualAxis</code>和<code>VirtualButton</code>的基础上，加上<code>UI操作</code>来实现<code>虚拟摇杆</code>和<code>按钮</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay22/Image1.png" srcset="/img/loading.gif" lazyload alt="框架示意图"></p>
+<p>&amp;emsp;&amp;emsp;此外，为了方便脚本的寻找，我们在<code>Assets\Scripts</code>文件夹下新建一个名为<code>Input</code>的文件夹，用于存放所有和实现虚拟摇杆和按钮有关的脚本。</p>
+<hr>
+<h2 id="实现VirtualAxis和VirtualButton"><a href="#实现VirtualAxis和VirtualButton" class="headerlink" title="实现VirtualAxis和VirtualButton"></a>实现VirtualAxis和VirtualButton</h2><p>&amp;emsp;&amp;emsp;在清楚了框架的设计之后，我们先来实现用于处理输入的<code>VirtualAxis</code>和<code>VirtualButton</code>类。在实现<code>VirtualAxis</code>和<code>VirtualButton</code>类之前，我们需要了解一下<code>VirtualAxis</code>和<code>VirtualButton</code>类需要管理哪些值。</p>
+<p>&amp;emsp;&amp;emsp;通过前面对Unity提供的<code>Input</code>类的使用，我们知道，当我们使用<code>Axis</code>时，我们可以获得一个在<code>(-1, 1)</code>内连续变化的<code>float类型</code>值。而当我们使用<code>Button</code>时，我们可以获取三个分别代表<code>按钮刚刚被按下</code>、<code>按钮被持续按下</code>和<code>按钮刚刚被松开</code>的<code>bool 类型</code>值。</p>
+<p>&amp;emsp;&amp;emsp;也就是说，<code>VirtualAxis</code>需要管理一个<code>float类型</code>的变量，而<code>VirtualButton</code>需要管理三个<code>bool类型</code>的变量。</p>
+<p>&amp;emsp;&amp;emsp;了解了<code>VirtualAxis</code>和<code>VirtualButton</code>类需要管理的值之后，我们先来实现较为简单的<code>VirtualAxis</code>类。首先，我们在<code>Assets\Scripts\Input</code>文件夹下新建一个名为<code>VirtualAxis</code>的C#脚本，然后编辑<code>VirtualAxis.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>VirtualAxis.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">VirtualAxis</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name &#123; <span class="hljs-keyword">get</span>; <span class="hljs-keyword">private</span> <span class="hljs-keyword">set</span>; &#125;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> m_Value;<br><br>    <span class="hljs-comment">// 构造函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">VirtualAxis</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">this</span>.Name = name;<br>    &#125;<br><br>    <span class="hljs-comment">// 更新当前的值</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>(<span class="hljs-params"><span class="hljs-built_in">float</span> <span class="hljs-keyword">value</span></span>)</span> &#123;<br>        m_Value = <span class="hljs-keyword">value</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 返回当前的值</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> <span class="hljs-title">GetValue</span>()</span> &#123;<br>        <span class="hljs-keyword">return</span> m_Value; <br>    &#125;<br><br>    <span class="hljs-comment">// 返回初始值</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> <span class="hljs-title">GetValueRaw</span>()</span> &#123;<br>        <span class="hljs-keyword">return</span> m_Value;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;接着，我们来实现较为复杂的<code>VirtualButton</code>类，我们在<code>Assets\Scripts\Input</code>文件夹下新建一个名为<code>VirtualButton</code>的C#脚本，然后编辑<code>VirtualButton.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>VirtualButton.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">VirtualButton</span> &#123;<br>    <span class="hljs-comment">// 按钮的名称</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name &#123; <span class="hljs-keyword">get</span>; <span class="hljs-keyword">private</span> <span class="hljs-keyword">set</span>; &#125;<br><br>    <span class="hljs-comment">// 按下按钮的帧数</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> m_LastPressedFrame = <span class="hljs-number">-5</span>;<br>    <span class="hljs-comment">// 释放按钮的帧数</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> m_ReleasedFrame = <span class="hljs-number">-5</span>;<br>    <span class="hljs-comment">// 按钮是否处于被按压的状态</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_Pressed;<br><br>    <span class="hljs-comment">// 构造函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">VirtualButton</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">this</span>.Name = name;<br>    &#125;<br><br>    <span class="hljs-comment">// 按压按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Pressed</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span> (m_Pressed) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        m_Pressed = <span class="hljs-literal">true</span>;<br>        <span class="hljs-comment">// 记录第一次按压按钮时的帧数</span><br>        m_LastPressedFrame = Time.frameCount;<br>    &#125;<br><br>    <span class="hljs-comment">// 松开按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Released</span>()</span> &#123;<br>        m_Pressed = <span class="hljs-literal">false</span>;<br>        <span class="hljs-comment">// 记录松开按钮时的帧数</span><br>        m_ReleasedFrame = Time.frameCount;<br>    &#125;<br><br>    <span class="hljs-comment">// 获取当前是否按压按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">GetButton</span>()</span> &#123;<br>        <span class="hljs-keyword">return</span> m_Pressed;<br>    &#125;<br><br>    <span class="hljs-comment">// 获取当前是否刚刚按下按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">GetButtonDown</span>()</span> &#123;<br>        <span class="hljs-keyword">return</span> (m_LastPressedFrame == Time.frameCount - <span class="hljs-number">1</span>);<br>    &#125;<br><br>    <span class="hljs-comment">// 获取当前是否刚刚松开按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">GetButtonUp</span>()</span> &#123;<br>        <span class="hljs-keyword">return</span> (m_ReleasedFrame == Time.frameCount - <span class="hljs-number">1</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li>这里我们使用类型为<code>bool</code>的<code>GetButtonDown</code>、<code>GetButton</code>和<code>GetBottonUp</code>函数来获取按钮当前是否处于<code>按钮刚刚被按下</code>、<code>按钮被持续按下</code>和<code>按钮刚刚被松开</code>状态</li>
+<li>我们知道，<code>按钮刚刚被按下</code>和<code>按钮刚刚被松开</code>状态是一个短暂的状态，当按钮被按下时，<code>按钮刚刚被按下</code>状态只会持续一帧的时间，<code>按钮刚刚被松开</code>状态也一样。因此，我们使用了<code>m_LastPressedFrame</code>和<code>m_ReleasedFrame</code>来保存<code>按钮刚刚被按下</code>和<code>按钮刚刚被松开</code>的帧数，并通过分别比较<code>m_LastPressedFrame</code>、<code>m_ReleasedFrame</code>和<code>Time.frameCount</code>的帧数差来判断按钮当前是否为<code>按钮刚刚被按下</code>或者<code>按钮刚刚被松开</code>状态。</li>
+</ol>
+<hr>
+<h2 id="实现用于管理的InputManager"><a href="#实现用于管理的InputManager" class="headerlink" title="实现用于管理的InputManager"></a>实现用于管理的InputManager</h2><p>&amp;emsp;&amp;emsp;实现完<code>VirtualAxis</code>和<code>VirtualButton</code>类之后，我们还需要实现用于管理<code>VirtualAxis</code>和<code>VirtualButton</code>类的静态类<code>InputManager</code>。我们在<code>Assets\Scripts\Input</code>文件夹下新建一个名为<code>InputManager</code>的C#脚本，然后编辑<code>InputManager.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>InputManager.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System;<br><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title">InputManager</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Dictionary&lt;<span class="hljs-built_in">string</span>, VirtualAxis&gt; m_VirtualAxes;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Dictionary&lt;<span class="hljs-built_in">string</span>, VirtualButton&gt; m_VirtualButtons;<br><br><br>    <span class="hljs-comment">// 私有构造器	</span><br>    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-title">InputManager</span>()</span> &#123;<br>        m_VirtualAxes = <span class="hljs-keyword">new</span> Dictionary&lt;<span class="hljs-built_in">string</span>, VirtualAxis&gt;();<br>        m_VirtualButtons = <span class="hljs-keyword">new</span> Dictionary&lt;<span class="hljs-built_in">string</span>, VirtualButton&gt;();<br>    &#125;<br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span> 用于管理的API</span><br>    <span class="hljs-comment">// 判断轴是否存在</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">AxisExists</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">return</span> m_VirtualAxes.ContainsKey(name);<br>    &#125;<br><br>    <span class="hljs-comment">// 判断按钮是否注册</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">ButtonExists</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">return</span> m_VirtualButtons.ContainsKey(name);<br>    &#125;<br><br>    <span class="hljs-comment">// 注册Axis</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">RegisterVirtualAxis</span>(<span class="hljs-params">VirtualAxis axis</span>)</span> &#123;<br>        <span class="hljs-comment">// 如果已经存在同名Axis，那么提示error</span><br>        <span class="hljs-keyword">if</span> (m_VirtualAxes.ContainsKey(axis.Name)) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is already a virtual axis named &quot;</span> + axis.Name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 添加新轴</span><br>            m_VirtualAxes.Add(axis.Name, axis);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 注册Button</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">RegisterVirtualButton</span>(<span class="hljs-params">VirtualButton button</span>)</span> &#123;<br>        <span class="hljs-comment">// 如果已经存在同名Button，那么提示error</span><br>        <span class="hljs-keyword">if</span> (m_VirtualButtons.ContainsKey(button.Name)) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is already a virtual button named &quot;</span> + button.Name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 添加新按钮</span><br>            m_VirtualButtons.Add(button.Name, button);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 注销Axis</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">UnRegisterVirtualAxis</span>(<span class="hljs-params">VirtualAxis axis</span>)</span> &#123;		<br>        <span class="hljs-comment">// 删除指定的Axis</span><br>        <span class="hljs-keyword">if</span> (m_VirtualAxes.ContainsKey(axis.Name)) &#123;<br>            m_VirtualAxes.Remove(axis.Name);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 注销Button</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">UnRegisterVirtualButton</span>(<span class="hljs-params">VirtualButton button</span>)</span> &#123;<br>        <span class="hljs-comment">// 删除指定的Button</span><br>        <span class="hljs-keyword">if</span> (m_VirtualButtons.ContainsKey(button.Name)) &#123;<br>            m_VirtualButtons.Remove(button.Name);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 按下按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetButtonDown</span>(<span class="hljs-params">VirtualButton button</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(InputManager.ButtonExists(button.Name)) &#123;<br>            button.Pressed();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;There is not a virtual button named &quot;</span> + button.Name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 松开按钮</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetButtonUp</span>(<span class="hljs-params">VirtualButton button</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(InputManager.ButtonExists(button.Name)) &#123;<br>            button.Released();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;There is not a virtual button named &quot;</span> + button.Name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>        &#125;<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span> 用于获取输入的API</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">float</span> <span class="hljs-title">GetAxis</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_VirtualAxes.ContainsKey(name)) &#123;<br>            <span class="hljs-keyword">return</span> m_VirtualAxes[name].GetValue();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is not axis named &quot;</span> + name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0f</span>;<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">float</span> <span class="hljs-title">GetAxisRaw</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_VirtualAxes.ContainsKey(name)) &#123;<br>            <span class="hljs-keyword">return</span> m_VirtualAxes[name].GetValueRaw();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is not axis named &quot;</span> + name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0f</span>;<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">GetButton</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_VirtualButtons.ContainsKey(name)) &#123;<br>            <span class="hljs-keyword">return</span> m_VirtualButtons[name].GetButton();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is not button named &quot;</span> + name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">GetButtonDown</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_VirtualButtons.ContainsKey(name)) &#123;<br>            <span class="hljs-keyword">return</span> m_VirtualButtons[name].GetButtonDown();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is not button named &quot;</span> + name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">GetButtonUp</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span>(m_VirtualButtons.ContainsKey(name)) &#123;<br>            <span class="hljs-keyword">return</span> m_VirtualButtons[name].GetButtonUp();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;There is not button named &quot;</span> + name + <span class="hljs-string">&quot; registered.&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li>我们知道，我们通常会使用多个<code>Axis</code>和<code>Button</code>，且我们通过<code>Name</code>来获取<code>Axis</code>和<code>Button</code>的输入值，因此我们需要使用<code>Dictionary</code>来管理<code>VirtualAxis</code>和<code>VirtualButton</code>，并将它们的<code>Name</code>设置为<code>Key</code></li>
+<li><code>InputManager</code>是一个静态类，因此我们需要提供一个不带<code>访问符</code>的<code>静态构造器</code>，且所有函数和变量都应为<code>Static</code>，具体详情可以查阅<a target="_blank" rel="noopener" href="https://wizardforcel.gitbooks.io/msdn-csharp/guide/21.html">C# 静态类</a></li>
+<li><code>InputManager</code>提供了两类API，一类用于管理<code>VirtualAxis</code>和<code>VirtualButton</code>的API，另外一类则是用于在<code>Game Play</code>中获取输入的API</li>
+</ol>
+<hr>
+<h2 id="实现虚拟摇杆"><a href="#实现虚拟摇杆" class="headerlink" title="实现虚拟摇杆"></a>实现虚拟摇杆</h2><p>&amp;emsp;&amp;emsp;实现了静态类<code>InputManager</code>之后，我们开始实现控制虚拟摇杆的<code>JoyStickHandler</code>。我们在<code>Assets\Scripts\Input</code>文件夹下新建一个名为<code>JoyStickHandler</code>的C#脚本，然后编辑<code>JoyStickHandler.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>JoyStickHandler.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><span class="hljs-keyword">using</span> UnityEngine.UI;<br><span class="hljs-keyword">using</span> UnityEngine.EventSystems;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">JoyStickHandler</span> : <span class="hljs-title">MonoBehaviour</span>, <span class="hljs-title">IPointerDownHandler</span>, <span class="hljs-title">IPointerUpHandler</span>, <span class="hljs-title">IDragHandler</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">enum</span> AxisOption &#123;<br>        <span class="hljs-comment">// 使用哪个轴</span><br>        Both,			<span class="hljs-comment">// 使用两个轴</span><br>        Horizontal, 	<span class="hljs-comment">// 使用水平轴</span><br>        Vertical 		<span class="hljs-comment">// 使用数值轴</span><br>    &#125;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;虚拟摇杆的最大活动范围&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> Range = <span class="hljs-number">100</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;是否根据屏幕的尺寸对虚拟摇杆的最大获得范围进行缩放&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> ScaleRange = <span class="hljs-literal">true</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;使用哪个轴&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AxisOption AxisToUse = AxisOption.Both;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;水平轴的名称&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> HorizontalAxisName = <span class="hljs-string">&quot;Horizontal&quot;</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;数值轴的名称&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> VerticalAxisName = <span class="hljs-string">&quot;Vertical&quot;</span>;<br><br>    Vector3 m_StartPos;<br>    <span class="hljs-built_in">bool</span> m_UseHorizontalAxis;<br>    <span class="hljs-built_in">bool</span> m_UseVerticalAxis;<br>    VirtualAxis m_HorizontalVirtualAxis;<br>    VirtualAxis m_VerticalVirtualAxis;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 确保虚拟摇杆运动的位置一样</span><br>        <span class="hljs-keyword">if</span>(ScaleRange)&#123;<br>            CanvasScaler scaler = transform.root.GetComponent&lt;CanvasScaler&gt;();<br><br>            <span class="hljs-built_in">float</span> scaleX = Screen.width / scaler.referenceResolution.x;<br>            <span class="hljs-built_in">float</span> scaleY = Screen.height / scaler.referenceResolution.y;<br>            <br>            <span class="hljs-keyword">if</span>(scaleX &gt; scaleY) &#123;<br>                Range *= scaleY;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Range *= scaleX;<br>            &#125;<br>        &#125;<br>        <br>        m_UseHorizontalAxis = (AxisToUse == AxisOption.Both || AxisToUse == AxisOption.Horizontal);<br>        m_UseVerticalAxis = (AxisToUse == AxisOption.Both || AxisToUse == AxisOption.Vertical);<br><br>        <span class="hljs-comment">// 启用时对轴进行注册</span><br>        <span class="hljs-keyword">if</span> (m_UseHorizontalAxis) &#123;<br>            m_HorizontalVirtualAxis = <span class="hljs-keyword">new</span> VirtualAxis(HorizontalAxisName);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (m_UseVerticalAxis) &#123;<br>            m_VerticalVirtualAxis = <span class="hljs-keyword">new</span> VirtualAxis(VerticalAxisName);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEnable</span>()</span> &#123;<br>        <span class="hljs-comment">// 启用时对轴进行注册</span><br>        <span class="hljs-keyword">if</span> (m_UseHorizontalAxis) &#123;<br>            InputManager.RegisterVirtualAxis(m_HorizontalVirtualAxis);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (m_UseVerticalAxis) &#123;<br>            InputManager.RegisterVirtualAxis(m_VerticalVirtualAxis);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        m_StartPos = transform.position;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnDisable</span>()</span> &#123;<br>        <span class="hljs-comment">// 禁用时取消轴注册</span><br>        <span class="hljs-keyword">if</span> (m_UseHorizontalAxis) &#123;<br>            InputManager.UnRegisterVirtualAxis(m_HorizontalVirtualAxis);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (m_UseVerticalAxis) &#123;<br>            InputManager.UnRegisterVirtualAxis(m_VerticalVirtualAxis);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 更新摇杆的位置和轴的值</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">UpdateVirtualAxes</span>(<span class="hljs-params">Vector3 delta</span>)</span> &#123;<br>        transform.position = <span class="hljs-keyword">new</span> Vector3(<br>            m_StartPos.x + delta.x, <br>            m_StartPos.y + delta.y, <br>            m_StartPos.z + delta.z<br>        );<br><br>        <span class="hljs-comment">// 这里需要除以Range而不是归一化</span><br>        delta /= Range;<br><br>        <span class="hljs-keyword">if</span> (m_UseHorizontalAxis) &#123;<br>            m_HorizontalVirtualAxis.Update(delta.x);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (m_UseVerticalAxis) &#123;<br>            m_VerticalVirtualAxis.Update(delta.y);<br>        &#125;<br>    &#125;<br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span>  接口函数</span><br>    <span class="hljs-comment">// 拖拽虚拟遥杆</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnDrag</span>(<span class="hljs-params">PointerEventData data</span>)</span> &#123;<br>        Vector3 newPos = Vector3.zero;<br><br>        <span class="hljs-comment">// 更新水平轴的位置和值</span><br>        <span class="hljs-keyword">if</span> (m_UseHorizontalAxis) &#123;<br>            <span class="hljs-built_in">float</span> delta = data.position.x - m_StartPos.x;<br>            newPos.x = delta;<br>        &#125;<br><br><br>        <span class="hljs-keyword">if</span> (m_UseVerticalAxis) &#123;<br>            <span class="hljs-built_in">float</span> delta = data.position.y - m_StartPos.y;<br>            newPos.y = delta;<br>        &#125;<br><br>        <span class="hljs-comment">// 确保运动范围为半径为Range的圆</span><br>        <span class="hljs-keyword">if</span>(newPos.magnitude &gt; Range) &#123;<br>            newPos = newPos.normalized * Range;<br>        &#125;<br><br>        UpdateVirtualAxes(newPos);<br>    &#125;<br><br>    <span class="hljs-comment">// 松开虚拟摇杆</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnPointerUp</span>(<span class="hljs-params">PointerEventData data</span>)</span> &#123;<br>        UpdateVirtualAxes(Vector3.zero);<br>    &#125;<br><br>    <span class="hljs-comment">// 点击虚拟摇杆</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnPointerDown</span>(<span class="hljs-params">PointerEventData data</span>)</span> &#123;<br>        <br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li><code>JoyStickHandler.cs</code>脚本需要附加到<code>Game Object</code>上，因此<code>JoyStickHandler</code>类需要继承<code>MonoBehaviour</code></li>
+<li>根据前面的框架设计，<code>JoyStickHandler</code>类除了要使用<code>VirtualAxis</code>，还需要根据用户对UI的操作来获取输入，因此我们需要让<code>JoyStickHandler</code>实现位于<code>UnityEngine.EventSystems</code>命名空间下的<code>IPointerDownHandler</code>、<code>IPointerUpHandler</code>和<code>IDragHandler</code>接口，从而获取UI的<code>按下</code>、<code>松开</code>和<code>拖拽</code>事件</li>
+<li>当我们勾选<code>ScaleRange</code>时，我们需要根据屏幕尺寸对<code>Range</code>进行缩放，从而保证在不同尺寸的屏幕上，摇杆移动的最大距离一致</li>
+<li>为了减少<code>InputManager</code>的管理量，当虚拟摇杆被禁用时，我们需要<code>注销对应的Axis</code>，当虚拟摇杆被启用时，我们在重新<code>注册对应的Axis</code></li>
+</ol>
+<hr>
+<h2 id="实现按钮"><a href="#实现按钮" class="headerlink" title="实现按钮"></a>实现按钮</h2><p>&amp;emsp;&amp;emsp;实现了虚拟摇杆之后，我们接着实现控制按钮的<code>ButtonHandler</code>。我们在<code>Assets\Scripts\Input</code>文件夹下新建一个名为<code>ButtonHandler</code>的C#脚本，然后编辑<code>ButtonHandler.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>ButtonHandler.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><span class="hljs-keyword">using</span> UnityEngine.UI;<br><span class="hljs-keyword">using</span> UnityEngine.EventSystems;<br><br>[<span class="hljs-meta">RequireComponent(typeof(Image))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ButtonHandler</span> : <span class="hljs-title">MonoBehaviour</span>, <span class="hljs-title">IPointerDownHandler</span>, <span class="hljs-title">IPointerUpHandler</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;激活按钮使用的名字&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;按钮松开时显示的图片&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Sprite NormalImage;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;按钮被按下时显示的图片&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Sprite ActiveImage;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;按钮被禁用时显示的图片&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Sprite DisableImage;<br><br>    <span class="hljs-keyword">private</span> Image m_CurrentImage;<br>    <span class="hljs-keyword">private</span> VirtualButton m_Button;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        m_CurrentImage = GetComponent&lt;Image&gt;();<br>        <span class="hljs-comment">// 创建按钮</span><br>        m_Button = <span class="hljs-keyword">new</span> VirtualButton(Name);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEnable</span>()</span> &#123;<br>        InputManager.RegisterVirtualButton(m_Button);<br>        <span class="hljs-keyword">if</span>(NormalImage != <span class="hljs-literal">null</span>) &#123;<br>            m_CurrentImage.sprite = NormalImage;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnDisable</span>()</span> &#123;<br>        InputManager.UnRegisterVirtualButton(m_Button);<br>        <span class="hljs-keyword">if</span>(DisableImage != <span class="hljs-literal">null</span>) &#123;<br>            m_CurrentImage.sprite = DisableImage;<br>        &#125;<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">region</span>  接口函数</span><br>    <span class="hljs-comment">// 松开虚拟摇杆</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnPointerUp</span>(<span class="hljs-params">PointerEventData data</span>)</span> &#123;<br>        InputManager.SetButtonUp(m_Button);<br><br>        <span class="hljs-keyword">if</span>(NormalImage != <span class="hljs-literal">null</span>) &#123;<br>            m_CurrentImage.sprite = NormalImage;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 点击虚拟摇杆</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnPointerDown</span>(<span class="hljs-params">PointerEventData data</span>)</span> &#123;<br>        InputManager.SetButtonDown(m_Button);<br><br>        <span class="hljs-keyword">if</span>(ActiveImage != <span class="hljs-literal">null</span>) &#123;<br>            m_CurrentImage.sprite = ActiveImage;<br>        &#125;<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li><code>ButtonHandler.cs</code>脚本需要附加到<code>Game Object</code>上，因此<code>ButtonHandler</code>类需要继承<code>MonoBehaviour</code></li>
+<li>因为按钮不可以被拖拽，因此我们只需要实现位于<code>UnityEngine.EventSystems</code>命名空间下的<code>IPointerDownHandler</code>和<code>IPointerUpHandler</code>接口</li>
+<li>为了减少<code>InputManager</code>的管理量，当按钮被禁用时，我们需要<code>注销对应的Button</code>，当按钮被启用时，我们在重新<code>注册对应的Button</code></li>
+<li>在这里，我们默认<code>Button</code>都需要使用<code>Image</code>，<code>可以根据自己的具体需求来拓展</code></li>
+</ol>
+<hr>
+<h2 id="为游戏场景添加虚拟摇杆和按钮"><a href="#为游戏场景添加虚拟摇杆和按钮" class="headerlink" title="为游戏场景添加虚拟摇杆和按钮"></a>为游戏场景添加虚拟摇杆和按钮</h2><p>&amp;emsp;&amp;emsp;按钮和虚拟摇杆都实现了之后，我们开始为游戏场景添加虚拟摇杆和按钮。为了和游戏场景的UI区分开来，我们需要另外创建一个用于绘制虚拟摇杆和按钮的Canvas。</p>
+<blockquote>
+<p>创建绘制虚拟摇杆和按钮的Canvas的步骤：</p>
+</blockquote>
+<ol>
+<li>在游戏场景中新建一个Canvas，并将其重命名为<code>InputCanvas</code></li>
+<li>接着修改<code>InputCanvas</code>下<code>Canvas Scaler</code>组件<blockquote>
+<blockquote>
+<p><code>Canvas Scaler</code>组件的属性</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>UI Scale Mode</code>: <code>Scale With Screen Size</code></li>
+<li><code>Reference Resolution</code>: <code>X(1920), Y(1080)</code></li>
+<li><code>Screen Match Mode</code>: <code>Match Width or Height</code></li>
+<li><code>Match</code>: <code>0.5</code></li>
+</ul>
+</li>
+<li>最后，我们需要确保原先的<code>UICanvas</code>绘制在<code>InputCanvas</code>之上，因此我们需要修改<code>UICanvas</code>上<code>Canvas</code>组件的<code>Sort Order</code>属性为<code>1</code></li>
+</ol>
+<p>&amp;emsp;&amp;emsp;创建好绘制虚拟摇杆和按钮的Canvas之后，我们先来添加虚拟摇杆。</p>
+<blockquote>
+<p>添加虚拟摇杆的步骤如下：</p>
+</blockquote>
+<ol>
+<li>在<code>InputCanvas</code>下创建一个<code>Image</code>，然后将其重命名为<code>JoyStickBackground</code><blockquote>
+<blockquote>
+<p><code>JoyStickBackground</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Anchors</code>: 点击<code>Rect Transform</code>组件左上角的方框，然后选择<code>bottom-left</code></li>
+<li><code>PosX</code>: 250</li>
+<li><code>PosY</code>: 210</li>
+<li><code>Width</code>: 300</li>
+<li><code>Height</code>: 300</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>RadialJoy_Area</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>JoyStickBackground</code>下创建一个<code>Image</code>，然后将其重命名为<code>JoyStick</code>，并在<code>JoyStick</code>物体上添加<code>JoyStickHandler.cs</code>脚本<blockquote>
+<blockquote>
+<p><code>JoyStick</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: 0</li>
+<li><code>Width</code>: 150</li>
+<li><code>Height</code>: 150</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>RadialJoy_Touch</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+<li><code>JoyStickHandler (Script)</code><ul>
+<li><code>Range</code>: 100</li>
+<li><code>Scale Range</code>: true</li>
+<li><code>Axis To Use</code>: Both</li>
+<li><code>Horizontal Axis Name</code>: <code>Horizontal</code></li>
+<li><code>Vertical Axis Name</code>: <code>Vertical</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;添加完虚拟摇杆之后，我们继续添加按钮</p>
+<blockquote>
+<p>添加按钮的步骤：</p>
+</blockquote>
+<ol>
+<li>在<code>InputCanvas</code>下创建一个<code>Image</code>，然后将其重命名为<code>Fire1Button</code>，并在<code>Fire1Button</code>物体上添加<code>ButtonHandler.cs</code>脚本<blockquote>
+<blockquote>
+<p><code>Fire1Button</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Anchors</code>: 点击<code>Rect Transform</code>组件左上角的方框，然后选择<code>bottom-right</code></li>
+<li><code>PosX</code>: -160</li>
+<li><code>PosY</code>: 140</li>
+<li><code>Width</code>: 200</li>
+<li><code>Height</code>: 200</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>Button_normal</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+<li><code>ButtonHandler (Script)</code><ul>
+<li><code>Name</code>: <code>Fire1</code></li>
+<li><code>Normal Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>Button_normal</code>图片</li>
+<li><code>Active Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>Button_active</code>图片</li>
+<li><code>Diasble Image</code>: <code>Assets\Sprites\UI</code>文件夹下的<code>Button_normal</code>图片</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>Fire1Button</code>物体上创建一个<code>Image</code><blockquote>
+<blockquote>
+<p><code>Image</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: 0</li>
+<li><code>Width</code>: 140</li>
+<li><code>Height</code>: 60</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Props</code>文件夹下的<code>part_rocket</code>图片</li>
+<li><code>Color</code>: (255, 255, 255, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>复制三次<code>Fire1Button</code>物体得到<code>Fire1Button (1)</code>、<code>Fire1Button (2)</code>和<code>Fire1Button (3)</code>物体</li>
+<li>将<code>Fire1Button (1)</code>重命名为<code>JumpButton</code><blockquote>
+<blockquote>
+<p><code>JumpButton</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: -380</li>
+<li><code>PosY</code>: 140</li>
+<li><code>Width</code>: 150</li>
+<li><code>Height</code>: 150</li>
+</ul>
+</li>
+<li><code>ButtonHandler (Script)</code><ul>
+<li><code>Name</code>: <code>Jump</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在<code>JumpButton</code>物体上创建一个<code>Text</code>，并删除<code>JumpButton</code>物体下的<code>Image</code>子物体<blockquote>
+<blockquote>
+<p><code>Text</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>Anchors</code>: 点击<code>Rect Transform</code>组件左上角的方框，然后选择<code>strentch-strentch</code></li>
+<li><code>Left</code>: 0</li>
+<li><code>Top</code>: 0</li>
+<li><code>Right</code>: 0</li>
+<li><code>Bottom</code>: 0</li>
+</ul>
+</li>
+<li><code>Text</code>: <ul>
+<li><code>Text</code>: <code>Jump</code></li>
+<li><code>Font</code>: <code>Assets\Fonts</code>下的<code>BradBunR</code>字体文件</li>
+<li><code>Font Size</code>: 58</li>
+<li><code>Alignment</code>: 水平居中，垂直居中</li>
+<li><code>Color</code>: (50, 50, 50, 255)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>将<code>Fire1Button (2)</code>重命名为<code>Fire2Button</code><blockquote>
+<blockquote>
+<p><code>Fire2Button</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: -351.6</li>
+<li><code>PosY</code>: 295.6</li>
+<li><code>Width</code>: 150</li>
+<li><code>Height</code>: 150</li>
+</ul>
+</li>
+<li><code>ButtonHandler (Script)</code><ul>
+<li><code>Name</code>: <code>Fire2</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>接着，我们修改<code>Fire2Button</code>物体下的<code>Image</code>子物体<blockquote>
+<blockquote>
+<p><code>Image</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: 0</li>
+<li><code>Width</code>: 100</li>
+<li><code>Height</code>: 100</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Props</code>文件夹下的<code>prop_bomb</code>图片</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>将<code>Fire1Button (3)</code>重命名为<code>Fire3Button</code><blockquote>
+<blockquote>
+<p><code>Fire3Button</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: -160</li>
+<li><code>PosY</code>: 360</li>
+<li><code>Width</code>: 150</li>
+<li><code>Height</code>: 150</li>
+</ul>
+</li>
+<li><code>ButtonHandler (Script)</code><ul>
+<li><code>Name</code>: <code>Fire3</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>最后，我们修改<code>Fire1Button (3)</code>物体下的<code>Image</code>子物体<blockquote>
+<blockquote>
+<p><code>Image</code>物体需要修改的组件属性：</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><code>Rect Transform</code>:<ul>
+<li><code>PosX</code>: 0</li>
+<li><code>PosY</code>: 0</li>
+<li><code>Width</code>: 110</li>
+<li><code>Height</code>: 60</li>
+</ul>
+</li>
+<li><code>Image</code>: <ul>
+<li><code>Source Image</code>: <code>Assets\Sprites\Character</code>文件夹下<code>char_hero_beanMan</code>图集切割出来的<code>bazooka</code>图片</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;添加完虚拟摇杆和按钮之后的效果图如下所示:</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay22/Image2.png" srcset="/img/loading.gif" lazyload alt="添加完虚拟摇杆和按钮之后的效果图"></p>
+<hr>
+<h2 id="使用虚拟摇杆和按钮"><a href="#使用虚拟摇杆和按钮" class="headerlink" title="使用虚拟摇杆和按钮"></a>使用虚拟摇杆和按钮</h2><p>&amp;emsp;&amp;emsp;添加完虚拟摇杆和按钮之后，我们需要将之前使用Unity提供<code>Input类</code>来获取输入的脚本改为使用<code>InputManager</code>类来获取输入。首先，我们修改<code>Assets\Scripts\Player</code>文件夹下的<code>PlayerAttack.cs</code>:</p>
+<figure class="highlight csharp"><figcaption><span>PlayerAttack.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-comment">// [RequireComponent(typeof(Animator))]</span><br>[<span class="hljs-meta">RequireComponent(typeof(PlayerController))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PlayerAttack</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;导弹Prefab&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Missile MissilePrefab;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;导弹发射点&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Transform ShootingPoint;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;发射导弹的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip ShootEffect;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;炸弹Prefab&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Rigidbody2D BombPrefab;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;使用火箭筒抛射炸弹的力&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> ProjectileBombForce = <span class="hljs-number">1000f</span>;<br><br>    <span class="hljs-comment">// private Animator m_Animator;</span><br>    <span class="hljs-keyword">private</span> PlayerController m_PlayerCtrl;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 获取引用</span><br>        <span class="hljs-comment">// m_Animator = GetComponent&lt;Animator&gt;();</span><br>        m_PlayerCtrl = GetComponent&lt;PlayerController&gt;();<br><br>        <span class="hljs-comment">// 检查关键属性是否赋值</span><br>        <span class="hljs-keyword">if</span>(MissilePrefab == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置MissilePrefab&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(ShootingPoint == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置ShootingPoint&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(BombPrefab == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置BombPrefab&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br><span class="hljs-meta">#<span class="hljs-keyword">if</span> UNITY_STANDALONE                                //PC端使用Input来获取输入</span><br>        <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Fire1&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 发射导弹</span><br>            Fire();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Fire2&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 放置炸弹</span><br>            LayBomb();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Fire3&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 抛射炸弹</span><br>            ProjectileBomb();<br>        &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">elif</span> UNITY_IOS || UNITY_ANDROID                    //移动端使用InputManager来获取输入</span><br>        <span class="hljs-keyword">if</span> (InputManager.GetButtonDown(<span class="hljs-string">&quot;Fire1&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 发射导弹</span><br>            Fire();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (InputManager.GetButtonDown(<span class="hljs-string">&quot;Fire2&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 放置炸弹</span><br>            LayBomb();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (InputManager.GetButtonDown(<span class="hljs-string">&quot;Fire3&quot;</span>)) &#123;<br>            <span class="hljs-comment">// 抛射炸弹</span><br>            ProjectileBomb();<br>        &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>    &#125;<br><br>    <span class="hljs-comment">// 发射导弹</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Fire</span>()</span> &#123;<br>        <span class="hljs-comment">// // 播放射击动画</span><br>        <span class="hljs-comment">// m_Animator.SetTrigger(&quot;Shoot&quot;);</span><br><br>        <span class="hljs-comment">// 播放射击音效</span><br>        AudioSource.PlayClipAtPoint(ShootEffect, ShootingPoint.position);<br><br>        <span class="hljs-comment">// 创建导弹</span><br>        Missile instance = Instantiate(MissilePrefab, ShootingPoint.position, Quaternion.identity) <span class="hljs-keyword">as</span> Missile;<br><br>        <span class="hljs-comment">// 如果角色跟导弹的朝向不一致，就翻转导弹</span><br>        <span class="hljs-keyword">if</span>(m_PlayerCtrl.FacingRight ^ instance.FacingRight) &#123;<br>            instance.Flip();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 放置炸弹</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LayBomb</span>()</span> &#123;<br>        <span class="hljs-comment">// 判断当前是否至少有一颗炸弹可以释放</span><br>        <span class="hljs-keyword">if</span>(GameStateManager.Instance.BombManagerInstance.ReleaseBomb(<span class="hljs-number">1</span>) == <span class="hljs-literal">false</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// 放置炸弹</span><br>        Instantiate(BombPrefab, <span class="hljs-keyword">this</span>.transform.position, Quaternion.identity);<br>    &#125;<br><br>    <span class="hljs-comment">// 抛射炸弹</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ProjectileBomb</span>()</span> &#123;<br>        <span class="hljs-comment">// 判断当前是否至少有一颗炸弹可以释放</span><br>        <span class="hljs-keyword">if</span>(GameStateManager.Instance.BombManagerInstance.ReleaseBomb(<span class="hljs-number">1</span>) == <span class="hljs-literal">false</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// 抛射炸弹</span><br>        Rigidbody2D body = Instantiate(BombPrefab, ShootingPoint.position, Quaternion.identity) <span class="hljs-keyword">as</span> Rigidbody2D;<br>        <span class="hljs-keyword">if</span>(m_PlayerCtrl.FacingRight) &#123;<br>            body.AddForce(Vector2.right * ProjectileBombForce);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            body.AddForce(Vector2.left * ProjectileBombForce);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;首先，我们修改<code>Assets\Scripts\Player</code>文件夹下的<code>PlayerController.cs</code>: </p>
+<figure class="highlight csharp"><figcaption><span>PlayerController.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">RequireComponent(typeof(Rigidbody2D))</span>]<br>[<span class="hljs-meta">RequireComponent(typeof(Animator))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PlayerController</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;角色初始朝向是否朝向右边&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> FacingRight = <span class="hljs-literal">true</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;移动时角色加速的力大小&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> MoveForce = <span class="hljs-number">365f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;角色移动的最大速度&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> MaxSpeed = <span class="hljs-number">5f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;跳跃时向上加速的力大小&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> JumpForce = <span class="hljs-number">1000f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;检测角色是否落地&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Transform GroundCheck;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;跳跃音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip[] JumpClips;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;显示血量条的物体&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Transform HealthBarDisplay;<br><br>    <span class="hljs-comment">// 获取用户输入</span><br>    <span class="hljs-keyword">private</span> Vector2 m_Input;<br>    <span class="hljs-comment">// 记录角色当前是否处于准备跳跃状态</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_IsReadyToJump;<br>    <span class="hljs-comment">// 记录角色当前是否正处于跳跃状态</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_IsJumping;<br>    <span class="hljs-comment">// 记录角色当前是否处于着地状态</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_GroundedStatus;<br><br>    <span class="hljs-comment">// 组件引用变量</span><br>    <span class="hljs-keyword">private</span> Rigidbody2D m_Rigidbody2D;<br>    <span class="hljs-keyword">private</span> Animator m_Animator;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 获取组件引用</span><br>        m_Rigidbody2D = GetComponent&lt;Rigidbody2D&gt;();<br>        m_Animator = GetComponent&lt;Animator&gt;();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-comment">// 监测变量是否正确赋值</span><br>        <span class="hljs-keyword">if</span>(GroundCheck == <span class="hljs-literal">null</span>) &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请先设置GroundCheck&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 初始化变量</span><br>        m_Input = <span class="hljs-keyword">new</span> Vector2();<br>        m_IsReadyToJump = <span class="hljs-literal">false</span>;<br>        m_IsJumping = <span class="hljs-literal">false</span>;<br>        m_GroundedStatus = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br>        <span class="hljs-comment">// 通过检测角色和groundCheck之间是否存在Ground层的物体来判断当前是否落地</span><br>        m_GroundedStatus = Physics2D.Linecast(<br>            transform.position,<br>            GroundCheck.position,<br>            LayerMask.GetMask(<span class="hljs-string">&quot;Obstacle&quot;</span>)<br>        );<br>        <br>        <span class="hljs-comment">// 设置动画状态机控制参数</span><br>        m_Animator.SetBool(<span class="hljs-string">&quot;Grounded&quot;</span>, m_GroundedStatus);<br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> UNITY_STANDALONE                                //PC端使用Input来获取输入</span><br>        <span class="hljs-comment">// 着地时，如果当前不处于跳跃状态且按下了跳跃键，进入准备跳跃状态</span><br>        <span class="hljs-keyword">if</span>(m_GroundedStatus &amp;&amp; !m_IsJumping &amp;&amp; Input.GetButtonDown(<span class="hljs-string">&quot;Jump&quot;</span>)) &#123;<br>            m_IsReadyToJump = <span class="hljs-literal">true</span>;<br>        &#125;<br><br>        m_Input.x = Input.GetAxis(<span class="hljs-string">&quot;Horizontal&quot;</span>);<br><span class="hljs-meta">#<span class="hljs-keyword">elif</span> UNITY_IOS || UNITY_ANDROID                    //移动端使用InputManager来获取输入</span><br>        <span class="hljs-comment">// 着地时，如果当前不处于跳跃状态且按下了跳跃键，进入准备跳跃状态</span><br>        <span class="hljs-keyword">if</span>(m_GroundedStatus &amp;&amp; !m_IsJumping &amp;&amp; InputManager.GetButtonDown(<span class="hljs-string">&quot;Jump&quot;</span>)) &#123;<br>            m_IsReadyToJump = <span class="hljs-literal">true</span>;<br>        &#125;<br><br>        m_Input.x = InputManager.GetAxis(<span class="hljs-string">&quot;Horizontal&quot;</span>);<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br>        <span class="hljs-comment">// 刚刚落地，退出跳跃状态</span><br>        <span class="hljs-keyword">if</span>(m_GroundedStatus &amp;&amp; m_IsJumping) &#123;<br>            m_IsJumping = <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FixedUpdate</span>()</span> &#123;<br>        <span class="hljs-comment">//获取水平输入</span><br>        <span class="hljs-built_in">float</span> h = m_Input.x;<br><br>        <span class="hljs-comment">// 设置动画状态机控制参数</span><br>        m_Animator.SetFloat(<span class="hljs-string">&quot;Speed&quot;</span>, Mathf.Abs(h));<br><br>        <span class="hljs-comment">// 若h * m_Rigidbody2D.velocity.x为正数且小于MaxSpeed，表示需要继续加速</span><br>        <span class="hljs-comment">// 若h * m_Rigidbody2D.velocity.x为负数，则表示需要反向加速</span><br>        <span class="hljs-keyword">if</span>(h * m_Rigidbody2D.velocity.x &lt; MaxSpeed) &#123;<br>            m_Rigidbody2D.AddForce(Vector2.right * h * MoveForce);<br>        &#125;<br><br>        <span class="hljs-comment">//设置物体速度的阈值</span><br>        <span class="hljs-keyword">if</span>(Mathf.Abs(m_Rigidbody2D.velocity.x) &gt; MaxSpeed) &#123;<br>            m_Rigidbody2D.velocity = <span class="hljs-keyword">new</span> Vector2(<br>                Mathf.Sign(m_Rigidbody2D.velocity.x) * MaxSpeed,<br>                m_Rigidbody2D.velocity.y<br>            );<br>        &#125;<br><br>        <span class="hljs-comment">//判断当前是否需要转向</span><br>        <span class="hljs-keyword">if</span>(h &gt; <span class="hljs-number">0</span> &amp;&amp; !FacingRight) &#123;<br>            Flip();<br>        &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(h &lt; <span class="hljs-number">0</span> &amp;&amp; FacingRight) &#123;<br>            Flip();<br>        &#125;<br><br>        <span class="hljs-comment">// 跳跃</span><br>        <span class="hljs-keyword">if</span>(m_IsReadyToJump) &#123;<br>            Jump();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Jump</span>()</span> &#123;<br>        <span class="hljs-comment">// 进入跳跃状态</span><br>        m_IsJumping = <span class="hljs-literal">true</span>;<br><br>        <span class="hljs-comment">// 设置一个竖直向上的力</span><br>        m_Rigidbody2D.AddForce(<span class="hljs-keyword">new</span> Vector2(<span class="hljs-number">0f</span>, JumpForce));<br><br>        <span class="hljs-comment">// 设置动画状态机控制参数</span><br>        m_Animator.SetTrigger(<span class="hljs-string">&quot;Jump&quot;</span>);<br><br>        <span class="hljs-comment">// 退出准备跳跃状态，避免重复跳跃</span><br>        m_IsReadyToJump = <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-comment">//随机在角色当前所处的位置播放一个跳跃的音频</span><br>        <span class="hljs-keyword">if</span>(JumpClips.Length &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-built_in">int</span> i = Random.Range(<span class="hljs-number">0</span>, JumpClips.Length);<br>            AudioSource.PlayClipAtPoint(JumpClips[i], transform.position);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Flip</span>()</span> &#123;<br>        <span class="hljs-comment">// 修改当前朝向</span><br>        FacingRight = !FacingRight;<br><br>        <span class="hljs-comment">// 修改scale的x分量实现转向</span><br>        <span class="hljs-keyword">this</span>.transform.localScale = Vector3.Scale(<br>            <span class="hljs-keyword">new</span> Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>),<br>            <span class="hljs-keyword">this</span>.transform.localScale<br>        );<br><br>        <span class="hljs-keyword">if</span>(HealthBarDisplay != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-comment">// 在角色转向时翻转HealthBarDisplay，确保HealthBarDisplay不随角色转向而翻转</span><br>            HealthBarDisplay.localScale = Vector3.Scale(<br>                <span class="hljs-keyword">new</span> Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>),<br>                HealthBarDisplay.localScale<br>            );<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogWarning(<span class="hljs-string">&quot;请设置HealthBarDisplay&quot;</span>);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li>因为<code>PlayController</code>没有使用到<code>m_AduioScoure</code>成员变量，因此我们将和这个变量有关的代码全部删除</li>
+<li>之前我们在<code>FixedUpdate</code>中获取<code>Horizontal Axis</code>的输入，通常来说，获取输入这一操作应该在<code>Update</code>函数中执行，因此我们新增一个<code>m_Input</code>在<code>Update</code>中获取输入，然后在<code>FixedUpdate</code>函数中使用<code>m_Input</code></li>
+</ol>
+<p>&amp;emsp;&amp;emsp;修改完毕之后，运行游戏，发现当我们拖拽虚拟摇杆的时候，角色可以左右移动。当我们点击按钮的时候，角色会根据我们点击的按钮执行相应的操作。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;至此，我们就已经完成了实现虚拟摇杆和按钮的全部工作。需要说明的是，我们<code>InputManager</code>并没有<code>根据当前的平台自动来判断是否需要显示虚拟摇杆和按钮</code>的功能，我们可以根据自己的具体需求自行进行拓展。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay20</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://assetstore.unity.com/packages/essentials/asset-packs/standard-assets-32351">Standard Asstes</a></li>
+<li><a target="_blank" rel="noopener" href="https://wizardforcel.gitbooks.io/msdn-csharp/guide/21.html">C# 静态类</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/EventSystems.IPointerDownHandler.html">IPointerDownHandler接口</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/EventSystems.IPointerUpHandler.html">IPointerUpHandler接口</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/EventSystems.IDragHandler.html">IDragHandler接口</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tutorial/" class="category-chain-item">教程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/tutorial/potato-glory/" class="category-chain-item">《土豆荣耀》</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Unity-%E6%95%99%E7%A8%8B/">#Unity,教程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>《土豆荣耀》重构笔记（二十二）实现虚拟摇杆和按钮</div>
+      <div>https://asancai.github.io/posts/240d846e.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年2月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/374182d2.html" title="《土豆荣耀》重构笔记（二十三）打包游戏">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（二十三）打包游戏</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/15dea16.html" title="《土豆荣耀》重构笔记（二十一）制作游戏菜单场景">
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（二十一）制作游戏菜单场景</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

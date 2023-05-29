@@ -1,0 +1,806 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;为了记录重构笔记的进度，我在Github上创建了一个名为PotatoGloryTutorial的Repository，里面的每个分支都记录着对应文章所做的修改。因为篇幅有限，很多具体的细节不会一一赘述，本篇文章对应的分支为essay1，读者可以将PotatoGloryTutorial这个仓库clone至本地之后切换到essay1分支，以便查看具体的细节。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《土豆荣耀》重构笔记（三）创建游戏场景">
+<meta property="og:url" content="https://asancai.github.io/posts/fe471202.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;为了记录重构笔记的进度，我在Github上创建了一个名为PotatoGloryTutorial的Repository，里面的每个分支都记录着对应文章所做的修改。因为篇幅有限，很多具体的细节不会一一赘述，本篇文章对应的分支为essay1，读者可以将PotatoGloryTutorial这个仓库clone至本地之后切换到essay1分支，以便查看具体的细节。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image1.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image2.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image3.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image4.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image5.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image6.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image7.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image8.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image9.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image10.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image11.png">
+<meta property="article:published_time" content="2018-12-21T11:59:40.000Z">
+<meta property="article:modified_time" content="2023-05-29T12:02:02.881Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="Unity,教程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image1.png">
+  
+  
+  
+  <title>《土豆荣耀》重构笔记（三）创建游戏场景 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="《土豆荣耀》重构笔记（三）创建游戏场景"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-12-21 19:59" pubdate>
+          2018年12月21日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">《土豆荣耀》重构笔记（三）创建游戏场景</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;为了记录重构笔记的进度，我在Github上创建了一个名为<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>的Repository，里面的每个分支都记录着对应文章所做的修改。因为篇幅有限，很多具体的细节不会一一赘述，本篇文章对应的分支为<code>essay1</code>，读者可以将<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库clone至本地之后切换到<code>essay1</code>分支，以便查看具体的细节。</p>
+<hr>
+<h2 id="导入资源"><a href="#导入资源" class="headerlink" title="导入资源"></a>导入资源</h2><p>&amp;emsp;&amp;emsp;打开Unity（2017.3.0f3）,点击<code>New</code>，创建一个名为<code>PotatoGloryTutorial</code>的<code>2D</code>项目：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image1.png" srcset="/img/loading.gif" lazyload alt="创建项目"></p>
+<p>&amp;emsp;&amp;emsp;打开Unity界面之后，我们需要导入资源。前面提到过，本项目大部分素材来源于Unity Assets Store上一个免费的package <a target="_blank" rel="noopener" href="https://assetstore.unity.com/packages/essentials/tutorial-projects/2d-platformer-11228">2D Platformer</a>，因此可以直接在<code>Asset Store</code>上Download并Import。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image2.png" srcset="/img/loading.gif" lazyload alt="Asset Store"></p>
+<p>&amp;emsp;&amp;emsp;需要注意的是，<code>2D Platformer</code>是一个完整的项目，里面还包含了很多脚本，里面有很多写得很不错的代码，有兴趣的读者可以直接下载下来参考。此外，<code>2D Platformer</code>里面还包含已经制作好的<code>Animation</code>和<code>Prefab</code>，不想浪费时间自己从头制作的读者可以直接下载<code>2D Platformer</code>后删除脚本文件，直接使用<code>2D Platformer</code>提供的资源。</p>
+<p>&amp;emsp;&amp;emsp;在这里，因为本项目的脚本不完全和<code>2D Platformer</code>一致，所以我们不直接下载完整的项目，而是导入我预先准备好的资源<a target="_blank" rel="noopener" href="https://github.com/AsanCai/Download/raw/master/package/PotatoGlory.unitypackage">package</a>。下载完成之后，在Unity上方的菜单栏找到<code>Assets</code>选项，点击<code>Assets</code>-&gt;<code>Import Package</code>-&gt;<code>Custom Package...</code>，然后找到自己下载好的<code>PotatoGlory.unitypackage</code>，然后点击<code>Import</code>导入全部资源。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image3.png" srcset="/img/loading.gif" lazyload alt="导入资源"></p>
+<hr>
+<h2 id="调整Unity布局"><a href="#调整Unity布局" class="headerlink" title="调整Unity布局"></a>调整Unity布局</h2><p>&amp;emsp;&amp;emsp;在正式开始搭建游戏背景之前，为了提高开发的效率，我们还需要调整一下Unity界面的布局。点击右上角的<code>Layout</code>按钮，会出现一个下拉菜单。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image4.png" srcset="/img/loading.gif" lazyload alt="Layout"></p>
+<p>&amp;emsp;&amp;emsp;个人最喜欢的布局方案是<code>2 by 3</code>，大家可以根据自己的喜好进行选择。选择<code>2 by 3</code>方案之后，我们还需要做一些小调整，将<code>Project</code>窗口拖动到<code>Hierarchy</code>窗口下方。当然，这个调整只是出于我个人的习惯，读者可以选择不调整，也可以根据自己的喜好调整其他窗口，调整的方法都是<code>鼠标单击窗口上方的选项卡，然后按住不放进行拖动</code>。</p>
+<p>&amp;emsp;&amp;emsp;调整完成之后，再次点击<code>Layout</code>，选择<code>Save Layout...</code>，将其命名为<code>Favorite</code>，然后点击<code>Save</code>。这样，我们就新建了一个名为<code>Favorite</code>的布局，以后就可以通过选择<code>Favorite</code>来快速恢复到我们现在调整的布局了。我们最终调整完成的布局如下所示：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image5.png" srcset="/img/loading.gif" lazyload alt="调整后的布局"></p>
+<hr>
+<h2 id="创建游戏场景"><a href="#创建游戏场景" class="headerlink" title="创建游戏场景"></a>创建游戏场景</h2><p>&amp;emsp;&amp;emsp;做好前期准备之后，终于进入我们今天的主题——创建游戏场景了。首先，我们右击在<code>Project</code>窗口下的<code>Assets</code>文件夹，然后选择<code>Create</code>-&gt;<code>Folder</code>来创建一个名为<code>Scenes</code>的文件夹，用于保存我们的游戏场景。然后直接按快捷键<code>Ctrl + S</code>，将Unity默认打开的<code>Untitled</code>场景保存到<code>Scenes</code>文件夹下，并将其命名为<code>SinglePlayerGameScene.unity</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image6.png" srcset="/img/loading.gif" lazyload alt="创建游戏场景"></p>
+<hr>
+<h2 id="设置Aspect"><a href="#设置Aspect" class="headerlink" title="设置Aspect"></a>设置Aspect</h2><p>&amp;emsp;&amp;emsp;接着，因为我们最后的目标是做成一个Android手机游戏，所以我们还需要<code>Game</code>窗口下设置一个<code>Aspect</code>来预览在手机上运行的效果。这里，我们创建一个固定分辨率为<code>1920x1080</code>的Aspect，并将其命名为<code>Android</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image7.png" srcset="/img/loading.gif" lazyload alt="设置Aspect"></p>
+<hr>
+<h2 id="放置Sprite"><a href="#放置Sprite" class="headerlink" title="放置Sprite"></a>放置Sprite</h2><p>&amp;emsp;&amp;emsp;创建好<code>Aspect</code>之后，我们将<code>Sprites\Environment</code>目录下的图片<code>env_bg</code>从<code>Project</code>窗口直接拖动到<code>Hierarchy</code>窗口里，可以看到在场景中出现了一张天空的背景图，但在<code>Game</code>窗口中，这张图片的可见范围很小。我们需要调大<code>Main Camera</code>的<code>Size</code>，使其能看到更大的范围，这里，我们将其设置为<code>11</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image8.png" srcset="/img/loading.gif" lazyload alt="调整Main Camera"></p>
+<p>&amp;emsp;&amp;emsp;调整完Camere之后，我们继续通过拖拽往场景里面添加其他的素材。但奇怪的是，在添加素材的过程中，有可能出现后面拖进去的素材在<code>Scene</code>和<code>Game</code>窗口里看不到的情况。这是因为在Unity里，摄像机按照<code>从远到近</code>的顺序来渲染物体，后渲染的物体会覆盖在先渲染的物体之上。<code>而对于在摄像机投影方向上距离摄像机距离一样的物体，它们的渲染顺序是随机的</code>。</p>
+<p>&amp;emsp;&amp;emsp;想要保证<code>物体A</code>在<code>物体B</code>之后渲染，我们可以设置<code>物体B</code>在摄像机投影方向上与摄像机的距离比<code>物体A</code>近。在Unity的2D项目中，默认使用的是<code>Orthographic Camera</code>，也就是正交摄像机，其投影方向为<code>Z轴的正方向</code>，默认垂直于屏幕。因此，我们只需要按照物体的前后关系来设置它们的z坐标的大小即可。但如果这样做，当场景中的物体增多时往往会出现记不清其他物体坐标的问题，不仅难以管理，而且效率也低。</p>
+<hr>
+<h2 id="Sorting-Layer"><a href="#Sorting-Layer" class="headerlink" title="Sorting Layer"></a>Sorting Layer</h2><p>&amp;emsp;&amp;emsp;为了解决这一问题，Unity在<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-SpriteRenderer.html">Sprite Renderer组件</a>中提供了<code>Sorting Layer</code>和<code>Order In Layer</code>属性让我们使用。Unity在渲染Sprite时，首先根据按照<code>Sorting Layer</code>的渲染顺序来渲染Sprite，如果两个Sprite处于相同<code>Sorting Layer</code>，那么就按照它们<code>Order In Layer</code>的值<code>从小到大</code>进行渲染。倘若两个Sprite<code>Order In Layer</code>的值也相同，再按照在摄像机投影方向上距离摄像机距离的距离远近、也就是Z轴上的坐标来渲染。</p>
+<p>&amp;emsp;&amp;emsp;选中场景中的<code>env_bg</code>，然后在<code>Inspector</code>窗口，点击<code>Add Sorting Layer...</code>。打开Sorting Layer管理界面后，点击右下角的<code>+</code>创建<code>Background</code>和<code>Foreground</code>两个<code>Sorting Layer</code>，并用鼠标选中<code>Background</code>将其拖到<code>Default</code>上方。创建完毕之后，已有的<code>Sorting Layer</code>如下所示：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image9.png" srcset="/img/loading.gif" lazyload alt="设置Sorting Layer"></p>
+<p>&amp;emsp;&amp;emsp;在Unity中，<code>Sorting Layer</code>的渲染顺序为从上到下渲染，也就是说，Unity会先渲染所有<code>Sorting Layer</code>为<code>Backgroung</code>的Sprite，然后绘制所有<code>Sorting Layer</code>为<code>Default</code>的Sprite，最后绘制所有<code>Sorting Layer</code>为<code>Foreground</code>的Sprite。</p>
+<blockquote>
+<p>了解了<code>Sorting Layer</code>的使用之后，我们往场景中添加剩下的所有Sprite，场景中所有的Sprite及其属性如下：</p>
+</blockquote>
+<ul>
+<li>env_bg:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>：Backgroung, <code>Order In Layer</code>: 0</li>
+</ul>
+</li>
+<li>env_cloudTop:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>：Backgroung, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li>env_BigBen:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>：Backgroung, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li>env_Bank:<ul>
+<li><code>Position</code>: (0, 0, 0)</li>
+<li><code>Sorting Layer</code>：Backgroung, <code>Order In Layer</code>: 2</li>
+</ul>
+</li>
+<li>env_RiverBase: <ul>
+<li><code>Position</code>: (0, -11, 0)，Scale(2, 1, 1)</li>
+<li><code>Sorting Layer</code>: Backgroung, <code>Order In Layer</code>: 3</li>
+</ul>
+</li>
+<li>env_TowerFull:<ul>
+<li><code>Position</code>: (-22, 0, 0), Scale(1, 1, 1)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 0</li>
+</ul>
+</li>
+<li>env_TowerFull (1):<ul>
+<li><code>Position</code>: (22, 0, 0), Scale(-1, 1, 1)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 0</li>
+</ul>
+</li>
+<li>env_PlatformBridge:<ul>
+<li><code>Position</code>: (-12.3, -11.2, 0), Scale(1, 1, 1)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li>env_PlatformBridge (1):<ul>
+<li><code>Position</code>: (12.3, -11.2, 0), Scale(-1, 1, 1)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li>env_PlatformTop:<ul>
+<li><code>Position</code>: (-14.4, 0, 0), Scale(1, 1, 1)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li>env_PlatformTop (1):<ul>
+<li><code>Position</code>: (14.4, 0, 0), Scale(-1, 1, 1)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 1</li>
+</ul>
+</li>
+<li>env_PlatformUfo:<ul>
+<li><code>Position</code>: (0, -4.62, 0)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 2</li>
+</ul>
+</li>
+<li>env_UfoLegs:<ul>
+<li><code>Position</code>: (0, -1.44, 0)</li>
+<li><code>Sorting Layer</code>: Foreground, <code>Order In Layer</code>: 2</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="组织场景中的物体"><a href="#组织场景中的物体" class="headerlink" title="组织场景中的物体"></a>组织场景中的物体</h2><p>&amp;emsp;&amp;emsp;将所有的Sprite添加进去之后，我们发现场景中的物体太多，不太雅观。为了方便管理，我们可以使用<code>Empty GameObject</code>来组织场景中的物体。在Unity中，<code>Empty GameObject</code>只有<code>Transform</code>这一个组件，可以当作空节点用来组织、管理其他的物体。</p>
+<p>&amp;emsp;&amp;emsp;在<code>Hierarchy</code>窗口右击鼠标，选择<code>Create Empty</code>，然后在<code>Inspector</code>窗口将其命名为<code>Background</code>，并<code>Reset</code>其<code>Transform</code>组件的属性值。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image10.png" srcset="/img/loading.gif" lazyload alt="设置Empty GameObject属性"></p>
+<p>&amp;emsp;&amp;emsp;接着我们用同样的方法，创建另外一个命名为<code>Foreground</code>的<code>Empty GameObject</code>，并重置其<code>Transform</code>组件的属性值。创建完毕之后，我们在<code>Hierarchy</code>窗口中，将<code>Sorting Layer</code>为<code>Background</code>的物体拖到空物体<code>Background</code>下成为其子物体，将<code>Sorting Layer</code>为<code>Foreground</code>的物体拖到空物体<code>Foreground</code>下成为其子物体，最后，<code>Hierarchy</code>窗口的结构如图所示：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay3/Image11.png" srcset="/img/loading.gif" lazyload alt="场景物体组织结构"></p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;因为这是本系列第一篇讲解项目具体制作过程的文章，有些地方写得比较详细，也用了比较多的截图来说明一些基础操作。在后面的文章中，对于一些已经介绍过、或者比较简单的基础操作，将会使用文字描述。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay1</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-SpriteRenderer.html">Unity的Sprite Renderer组件</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-TagManager.html">Sorting Layer</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tutorial/" class="category-chain-item">教程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/tutorial/potato-glory/" class="category-chain-item">《土豆荣耀》</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Unity-%E6%95%99%E7%A8%8B/">#Unity,教程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>《土豆荣耀》重构笔记（三）创建游戏场景</div>
+      <div>https://asancai.github.io/posts/fe471202.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年12月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/cb0dc95d.html" title="《土豆荣耀》重构笔记（四）创建背景动画">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（四）创建背景动画</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/a2a8cd9.html" title="《土豆荣耀》重构笔记（二）Unity的安装以及安卓环境的配置">
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（二）Unity的安装以及安卓环境的配置</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

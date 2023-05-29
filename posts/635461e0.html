@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;在游戏里面，为了提高游戏的难度，增加游戏的趣味性，往往会根据游戏的需要实现怪物AI。一般来说，一个最基本的怪物AI需要包括自动巡逻、看到玩家攻击玩家、玩家离开恢复自动巡逻等功能。对于一些状态比较复杂的怪物AI，还需要使用行为树来辅助实现。 &amp;emsp;&amp;emsp;在本篇文章中，我们要实现的怪物AI逻辑十分简单，怪物只需要在场景中以恒定速度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《土豆荣耀》重构笔记（六）实现怪物的AI">
+<meta property="og:url" content="https://asancai.github.io/posts/635461e0.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;在游戏里面，为了提高游戏的难度，增加游戏的趣味性，往往会根据游戏的需要实现怪物AI。一般来说，一个最基本的怪物AI需要包括自动巡逻、看到玩家攻击玩家、玩家离开恢复自动巡逻等功能。对于一些状态比较复杂的怪物AI，还需要使用行为树来辅助实现。 &amp;emsp;&amp;emsp;在本篇文章中，我们要实现的怪物AI逻辑十分简单，怪物只需要在场景中以恒定速度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image1.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image2.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image3.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image4.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image5.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image6.png">
+<meta property="article:published_time" content="2018-12-27T10:53:16.000Z">
+<meta property="article:modified_time" content="2023-05-29T12:02:02.886Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="Unity,教程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image1.png">
+  
+  
+  
+  <title>《土豆荣耀》重构笔记（六）实现怪物的AI - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="《土豆荣耀》重构笔记（六）实现怪物的AI"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-12-27 18:53" pubdate>
+          2018年12月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          58 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">《土豆荣耀》重构笔记（六）实现怪物的AI</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;在游戏里面，为了提高游戏的难度，增加游戏的趣味性，往往会根据游戏的需要实现怪物AI。一般来说，一个最基本的怪物AI需要包括<code>自动巡逻</code>、<code>看到玩家攻击玩家</code>、<code>玩家离开恢复自动巡逻</code>等功能。对于一些状态比较复杂的怪物AI，还需要使用<code>行为树</code>来辅助实现。</p>
+<p>&amp;emsp;&amp;emsp;在本篇文章中，我们要实现的怪物AI逻辑十分简单，<code>怪物只需要在场景中以恒定速度移动，当遇到障碍物时转弯朝反方向继续行走即可</code>。因此，我们在实现怪物AI的逻辑时没有用到<code>行为树</code>或者<code>状态机</code>。</p>
+<p>&amp;emsp;&amp;emsp;此外，因为本篇文章是<code>《土豆荣耀》重构笔记</code>系列文章中第一篇涉及脚本编写的文章，所以在开始阅读本篇文章之间，可以先看一下<a href="https://asancai.github.io/environment/VSCodeWithUnity/">如何使用VS Code编写Unity脚本</a>。此外，本篇文章默认读者已经知道Unity脚本是如何工作的，熟悉获取组件的引用以及使用Unity提供的api等基本操作，对C#的基本语法也有一定的了解。</p>
+<hr>
+<h2 id="为场景添加Collider"><a href="#为场景添加Collider" class="headerlink" title="为场景添加Collider"></a>为场景添加Collider</h2><p>&amp;emsp;&amp;emsp;为了能让怪物在场景上行走，我们需要为怪物和场景添加Collider。在<code>Hierarchy</code>窗口中选中需要添加碰撞体的GameObject，然后点击右侧<code>Inspector</code>窗口中的<code>Add Componnet</code>按钮，选择<code>Physics 2D</code>之后，我们就可以选择Collider类型并添加。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image1.png" srcset="/img/loading.gif" lazyload alt="添加Collider"></p>
+<p>&amp;emsp;&amp;emsp;了解了如何添加Collider之后，我们先为场景添加Collider。场景中能和角色、怪物产生交互的物体都存放在<code>Foreground</code>下，它们添加的Collider属性如下所示：</p>
+<blockquote>
+<p>Foreground下的物体添加的Collider：</p>
+</blockquote>
+<ul>
+<li>env_TowerFull:<ul>
+<li><code>Collider</code>: Box Collider 2D</li>
+<li><code>Offset</code>: (0, 0)</li>
+<li><code>Size</code>:   (7.3, 27)</li>
+</ul>
+</li>
+<li>env_TowerFull (1):<ul>
+<li><code>Collider</code>: Box Collider 2D</li>
+<li><code>Offset</code>: (0, 0)</li>
+<li><code>Size</code>:   (7.3, 27)</li>
+</ul>
+</li>
+<li>env_PlatformBridge:<ul>
+<li><code>Collider</code>: Box Collider 2D</li>
+<li><code>Offset</code>: (0.8, 0.8)</li>
+<li><code>Size</code>:   (15.5, 1.6)</li>
+</ul>
+</li>
+<li>env_PlatformBridge (1):<ul>
+<li><code>Collider</code>: Box Collider 2D</li>
+<li><code>Offset</code>: (0.8, 0.8)</li>
+<li><code>Size</code>:   (15.5, 1.6)</li>
+</ul>
+</li>
+<li>env_PlatformTop:<ul>
+<li><code>Collider</code>: Box Collider 2D</li>
+<li><code>Offset</code>: (0, 0.12)</li>
+<li><code>Size</code>:   (9.6, 2.6)</li>
+</ul>
+</li>
+<li>env_PlatformTop (1):<ul>
+<li><code>Collider</code>: Box Collider 2D</li>
+<li><code>Offset</code>: (0, 0.12)</li>
+<li><code>Size</code>:   (9.6, 2.6)</li>
+</ul>
+</li>
+<li>env_PlatformUfo:<ul>
+<li><code>Collider</code>: Polygon Collider 2D</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="为怪物添加Collider和Rigidbody"><a href="#为怪物添加Collider和Rigidbody" class="headerlink" title="为怪物添加Collider和Rigidbody"></a>为怪物添加Collider和Rigidbody</h2><p>&amp;emsp;&amp;emsp;接着，我们在<code>Hierarchy</code>选中<code>AlienSlug</code>和<code>AlienShip</code>为它们添加Collider。</p>
+<blockquote>
+<p><code>AlienSlug</code>和<code>AlienShip</code>添加的Collider信息如下：</p>
+</blockquote>
+<ul>
+<li>AlienSlug:<ul>
+<li><code>Collider</code>: Capsule Collider 2D</li>
+<li><code>Offset</code>: (0, 0)</li>
+<li><code>Size</code>: (1.14, 1.74)</li>
+</ul>
+</li>
+<li>AlienShip:<ul>
+<li><code>Collider</code>: Circle Collider 2D</li>
+<li><code>Offset</code>: (0.1, 0)</li>
+<li><code>Radius</code>: 0.9</li>
+</ul>
+</li>
+</ul>
+<p>&amp;emsp;&amp;emsp;点击运行游戏，我们发现怪物悬浮在空中，这是因为我们<code>没有给它们添加刚体组件</code>，<code>它们没有物理属性</code>。在2D项目中，如果我们想让一个物体具有重力、速度等物理属性，我们需要给这个物体添加<code>Rigidbody2D</code>组件。<code>Rigidbody2D</code>组件也位于<code>Add Component\Physics 2D</code>目录下。接下来，我们为<code>AlienSlug</code>和<code>AlienShip</code>添加<code>Rigidbody2D</code>组件。</p>
+<p>&amp;emsp;&amp;emsp;添加完成后，再次运行游戏，可以看到怪物受重力影响掉落下来，且发生了翻滚。我们想让怪物一直保持直立，因此我们需要在<code>Rigidbody2D</code>的<code>Constraints</code>属性里设置勾选<code>Freeze Rotation Z</code>，不让物体在进行物理模拟时，绕Z轴进行旋转。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image2.png" srcset="/img/loading.gif" lazyload alt="限制旋转"></p>
+<p>&amp;emsp;&amp;emsp;设置完成之后，我们再次运行游戏，可以看到怪物会受到重力影响，且一直保持直立，不会翻滚。最后，我们需要将我们所做的修改应用到它们的Prefab上。在<code>Hierarchy</code>分别选中<code>AlienSlug</code>和<code>AlienShip</code>，然后在<code>Inspector</code>窗口中点击<code>Apply</code>按钮即可。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image3.png" srcset="/img/loading.gif" lazyload alt="应用修改到Prefab上"></p>
+<hr>
+<h2 id="让怪物动起来"><a href="#让怪物动起来" class="headerlink" title="让怪物动起来"></a>让怪物动起来</h2><p>&amp;emsp;&amp;emsp;接下来，我们开始编写脚本来实现让怪物在场景中移动的功能。我们在<code>Assets</code>下创建一个名为<code>Scripts</code>的文件夹，然后在<code>Scripts</code>文件夹下创建一个名为<code>Enemy</code>的文件夹用于保存和怪物相关的脚本。创建完毕后，我们在<code>Enemy</code>文件夹下创建脚本<code>Wander.cs</code>，然后双击打开。</p>
+<p>&amp;emsp;&amp;emsp;既然想要让怪物在场景中移动，那么我们就需要先知道怪物移动的速度以及方向。首先在<code>Wander.cs</code>加入以下代码：</p>
+<figure class="highlight csharp"><figcaption><span>Wander.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs csharp">[<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;是否朝向右边&quot;</span>)</span>]<br>[<span class="hljs-meta">SerializeField</span>]<br><span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> FacingRight = <span class="hljs-literal">true</span>;<br><br>[<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物移动的速度&quot;</span>)</span>]<br>[<span class="hljs-meta">SerializeField</span>]<br><span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> MoveSpeed = <span class="hljs-number">2f</span>;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ul>
+<li><code>Tooltip</code>：<ul>
+<li>Unity提供的一个Attribute，参数为string；</li>
+<li>我们可以使用<code>Tooltip</code>这一Attribute来设置提示的内容，当我们将鼠标悬停在<code>Inspector</code>窗口显示的参数上时，我们可以看到提示的内容</li>
+</ul>
+</li>
+<li><code>SerializeField</code>：<ul>
+<li>Unity提供的一个Attribute，没有参数；</li>
+<li>Unity只会在<code>Inspector</code>窗口中显示可见性为<code>public</code>的字段，通过使用<code>SerializeField</code>这一Attribute，可以强制在<code>Inspector</code>窗口中显示可见性为<code>private</code>和<code>protected</code>的字段</li>
+</ul>
+</li>
+</ul>
+<p>&amp;emsp;&amp;emsp;接下来，我们要让怪物动起来，需要给怪物的<code>Rigidbody2D</code>组件设置速度，在<code>Wander.cs</code>加入以下代码：</p>
+<figure class="highlight csharp"><figcaption><span>Wander.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-comment">//用于设置怪物对象的物理属性</span><br><span class="hljs-keyword">private</span> Rigidbody2D m_Rigidbody;<br><span class="hljs-comment">// 用于保存当前的水平移动速度</span><br><span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> m_CurrentMoveSpeed;<br><br><span class="hljs-comment">// 获取组件引用</span><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>    m_Rigidbody = GetComponent&lt;Rigidbody2D&gt;();<br>&#125;<br><br><span class="hljs-comment">// 设置字段的初始值</span><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>    <span class="hljs-keyword">if</span>(FacingRight) &#123;<br>        m_CurrentMoveSpeed = MoveSpeed;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        m_CurrentMoveSpeed = -MoveSpeed;<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 执行和物理相关的代码</span><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FixedUpdate</span>()</span> &#123;<br>    m_Rigidbody.velocity = <span class="hljs-keyword">new</span> Vector2(m_CurrentMoveSpeed, m_Rigidbody.velocity.y);<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：<br>&amp;emsp;&amp;emsp;上面代码涉及到的<code>Awake</code>、<code>Start</code>和<code>FixedUpdate</code>都是Unity提供的生命周期函数，感兴趣的读者可以查看<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ExecutionOrder.html">Unity各生命周期函数的执行顺序</a>来了解它们的执行顺序和作用。</p>
+</blockquote>
+<p>&amp;emsp;&amp;emsp;接着，我们将<code>Wander.cs</code>添加到<code>AlienSlug</code>和<code>AlienShip</code>上并运行游戏，可以看到场景中的两个怪物已经动了起来，但是出现了重叠的现象。我们不希望场景中的怪物会产生碰撞等物理交互，所以，我们还需要做一些额外的工作。</p>
+<hr>
+<h2 id="一些额外的工作"><a href="#一些额外的工作" class="headerlink" title="一些额外的工作"></a>一些额外的工作</h2><p>&amp;emsp;&amp;emsp;Unity为了方便我们决定Sprite的渲染顺序，提供了<code>Sorting Layer</code>。类似地，为了让我们更方便地管理场景中物体的渲染和物理模拟，Unity也提供了<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/Layers.html">Layer</a>。首先，我们新建一个名为<code>Enemy</code>的Layer，然后将<code>AlienSlug</code>和<code>AlienShip</code>的Layer都设置为<code>Enemy</code>。切换Layer时，我们选择<code>Yes, Change the children</code>将子物体的Layer都设置为<code>Enemy</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image4.png" srcset="/img/loading.gif" lazyload alt="创建Layer"></p>
+<p>&amp;emsp;&amp;emsp;接着，我们在Unity的顶部菜单栏选择<code>Edit-&gt;Project Settings-&gt;Physics 2D</code>打开2D项目的物理设置窗口，然后在<code>Layer Collision Matrix</code>中取消<code>Enemy-Enemy</code>那一项的勾选，告诉Unity，不对都处于<code>Enemy</code>这一Layer的两个物体进行任何物理碰撞模拟。再次运行游戏，可以看到两个怪物已经不会重叠了。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image5.png" srcset="/img/loading.gif" lazyload alt="Layer Collision Matrix"></p>
+<hr>
+<h2 id="实现怪物遇到障碍物转向的功能"><a href="#实现怪物遇到障碍物转向的功能" class="headerlink" title="实现怪物遇到障碍物转向的功能"></a>实现怪物遇到障碍物转向的功能</h2><p>&amp;emsp;&amp;emsp;目前我们的怪物还只有移动的功能，当它们遇到障碍物的时候，会被卡住，我们需要让它们在遇到障碍物时自动转向。我们可以使用<code>Physics2D.OverlapPointAll</code>来获取场景里某个点上所有的Collider，但我们如何辨别这些Collider是障碍物，还是其他物体呢？答案是，通过<code>Layer</code>和<code>LayerMask</code>。所谓的<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/Layers.html">LayerMask</a>，其实就是一个用<code>二进制来表示的int类型变量</code>，<code>哪个位上的值为1</code>，就代表对以该位为下标的<code>Layer</code>执行相应的操作。</p>
+<blockquote>
+<p>例如，我们之前创建的<code>Enemy</code>的Layer下标为8，那么当<code>LayerMask</code>的值为<code>128（二进制的10000000）</code>时，代表我们会对所有Layer为<code>Enemy</code>的物体进行操作</p>
+</blockquote>
+<p>&amp;emsp;&amp;emsp;新建一个名为<code>Obstacle</code>的Layer，然后将所有障碍物的Layer都设置为<code>Obstacle</code>。设置完毕之后，我们在<code>Assets\Scripts\Enemy</code>下新建一个名为<code>Enemy</code>的C#脚本，然后在<code>Enemy.cs</code>中加入以下代码：</p>
+<figure class="highlight csharp"><figcaption><span>Enemy.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">RequireComponent(typeof(Wander))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Enemy</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;障碍物检测点&quot;</span>)</span>]<br>    [<span class="hljs-meta">SerializeField</span>]<br>    <span class="hljs-keyword">private</span> Transform FrontCheck;<br><br>    <span class="hljs-keyword">private</span> Wander m_Wander;<br>    <span class="hljs-keyword">private</span> LayerMask m_LayerMask;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        m_Wander = GetComponent&lt;Wander&gt;();	<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        m_LayerMask = LayerMask.GetMask(<span class="hljs-string">&quot;Obstacle&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span> ()</span> &#123;<br>        Collider2D[] frontHits = Physics2D.OverlapPointAll(FrontCheck.position, m_LayerMask);<br><br>        <span class="hljs-keyword">if</span>(frontHits.Length &gt; <span class="hljs-number">0</span>) &#123;<br>            m_Wander.Flip();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ul>
+<li><code>RequireComponent</code>：<ul>
+<li>Unity提供的一个Attribute，参数为<code>Type</code></li>
+<li><code>RequireComponent[(typeof(Wander))]</code>表示在添加前，必须给该物体添加定义了<code>Wander</code>这个类的脚本，不然会报错</li>
+</ul>
+</li>
+<li><code>LayerMask.GetMask(&quot;Obstacle&quot;)</code>表示直接获得<code>Obstacle</code>这个Layer对应的LayerMask</li>
+</ul>
+<p>&amp;emsp;&amp;emsp;接着，我们在<code>Wander.cs</code>脚本里添加<code>Flip</code>函数，<code>Wander.cs</code>完整代码如下：</p>
+<figure class="highlight csharp"><figcaption><span>Wander.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">RequireComponent(typeof(Rigidbody2D))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Wander</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;是否朝向右边&quot;</span>)</span>]<br>    [<span class="hljs-meta">SerializeField</span>]<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> FacingRight = <span class="hljs-literal">true</span>;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物水平移动的速度&quot;</span>)</span>]<br>    [<span class="hljs-meta">SerializeField</span>]<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> MoveSpeed = <span class="hljs-number">2f</span>;<br><br><br>    <span class="hljs-comment">//用于设置怪物对象的物理属性</span><br>    <span class="hljs-keyword">private</span> Rigidbody2D m_Rigidbody;<br>    <span class="hljs-comment">// 用于保存当前的水平移动速度</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> m_CurrentMoveSpeed;<br><br>    <span class="hljs-comment">// 获取组件引用</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        m_Rigidbody = GetComponent&lt;Rigidbody2D&gt;();<br>    &#125;<br><br>    <span class="hljs-comment">// 设置字段的初始值</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span>(FacingRight) &#123;<br>            m_CurrentMoveSpeed = MoveSpeed;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            m_CurrentMoveSpeed = -MoveSpeed;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 执行和物理相关的代码</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FixedUpdate</span>()</span> &#123;<br>        m_Rigidbody.velocity = <span class="hljs-keyword">new</span> Vector2(m_CurrentMoveSpeed, m_Rigidbody.velocity.y);<br>    &#125;<br><br>    <span class="hljs-comment">// 转向函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Flip</span>()</span> &#123;<br>        m_CurrentMoveSpeed *= <span class="hljs-number">-1</span>;<br>        <br>        <span class="hljs-keyword">this</span>.transform.localScale = Vector3.Scale(<span class="hljs-keyword">new</span> Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>), <span class="hljs-keyword">this</span>.transform.localScale);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;最后，我们将<code>Enemy.cs</code>添加到<code>AlienSlug</code>和<code>AlienShip</code>中，并在<code>AlienSlug</code>和<code>AlienShip</code>下新建一个名为<code>FrontCheck</code>的<code>Empty GameObject</code>。设置<code>FrontCheck</code>的<code>Position</code>为<code>(1, 0, 0)</code>，接着拖拽<code>FrontCheck</code>，将其复制给<code>Enemy.cs</code>脚本上的<code>FrontCheck</code>属性。运行游戏，可以看到怪物已经能正常转向了。</p>
+<hr>
+<h2 id="修改Sorting-Layer"><a href="#修改Sorting-Layer" class="headerlink" title="修改Sorting Layer"></a>修改Sorting Layer</h2><p>&amp;emsp;&amp;emsp;运行游戏的时候，我们发现<code>AlienSlug</code>的尾巴被UFO遮住了，我们需要调整一下<code>Sorting Layer</code>的渲染顺序。在<code>Hierarchy</code>窗口下点击<code>AlienShip</code>的子物体<code>char_enemy_alienShip</code>，然后点击<code>Add Sorting Layer</code>将<code>Sorting Layer</code>的顺序调整为下图所示的顺序：</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay6/Image6.png" srcset="/img/loading.gif" lazyload alt="修改Sorting Layer"></p>
+<p>&amp;emsp;&amp;emsp;至此，我们所有的修改就都完成了，点击<code>AlienSlug</code>和<code>AlienShip</code>在<code>Inspector</code>窗口中的<code>Apply</code>按钮将我们所做的修改应用到Prefab中，再保存场景产生的修改即可。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;<code>AlienSlug</code>和<code>AlienShip</code>下<code>Wander</code>脚本的<code>MoveSpeed</code>的值我默认给的是2，大家可以根据自己的喜好进行调整。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay4</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://asancai.github.io/environment/VSCodeWithUnity/">使用VS Code编写Unity脚本</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ExecutionOrder.html">Execution Order of Event Functions</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/EditingPrefabViaInstance.html">Editing a Prefab via its instances</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/Layers.html">Layer和LayerMask</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tutorial/" class="category-chain-item">教程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/tutorial/potato-glory/" class="category-chain-item">《土豆荣耀》</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Unity-%E6%95%99%E7%A8%8B/">#Unity,教程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>《土豆荣耀》重构笔记（六）实现怪物的AI</div>
+      <div>https://asancai.github.io/posts/635461e0.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年12月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/ce911e84.html" title="《土豆荣耀》重构笔记（七）控制角色移动并添加音效">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（七）控制角色移动并添加音效</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/d483ec30.html" title="《土豆荣耀》重构笔记（五）创建角色以及怪物的动画">
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（五）创建角色以及怪物的动画</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

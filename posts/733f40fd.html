@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言&amp;emsp;&amp;emsp;到目前为止，我们已经能在场景中控制角色进行移动、攻击怪物并拾取道具，但我们还没有做出一个完整的游戏，我们还需要加入游戏的胜负条件。  游戏的胜负条件   胜利条件：每击杀一个怪物获得100分，当已获得的分数达到预设的分数时，游戏胜利 失败条件：当角色死亡时，游戏失败  &amp;emsp;&amp;emsp;知道了游戏胜负条件之后，我们还需要加入游戏主逻">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器">
+<meta property="og:url" content="https://asancai.github.io/posts/733f40fd.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;到目前为止，我们已经能在场景中控制角色进行移动、攻击怪物并拾取道具，但我们还没有做出一个完整的游戏，我们还需要加入游戏的胜负条件。  游戏的胜负条件   胜利条件：每击杀一个怪物获得100分，当已获得的分数达到预设的分数时，游戏胜利 失败条件：当角色死亡时，游戏失败  &amp;emsp;&amp;emsp;知道了游戏胜负条件之后，我们还需要加入游戏主逻">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image1.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image2.png">
+<meta property="og:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image3.png">
+<meta property="article:published_time" content="2019-01-28T17:34:18.000Z">
+<meta property="article:modified_time" content="2023-05-29T12:02:02.909Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="Unity,教程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image1.png">
+  
+  
+  
+  <title>《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-01-29 01:34" pubdate>
+          2019年1月29日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          19k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          159 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&amp;emsp;&amp;emsp;到目前为止，我们已经能在场景中控制角色进行<code>移动</code>、<code>攻击怪物</code>并<code>拾取道具</code>，但我们还没有做出一个完整的游戏，我们还需要加入<code>游戏的胜负条件</code>。</p>
+<blockquote>
+<p><code>游戏的胜负条件</code></p>
+</blockquote>
+<ol>
+<li>胜利条件：每击杀一个怪物获得<code>100分</code>，当已获得的分数达到<code>预设的分数</code>时，游戏胜利</li>
+<li>失败条件：当角色死亡时，游戏失败</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;知道了<code>游戏胜负条件</code>之后，我们还需要加入<code>游戏主逻辑管理器</code>来管理整个游戏的<code>状态</code>。通常来说，一个游戏场景里面，只有唯一一个<code>游戏主逻辑管理器</code>。因此，我们可以使用<code>单例模式</code>来实现<code>游戏主逻辑管理器</code>。</p>
+<hr>
+<h2 id="什么是单例模式"><a href="#什么是单例模式" class="headerlink" title="什么是单例模式"></a>什么是单例模式</h2><p>&amp;emsp;&amp;emsp;<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Singleton_pattern">单例模式</a>是一种常用的<code>软件设计模式</code>。在应用这个模式时，单例对象的类必须保证<code>只有一个实例存在</code>，并提供一个访问这个<code>唯一实例</code>的<code>全局访问点</code>。</p>
+<p>&amp;emsp;&amp;emsp;<code>单例模式</code>的实现思路是：一个类定义<code>一个静态的实例引用</code>和<code>一个获得该实例的方法（必须是静态方法）</code>，当我们调用<code>获取静态实例的方法</code>时，如果类持有的<code>静态实例引用不为空就返回这个引用</code>，如果类保持的<code>静态实例引用为空就创建该类的实例，并将新创建的实例引用赋予该类持有的静态实例引用</code>。同时我们还应该将该类的<code>构造函数定义为私有方法</code>，这样其他处的代码就无法通过调用该类的构造函数来实例化该类的对象，<code>只有通过该类提供的静态方法来得到该类的唯一实例</code>。</p>
+<blockquote>
+<p><code>单例模式</code>的两种构建方式：</p>
+</blockquote>
+<ol>
+<li><code>懒汉方式(Lazy initialization)</code>：指单例类的单例实例在<code>第一次被使用时</code>构建。</li>
+<li><code>饿汉方式(Eager initialization)</code>：指单例类的单例实例在<code>类装载时</code>先主动构建。</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;由于Unity采用了<code>组件化编程</code>的方式，所以在Unity中，除了对象以外一切都是<code>组件(Component)</code>，所有定义了继承自<code>MonoBehaviour</code>的类的C#脚本都需要先绑定到<code>游戏对象(GameObject)</code>上，Unity才会<code>自动实例化该类</code>，并在游戏运行时调用<code>MonoBehaviour</code>的各个<code>事件函数</code>。此外，我们不可以使用<code>new</code>关键字对继承自<code>MonoBehaviour</code>的类进行实例化，只能使用<code>GetComponet&lt;&gt;</code>函数来获取该类的实例对象，这就决定了如果我们使用<code>饿汉方式(Eager initialization)</code>来实现<code>单例模式</code>，那么我们只能在<code>Awake</code>函数中<code>初始化单例对象</code>。</p>
+<p>&amp;emsp;&amp;emsp;需要注意的是，根据Unity关于<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/EventFunctions.html">Event Functions的说明文档</a>，Unity会按照<code>随机的顺序</code>执行所有继承自<code>MonoBehaviour</code>的类的<code>Awake</code>函数，因此如果我们使用<code>饿汉方式(Eager initialization)</code>来实现<code>单例模式</code>，那么我们需要保证<code>单例类</code>的<code>Awake</code>函数在其他继承自<code>MonoBehaviour</code>的类的<code>Awake</code>函数之前执行，否则将有可能<code>出现空引用的问题</code>。考虑到保证脚本之间的执行顺序工作量较大，<code>为了避免出现空引用的问题</code>，我们采用<code>懒汉方式(Lazy initialization)</code>来实现<code>单例模式</code>。</p>
+<hr>
+<h2 id="实现游戏主逻辑管理器框架"><a href="#实现游戏主逻辑管理器框架" class="headerlink" title="实现游戏主逻辑管理器框架"></a>实现游戏主逻辑管理器框架</h2><p>&amp;emsp;&amp;emsp;在了解了<code>单例模式</code>是什么，以及采用哪种方式实现<code>单例模式</code>之后，我们开始实现<code>游戏主逻辑管理器</code>。首先，我们在<code>Assets\Scripts</code>文件夹下创建一个名为<code>Manager</code>的文件夹，然后在<code>Assets\Scripts\Manager</code>文件夹下创建一个名为<code>GameStateManager</code>的C#脚本。接着，我们编辑<code>GameStateManager.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>GameStateManager.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-comment">// 游戏状态</span><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">enum</span> GameState &#123;<br>    Init,<br>    Start,<br>    Running,<br>    End<br>&#125;<br><br>[<span class="hljs-meta">RequireComponent(typeof(AudioSource))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">GameStateManager</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    <span class="hljs-comment">// 静态实例</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> GameStateManager m_Instance = <span class="hljs-literal">null</span>;<br>    <span class="hljs-comment">// 使用Property来访问静态实例</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> GameStateManager Instance &#123;<br>        <span class="hljs-keyword">get</span> &#123;<br>            <span class="hljs-keyword">if</span> (m_Instance == <span class="hljs-literal">null</span>) &#123;<br>                m_Instance = FindObjectOfType(<span class="hljs-keyword">typeof</span>(GameStateManager)) <span class="hljs-keyword">as</span> GameStateManager;<br>                <br>                <span class="hljs-comment">// 场景中没有添加了GameStateManager.cs脚本的GameObject，就自动创建一个</span><br>                <span class="hljs-keyword">if</span> (m_Instance == <span class="hljs-literal">null</span>) &#123;<br>                    GameObject obj = <span class="hljs-keyword">new</span> GameObject(<span class="hljs-string">&quot;GameStateManager&quot;</span>);<br>                    m_Instance = obj.AddComponent&lt;GameStateManager&gt;();<br>                &#125;<br>            &#125;<br>            <br>            <span class="hljs-comment">// 返回静态实例的引用</span><br>            <span class="hljs-keyword">return</span> m_Instance;<br>        &#125;<br>    &#125;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏运行时的背景音乐&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip BackgroundMusic;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏胜利时的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip GameWinClip;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏失败时的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip GameLoseClip;<br><br>    <span class="hljs-comment">// 游戏处于哪个状态</span><br>    <span class="hljs-keyword">private</span> GameState m_CurrentState;<br>    <span class="hljs-comment">// 游戏是否处于暂停状态</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_IsPaused;<br>    <span class="hljs-comment">// 游戏结果，true为胜利，false为失败</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_GameResult;<br><br>    <span class="hljs-keyword">private</span> AudioSource m_AudioSource;<br><br>    <span class="hljs-meta">#<span class="hljs-keyword">region</span> MonoBehaviour的事件函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 初始化组件</span><br>        m_AudioSource = GetComponent&lt;AudioSource&gt;();<br>        m_AudioSource.playOnAwake = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-comment">// 初始化成员变量</span><br>        m_IsPaused = <span class="hljs-literal">false</span>;<br>        m_CurrentState = GameState.Init;<br>        <br>        <span class="hljs-comment">// 开始游戏主循环</span><br>        StartCoroutine(GameMainLoop());<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span> 自定义游戏状态函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> IEnumerator <span class="hljs-title">GameMainLoop</span>()</span> &#123;<br>        GameInit();<br><br>        <span class="hljs-keyword">while</span>(m_CurrentState == GameState.Init) &#123;<br>            <span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br><br>        GameStart();<br><br>        <span class="hljs-keyword">while</span>(m_CurrentState == GameState.Running) &#123;<br>            GameRunning();<br><br>            <span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br><br>        GameEnd();<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏初始化</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameInit</span>()</span> &#123;<br>        <span class="hljs-comment">// 执行一些游戏预操作，例如初始化其他Manager、播放过场动画和进行倒计时等</span><br>        Debug.Log(<span class="hljs-string">&quot;Game Init&quot;</span>);<br><br>        <span class="hljs-comment">// 进入游戏开始状态</span><br>        m_CurrentState = GameState.Start;<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏开始</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameStart</span>()</span> &#123;<br>        Debug.Log(<span class="hljs-string">&quot;Game Start&quot;</span>);<br><br>        <span class="hljs-comment">// 开始播放背景音乐</span><br>        <span class="hljs-keyword">if</span>(BackgroundMusic != <span class="hljs-literal">null</span>) &#123;<br>            m_AudioSource.clip = BackgroundMusic;<br>            m_AudioSource.loop = <span class="hljs-literal">true</span>;<br>            m_AudioSource.Play();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置BackgroundMusic&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 进入游戏运行状态</span><br>        m_CurrentState = GameState.Running;<br>    &#125;<br><br>    <span class="hljs-comment">// 暂停游戏</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GamePause</span>()</span> &#123;<br>        Debug.Log(<span class="hljs-string">&quot;Game Pause&quot;</span>);<br><br>        <span class="hljs-comment">// 暂停背景音乐的播放</span><br>        m_AudioSource.Pause();<br>        <span class="hljs-comment">// 暂停游戏</span><br>        Time.timeScale = <span class="hljs-number">0f</span>;<br><br>        m_IsPaused = <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 继续游戏</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameContinue</span>()</span> &#123;<br>        Debug.Log(<span class="hljs-string">&quot;Game Continue&quot;</span>);<br><br>        <span class="hljs-comment">// 恢复背景音乐的播放</span><br>        Time.timeScale = <span class="hljs-number">1f</span>;<br>        <span class="hljs-comment">// 恢复游戏</span><br>        m_AudioSource.UnPause();<br><br>        m_IsPaused = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏运行</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameRunning</span>()</span> &#123;<br>        Debug.Log(<span class="hljs-string">&quot;Game Running&quot;</span>);<br><br>        <span class="hljs-comment">// 暂停或者恢复游戏</span><br>        <span class="hljs-keyword">if</span>(Input.GetKeyDown(KeyCode.P)) &#123;<br>            <span class="hljs-keyword">if</span>(m_IsPaused) &#123;<br>                GameContinue();<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                GamePause();<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(Input.GetKeyDown(KeyCode.E)) &#123;<br>            SetGameResult(<span class="hljs-literal">false</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(Input.GetKeyDown(KeyCode.Q)) &#123;<br>            SetGameResult(<span class="hljs-literal">true</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏结束</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameEnd</span>()</span> &#123;<br>        Debug.Log(<span class="hljs-string">&quot;Game End&quot;</span>);<br><br>        <span class="hljs-comment">// 停止播放背景音乐</span><br>        m_AudioSource.Stop();<br>        m_AudioSource.loop = <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-built_in">float</span> delay = <span class="hljs-number">0f</span>;<br><br>        <span class="hljs-keyword">if</span>(m_GameResult) &#123;<br>            <span class="hljs-keyword">if</span>(GameWinClip != <span class="hljs-literal">null</span>) &#123;<br>                AudioSource.PlayClipAtPoint(GameWinClip, <span class="hljs-keyword">this</span>.transform.position);<br>                delay = GameWinClip.length;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;请设置GameWinClip&quot;</span>);<br>            &#125;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">if</span>(GameLoseClip != <span class="hljs-literal">null</span>) &#123;<br>                AudioSource.PlayClipAtPoint(GameLoseClip, <span class="hljs-keyword">this</span>.transform.position);<br>                delay = GameLoseClip.length;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;请设置GameLoseClip&quot;</span>);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// 播放完音效之后，删除场景中的所有Generator</span><br>        Destroy(Generator, delay);<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span>  外部调用函数</span><br>    <span class="hljs-comment">// 设置游戏结果</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetGameResult</span>(<span class="hljs-params"><span class="hljs-built_in">bool</span> result</span>)</span> &#123;<br>        m_GameResult = result;<br>        m_CurrentState = GameState.End;<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li>这里，我们自定义了<code>GameInit</code>、<code>GameStart</code>、<code>GamePause</code>、<code>GameContinue</code>、<code>GameRunning</code>和<code>GameEnd</code>这几个游戏状态函数，用于执行对应状态的代码。</li>
+<li>其次，我们还使用了协程来实现<code>GameMainLoop</code>这个函数，用于切换和管理游戏状态</li>
+<li>最后，我们使用键盘上的<code>P</code>来<code>暂停和恢复游戏</code>，使用<code>Q</code>来切换至<code>游戏胜利</code>，使用<code>E</code>来切换至<code>游戏失败</code></li>
+</ol>
+<p>&amp;emsp;&amp;emsp;编辑完毕之后，我们在场景中新建一个名为<code>GameStateManager</code>的<code>Empty GameObject</code>，然后为其添加<code>GameStateManager.cs</code>，可以看到Unity自动帮我们添加了<code>AudioSource</code>组件。</p>
+<blockquote>
+<p><code>GameStateManager</code>物体上各个组件的属性设置：</p>
+</blockquote>
+<ol>
+<li><code>Transform</code>：<ul>
+<li><code>Position</code>：(0, 0, 0)</li>
+</ul>
+</li>
+<li><code>GameStateManager.cs</code><ul>
+<li><code>Background Music</code>: <code>Assets\Audio\Music</code>文件夹下的<code>MainTheme</code></li>
+<li><code>GameWinClip</code>: <code>Assets\Audio\Music</code>文件夹下的<code>GameWin</code></li>
+<li><code>GameLoseClip</code>: <code>Assets\Audio\Music</code>文件夹下的<code>GameLose</code></li>
+</ul>
+</li>
+<li><code>AudioSource</code>:<ul>
+<li><code>Play On Awake</code>: false</li>
+<li><code>Vloume</code>: 0.05</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image1.png" srcset="/img/loading.gif" lazyload alt="GameStateManager的组件"></p>
+<p>&amp;emsp;&amp;emsp;为<code>GameStateManager</code>添加完组件之后，我们可以听到游戏场景中出现了背景音乐，且<code>Console</code>窗口输出了对应的游戏状态。此外，当我们按键盘上的<code>P</code>键时，游戏可以<code>正常暂停和恢复</code>；当我们按<code>Q</code>或者<code>E</code>时，会<code>停止播放背景音乐</code>，开始播放<code>游戏胜利</code>或者<code>游戏失败</code>的音效，并在播放完之后删除场景中的<code>Generator</code>物体，不再产生新的东西。</p>
+<p>&amp;emsp;&amp;emsp;但同时我们发现导弹击中物体时的爆炸音效音量过大，因此我们还需要将<code>Assets\Prefabs\Weapons</code>文件夹下的<code>MissileExplosion</code>上<code>AudioSource</code>组件的<code>Volume</code>设置为<code>0.2</code>。</p>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image2.png" srcset="/img/loading.gif" lazyload alt="MissileExplosion的组件"></p>
+<hr>
+<h2 id="加入游戏胜负条件"><a href="#加入游戏胜负条件" class="headerlink" title="加入游戏胜负条件"></a>加入游戏胜负条件</h2><p>&amp;emsp;&amp;emsp;有了<code>游戏主逻辑管理器框架</code>之后，我们开始加入游戏胜负条件。如果我们直接在<code>GameStateManager</code>加入<code>分数管理的代码</code>，那么势必会出现<code>GameStateManager</code>里的<code>代码多且杂</code>的问题。我们应该让其他<code>Manager</code>来执行<code>分数管理</code>的工作，然后让管理整个游戏状态的<code>GameStateManager</code>来管理其他的<code>Manager</code>。</p>
+<p>&amp;emsp;&amp;emsp;清楚了这一设计思路之后，我们先在<code>Assets\Scripts\Manager</code>文件夹下创建一个名为<code>ScoreManager</code>的C#脚本，然后编辑<code>ScoreManager.cs</code>如下：</p>
+<figure class="highlight csharp"><figcaption><span>ScoreManager.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">Serializable</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ScoreManager</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏胜利的目标分数&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> TargetScore = <span class="hljs-number">5000</span>;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;保存嘲讽音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip[] TauntClips;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;得分之后播放嘲讽音效的概率&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> TauntProbaility = <span class="hljs-number">50f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;嘲讽的间隔&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> TauntDelay = <span class="hljs-number">1f</span>;<br><br>    <span class="hljs-comment">// 当前的分数</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> m_CurrentScore;<br>    <span class="hljs-comment">// 上一次播放的嘲讽音效的下标</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> m_TauntIndex;<br>    <span class="hljs-comment">// 上一次播放嘲讽音效的时间</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> m_LastTauntTime;<br>    <span class="hljs-comment">// 当前管理器是否停止工作</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_Stop;<br><br>    <span class="hljs-keyword">private</span> Transform m_Player;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Init</span>(<span class="hljs-params">Transform player</span>)</span> &#123;<br>        m_CurrentScore = <span class="hljs-number">0</span>;<br>        m_TauntIndex = <span class="hljs-number">0</span>;<br>        m_LastTauntTime = Time.time;<br>        m_Stop = <span class="hljs-literal">false</span>;<br><br>        m_Player = player;<br>    &#125;<br><br>    <span class="hljs-comment">// 管理器停止工作</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Stop</span>()</span> &#123;<br>        m_Stop = <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AddScore</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> score</span>)</span> &#123;<br>        <span class="hljs-comment">// 管理器停止工作，不执行任何操作</span><br>        <span class="hljs-keyword">if</span>(m_Stop) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// 增加分数</span><br>        m_CurrentScore += score;<br><br>        <span class="hljs-comment">// 达到目标分数，游戏胜利</span><br>        <span class="hljs-keyword">if</span>(m_CurrentScore &gt;= TargetScore) &#123;<br>            GameStateManager.Instance.SetGameResult(<span class="hljs-literal">true</span>);<br>        &#125;<br>        <br>        <span class="hljs-keyword">if</span>(m_LastTauntTime &lt;= Time.time + TauntDelay) &#123;<br>            <span class="hljs-built_in">float</span> tauntChance = UnityEngine.Random.Range(<span class="hljs-number">0f</span>, <span class="hljs-number">100f</span>);<br><br>            <span class="hljs-keyword">if</span>(tauntChance &gt; TauntProbaility) &#123;<br>                <span class="hljs-comment">// 播放嘲讽音效</span><br>                m_TauntIndex = TauntRandom();<br>                AudioSource.PlayClipAtPoint(TauntClips[m_TauntIndex], m_Player.position);<br>            &#125;<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-comment">//确保相邻两次嘲讽音效不相同</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> <span class="hljs-title">TauntRandom</span>()</span> &#123;<br>        <span class="hljs-built_in">int</span> i = UnityEngine.Random.Range(<span class="hljs-number">0</span>, TauntClips.Length);<br><br>        <span class="hljs-keyword">if</span> (i == m_TauntIndex)<br>            <span class="hljs-keyword">return</span> TauntRandom();<br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-keyword">return</span> i;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>代码说明：</p>
+</blockquote>
+<ol>
+<li>因为我们使用<code>GameStateManager</code>来管理<code>ScoreManager</code>，所以<code>ScoreManager</code>不需要继承<code>MonoBehaviour</code></li>
+<li>因为<code>ScoreManager</code>没有继承<code>MonoBehaviour</code>，所以我们需要为<code>ScoreManager</code>添加Unity提供的<code>Serializable</code>这一<code>Attribute</code>，通过<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/script-Serialization-Custom.html">自定义序列化的方式</a>使<code>ScoreManager</code>能被Unity序列化</li>
+<li>因为<code>ScoreManager</code>没有继承<code>MonoBehaviour</code>，所以我们不能使用<code>协程</code>，我们需要使用<code>Time.time</code>来实现<code>延时执行某段代码</code>的功能</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;编辑完<code>ScoreManager.cs</code>之后，我们修改<code>GameStateManager.cs</code>，删除用于测试的代码，并加入管理<code>ScoreManager</code>的代码：</p>
+<figure class="highlight csharp"><figcaption><span>GameStateManager.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-comment">// 游戏状态</span><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">enum</span> GameState &#123;<br>    Init,<br>    Start,<br>    Running,<br>    End<br>&#125;<br><br>[<span class="hljs-meta">RequireComponent(typeof(AudioSource))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">GameStateManager</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    <span class="hljs-comment">// 静态实例</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> GameStateManager m_Instance = <span class="hljs-literal">null</span>;<br>    <span class="hljs-comment">// 使用Property来访问静态实例</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> GameStateManager Instance &#123;<br>        <span class="hljs-keyword">get</span> &#123;<br>            <span class="hljs-keyword">if</span> (m_Instance == <span class="hljs-literal">null</span>) &#123;<br>                m_Instance = FindObjectOfType(<span class="hljs-keyword">typeof</span>(GameStateManager)) <span class="hljs-keyword">as</span> GameStateManager;<br>                <br>                <span class="hljs-comment">// 场景中没有添加了GameStateManager.cs脚本的GameObject，就自动创建一个</span><br>                <span class="hljs-keyword">if</span> (m_Instance == <span class="hljs-literal">null</span>) &#123;<br>                    GameObject obj = <span class="hljs-keyword">new</span> GameObject(<span class="hljs-string">&quot;GameStateManager&quot;</span>);<br>                    m_Instance = obj.AddComponent&lt;GameStateManager&gt;();<br>                &#125;<br>            &#125;<br>            <br>            <span class="hljs-comment">// 返回静态实例的引用</span><br>            <span class="hljs-keyword">return</span> m_Instance;<br>        &#125;<br>    &#125;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏运行时的背景音乐&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip BackgroundMusic;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏胜利时的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip GameWinClip;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;游戏失败时的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip GameLoseClip;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;ScoreManager的实例&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> ScoreManager ScoreManagerInstance = <span class="hljs-keyword">new</span> ScoreManager();<br><br>    <span class="hljs-comment">// 游戏处于哪个状态</span><br>    <span class="hljs-keyword">private</span> GameState m_CurrentState;<br>    <span class="hljs-comment">// 游戏是否处于暂停状态</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_IsPaused;<br>    <span class="hljs-comment">// 游戏结果，true为胜利，false为失败</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_GameResult;<br><br>    <span class="hljs-keyword">private</span> AudioSource m_AudioSource;<br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span> MonoBehaviour的事件函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 初始化组件</span><br>        m_AudioSource = GetComponent&lt;AudioSource&gt;();<br>        m_AudioSource.playOnAwake = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-comment">// 初始化成员变量</span><br>        m_IsPaused = <span class="hljs-literal">false</span>;<br>        m_CurrentState = GameState.Init;<br>        <br>        <span class="hljs-comment">// 开始游戏主循环</span><br>        StartCoroutine(GameMainLoop());<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span> 自定义游戏状态函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> IEnumerator <span class="hljs-title">GameMainLoop</span>()</span> &#123;<br>        GameInit();<br><br>        <span class="hljs-keyword">while</span>(m_CurrentState == GameState.Init) &#123;<br>            <span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br><br>        GameStart();<br><br>        <span class="hljs-keyword">while</span>(m_CurrentState == GameState.Running) &#123;<br>            GameRunning();<br><br>            <span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br><br>        GameEnd();<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏初始化</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameInit</span>()</span> &#123;<br>        <span class="hljs-comment">// 执行一些游戏预操作，例如初始化其他Manager、播放过场动画和进行倒计时等</span><br>        ScoreManagerInstance.Init();<br><br>        <span class="hljs-comment">// 进入游戏开始状态</span><br>        m_CurrentState = GameState.Start;<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏开始</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameStart</span>()</span> &#123;<br>        <span class="hljs-comment">// 开始播放背景音乐</span><br>        <span class="hljs-keyword">if</span>(BackgroundMusic != <span class="hljs-literal">null</span>) &#123;<br>            m_AudioSource.clip = BackgroundMusic;<br>            m_AudioSource.loop = <span class="hljs-literal">true</span>;<br>            m_AudioSource.Play();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置BackgroundMusic&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 进入游戏运行状态</span><br>        m_CurrentState = GameState.Running;<br>    &#125;<br><br>    <span class="hljs-comment">// 暂停游戏</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GamePause</span>()</span> &#123;<br>        <span class="hljs-comment">// 暂停背景音乐的播放</span><br>        m_AudioSource.Pause();<br>        <span class="hljs-comment">// 暂停游戏</span><br>        Time.timeScale = <span class="hljs-number">0f</span>;<br><br>        m_IsPaused = <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 继续游戏</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameContinue</span>()</span> &#123;<br>        <span class="hljs-comment">// 恢复背景音乐的播放</span><br>        Time.timeScale = <span class="hljs-number">1f</span>;<br>        <span class="hljs-comment">// 恢复游戏</span><br>        m_AudioSource.UnPause();<br><br>        m_IsPaused = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏运行</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameRunning</span>()</span> &#123;<br>        <span class="hljs-comment">// 暂停或者恢复游戏</span><br>        <span class="hljs-keyword">if</span>(Input.GetKeyDown(KeyCode.P)) &#123;<br>            <span class="hljs-keyword">if</span>(m_IsPaused) &#123;<br>                GameContinue();<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                GamePause();<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 游戏结束</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GameEnd</span>()</span> &#123;<br>        <span class="hljs-comment">// 停止播放背景音乐</span><br>        m_AudioSource.Stop();<br>        m_AudioSource.loop = <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-built_in">float</span> delay = <span class="hljs-number">0f</span>;<br><br>        <span class="hljs-keyword">if</span>(m_GameResult) &#123;<br>            <span class="hljs-keyword">if</span>(GameWinClip != <span class="hljs-literal">null</span>) &#123;<br>                AudioSource.PlayClipAtPoint(GameWinClip, <span class="hljs-keyword">this</span>.transform.position);<br>                delay = GameWinClip.length;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;请设置GameWinClip&quot;</span>);<br>            &#125;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">if</span>(GameLoseClip != <span class="hljs-literal">null</span>) &#123;<br>                AudioSource.PlayClipAtPoint(GameLoseClip, <span class="hljs-keyword">this</span>.transform.position);<br>                delay = GameLoseClip.length;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;请设置GameLoseClip&quot;</span>);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// 播放完音效之后，删除场景中的所有Generator</span><br>        Destroy(Generator, delay);<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">region</span>  外部调用函数</span><br>    <span class="hljs-comment">// 设置游戏结果</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetGameResult</span>(<span class="hljs-params"><span class="hljs-built_in">bool</span> result</span>)</span> &#123;<br>        m_GameResult = result;<br>        m_CurrentState = GameState.End;<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endregion</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;接着，我们在<code>Hierarchy</code>窗口中选中<code>GameStateManager</code>物体，可以看到<code>Inspector</code>窗口多出了一个名为<code>Score Manager Instance</code>折叠框，且在<code>Score Manager Instance</code>折叠框下出现了<code>ScoreManager</code>类里定义的公共字段。</p>
+<blockquote>
+<p><code>ScoreManager</code>类定义的公共字段设置：</p>
+</blockquote>
+<ul>
+<li><code>Target Score</code>: 5000</li>
+<li><code>Taunt Clips</code>: <code>Assets\Audio\Player\Taunts</code>文件夹下的9个音频</li>
+<li><code>Taunt Probaility</code>: 50</li>
+<li><code>Taunt Delay</code>: 1</li>
+</ul>
+<p><img src="https://github.com/AsanCai/BlogImage/raw/master/PotatoGloryTutorial/Essay19/Image3.png" srcset="/img/loading.gif" lazyload alt="GameStateManager脚本的属性设置"></p>
+<p>&amp;emsp;&amp;emsp;设置好<code>ScoreManager</code>类定义的公共字段之后，我们还需要在<code>Remover.cs</code>的<code>OnTriggerEnter2D</code>加入<code>设置游戏结果</code>的代码：</p>
+<figure class="highlight csharp"><figcaption><span>Remover.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">RequireComponent(typeof(BoxCollider2D))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Remover</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    ...<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnTriggerEnter2D</span>(<span class="hljs-params">Collider2D collision</span>)</span> &#123;<br>        <span class="hljs-comment">// 角色掉进河里，游戏失败</span><br>        <span class="hljs-keyword">if</span>(collision.CompareTag(<span class="hljs-string">&quot;Player&quot;</span>)) &#123;<br>            GameStateManager.Instance.SetGameResult(<span class="hljs-literal">false</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 实例化水花对象，水花对象会自动播放声音和动画</span><br>        Instantiate(SplashPrefab, collision.transform.position, transform.rotation);<br>        <span class="hljs-comment">// 销毁掉下去的物体</span><br>        Destroy(collision.gameObject);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;最后，我们还需要修改一下<code>CameraFollow.cs</code>的<code>LateUpdate</code>函数：</p>
+<figure class="highlight csharp"><figcaption><span>CameraFollow.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CameraFollow</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    ...<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LateUpdate</span>()</span> &#123;<br>        <span class="hljs-comment">// 如果角色被销毁，不再进行跟随</span><br>        <span class="hljs-keyword">if</span>(m_Player != <span class="hljs-literal">null</span>) &#123;<br>            TrackPlayer();<br>        &#125;<br>    &#125;<br><br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;修改完成之后，运行游戏，可以看到当我们打死怪物时，<code>Console</code>窗口会输出我们当前<code>不断增加的分数</code>，且<code>一定概率会播放嘲讽音效</code>。此外，当角色死亡或者直接掉进河里时，<code>背景音乐停止播放并播放游戏失败的音效</code>。</p>
+<hr>
+<h2 id="添加击杀怪物得分特效"><a href="#添加击杀怪物得分特效" class="headerlink" title="添加击杀怪物得分特效"></a>添加击杀怪物得分特效</h2><p>&amp;emsp;&amp;emsp;因为击杀怪物可以得分，所以我们需要添加<code>击杀怪物得分的特效</code>。</p>
+<blockquote>
+<p><code>得分特效</code>的制作步骤：</p>
+</blockquote>
+<ol>
+<li>在场景中新建一个名为<code>Score</code>的<code>Empty GameObject</code>，然后将<code>Assets\Sprites\UI</code>下的<code>numeric-1</code>和<code>numeric-0</code>图片拖拽至<code>Score</code>物体下成为<code>Score</code>物体的子物体</li>
+<li>复制<code>Score</code>物体下的<code>numeric-0</code>得到<code>numeric-0 (1)</code>物体</li>
+<li>设置<code>numeric-1</code>的<code>Position</code>为<code>(-0.4, 0, 0)</code>，<code>Sprite Renderer</code>组件的<code>Sorting Layer</code>属性为<code>Character</code>、<code>Order In Layer</code>属性为<code>10</code></li>
+<li>设置<code>numeric-0</code>的<code>Position</code>为<code>(0, 0, 0)</code>，<code>Sprite Renderer</code>组件的<code>Sorting Layer</code>属性为<code>Character</code>、<code>Order In Layer</code>属性为<code>10</code></li>
+<li>设置<code>numeric-0 (1)</code>的<code>Position</code>为<code>(0.5, 0, 0)</code>，<code>Sprite Renderer</code>组件的<code>Sorting Layer</code>属性为<code>Character</code>、<code>Order In Layer</code>属性为<code>10</code></li>
+<li>打开<code>Animation</code>窗口，选中Hierarchy窗口中的<code>Score</code>物体，然后点击<code>Animation</code>窗口中的<code>Create</code>按钮创建一个名为<code>Score.anim</code>的动画文件，并将其保存在<code>Assets\Animation\Enemy</code>文件夹下，最后将<code>Score.controller</code>文件移至<code>Assets\Animator\Enemy</code>文件夹下</li>
+<li>为<code>Score</code>物体添加<code>Destrpyer.cs</code>脚本</li>
+<li>点击<code>Animation</code>窗口的<code>红点按钮</code>，开始为<code>Score.anim</code>添加关键帧，添加的关键帧信息如下：<blockquote>
+<blockquote>
+<p><code>Score.anim</code>的关键帧：</p>
+</blockquote>
+</blockquote>
+<ol>
+<li><code>第一帧</code>：<ul>
+<li><code>frame</code>: 0</li>
+<li><code>numeric-1：Position</code>: (-0.4, 0, 0)</li>
+<li><code>numeric-0：Position</code>: (0, 0, 0)</li>
+<li><code>numeric-0 (1)：Position</code>: (0.5, 0, 0)</li>
+</ul>
+</li>
+<li><code>第二帧</code>：<ul>
+<li><code>frame</code>: 5</li>
+<li><code>numeric-1：Position</code>: (-0.4, 0.25, 0)</li>
+</ul>
+</li>
+<li><code>第三帧</code>：<ul>
+<li><code>frame</code>: 10</li>
+<li><code>numeric-0：Position</code>: (0, 0.31, 0)</li>
+</ul>
+</li>
+<li><code>第四帧</code>：<ul>
+<li><code>frame</code>: 30</li>
+<li><code>numeric-1：Position</code>: (-0.4, 0.78, 0)</li>
+<li><code>numeric-0：Position</code>: (0, 0.78, 0)</li>
+<li><code>numeric-0 (1)：Position</code>: (0.5, 0.78, 0)</li>
+</ul>
+</li>
+<li><code>第五帧</code>：<ul>
+<li><code>frame</code>: 40</li>
+<li><code>numeric-1：Position</code>: (-0.4, 1.1, 0)</li>
+<li><code>numeric-0：Position</code>: (0, 1.1, 0)</li>
+<li><code>numeric-0 (1)：Position</code>: (0.5, 1.1, 0)</li>
+</ul>
+</li>
+<li><code>第六帧</code>：<ul>
+<li><code>frame</code>: 60</li>
+<li><code>numeric-1：Position</code>: (-0.4, 1.25, 0)</li>
+<li><code>numeric-0：Position</code>: (0, 1.25, 0)</li>
+<li><code>numeric-0 (1)：Position</code>: (0.5, 1.25, 0)</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>在<code>Score.anim</code>的最后一帧处添加一个<code>Animation Event</code>，选择调用的函数为<code>DestroyGameObject</code></li>
+<li>将场景中的<code>Score</code>物体拖拽至<code>Assets\Prefabs\Character</code>文件夹将其制作为Prefab，然后删除场景中的<code>Score</code>物体</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;至此，我们的<code>得分特效</code>就制作好了。接下来，我们改写<code>Enemy.cs</code>，在怪物死亡时生成得分特效：</p>
+<figure class="highlight csharp"><figcaption><span>Enemy.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">using</span> System.Collections;<br><span class="hljs-keyword">using</span> System.Collections.Generic;<br><span class="hljs-keyword">using</span> UnityEngine;<br><br>[<span class="hljs-meta">RequireComponent(typeof(Wander))</span>]<br>[<span class="hljs-meta">RequireComponent(typeof(Rigidbody2D))</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Enemy</span> : <span class="hljs-title">MonoBehaviour</span> &#123;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;角色受伤时减少的血量&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> DamageAmount = <span class="hljs-number">10f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;角色被怪物伤害时受到的击退力大小&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> HurtForce = <span class="hljs-number">500f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;障碍物检测点&quot;</span>)</span>]<br>    [<span class="hljs-meta">SerializeField</span>]<br>    <span class="hljs-keyword">private</span> Transform FrontCheck;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物的血量&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> MaxHP = <span class="hljs-number">10f</span>;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物受伤时用来展示的图片&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Sprite DamagedSprite;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物死亡时用来展示的图片&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> Sprite DeadSprite;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物死亡时用来展示DeadSprite&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> SpriteRenderer BodySpriteRenderer;<br><br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;怪物死亡时的音效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> AudioClip[] DeathClips;<br>    [<span class="hljs-meta">Tooltip(<span class="hljs-string">&quot;得分特效&quot;</span>)</span>]<br>    <span class="hljs-keyword">public</span> GameObject ScorePrefab;<br><br>    <span class="hljs-keyword">private</span> Wander m_Wander;<br>    <span class="hljs-keyword">private</span> Rigidbody2D m_Rigidbody2D;<br><br>    <span class="hljs-keyword">private</span> LayerMask m_LayerMask;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> m_CurrentHP;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_Hurt;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> m_Dead;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 获取引用</span><br>        m_Wander = GetComponent&lt;Wander&gt;();<br>        m_Rigidbody2D = GetComponent&lt;Rigidbody2D&gt;();<br>    &#125;<br>        <br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-comment">// 初始化变量</span><br>        m_LayerMask = LayerMask.GetMask(<span class="hljs-string">&quot;Obstacle&quot;</span>);<br>        m_CurrentHP = MaxHP;<br>        m_Hurt = <span class="hljs-literal">false</span>;<br>        m_Dead = <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span> ()</span> &#123;<br>        <span class="hljs-comment">// 死亡之后不执行任何操作</span><br>        <span class="hljs-keyword">if</span>(m_Dead) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        Collider2D[] frontHits = Physics2D.OverlapPointAll(FrontCheck.position, m_LayerMask);<br><br>        <span class="hljs-keyword">if</span>(frontHits.Length &gt; <span class="hljs-number">0</span>) &#123;<br>            m_Wander.Flip();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnCollisionEnter2D</span>(<span class="hljs-params">Collision2D collision</span>)</span> &#123;<br>        <span class="hljs-comment">// 对角色造成伤害</span><br>        <span class="hljs-keyword">if</span>(collision.gameObject.CompareTag(<span class="hljs-string">&quot;Player&quot;</span>)) &#123;<br>            collision.gameObject.GetComponent&lt;PlayerHealth&gt;().TakeDamage(<span class="hljs-keyword">this</span>.transform, HurtForce, DamageAmount);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 受伤函数</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">TakeDamage</span>(<span class="hljs-params">Transform weapon, <span class="hljs-built_in">float</span> hurtForce, <span class="hljs-built_in">float</span> damage</span>)</span> &#123;<br>        <span class="hljs-comment">// 减少当前的HP</span><br>        m_CurrentHP -= damage;<br><br>        <span class="hljs-comment">// 制造击退效果</span><br>        Vector3 hurtVector = transform.position - weapon.position;<br>        m_Rigidbody2D.AddForce(hurtVector.normalized * hurtForce);<br><br>        <span class="hljs-comment">// 判断当前是否第一次受伤</span><br>        <span class="hljs-keyword">if</span>(!m_Hurt) &#123;<br>            m_Hurt = <span class="hljs-literal">true</span>;<br><br>            <span class="hljs-keyword">if</span>(DamagedSprite != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-comment">// 禁用原有的Sprite</span><br>                SpriteRenderer[] children = GetComponentsInChildren&lt;SpriteRenderer&gt;();<br>                <span class="hljs-keyword">foreach</span>(SpriteRenderer child <span class="hljs-keyword">in</span> children) &#123;<br>                    child.enabled = <span class="hljs-literal">false</span>;<br>                &#125;<br><br>                <span class="hljs-comment">// 显示怪物受伤图片</span><br>                <span class="hljs-keyword">if</span>(BodySpriteRenderer != <span class="hljs-literal">null</span>) &#123;<br>                    BodySpriteRenderer.enabled = <span class="hljs-literal">true</span>;<br>                    BodySpriteRenderer.sprite = DamagedSprite;<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    Debug.LogError(<span class="hljs-string">&quot;请设置BodySpriteRenderer&quot;</span>);<br>                &#125;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogWarning(<span class="hljs-string">&quot;请设置DamagedSprite&quot;</span>);<br>            &#125;<br>        &#125;<br>        <br>        <span class="hljs-comment">// 判断当前的是否死亡</span><br>        <span class="hljs-keyword">if</span>(m_CurrentHP &lt;= <span class="hljs-number">0</span> &amp;&amp; !m_Dead) &#123;<br>            m_Dead = <span class="hljs-literal">true</span>;<br>            Death();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Death</span>()</span> &#123;<br>        <span class="hljs-comment">// 禁用Wander.cs</span><br>        m_Wander.enabled = <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-keyword">if</span>(DeadSprite != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-comment">// 禁用原有的Sprite</span><br>            SpriteRenderer[] children = GetComponentsInChildren&lt;SpriteRenderer&gt;();<br>            <span class="hljs-keyword">foreach</span>(SpriteRenderer child <span class="hljs-keyword">in</span> children) &#123;<br>                child.enabled = <span class="hljs-literal">false</span>;<br>            &#125;<br><br>            <span class="hljs-comment">// 显示怪物死亡图片</span><br>            <span class="hljs-keyword">if</span>(BodySpriteRenderer != <span class="hljs-literal">null</span>) &#123;<br>                BodySpriteRenderer.enabled = <span class="hljs-literal">true</span>;<br>                BodySpriteRenderer.sprite = DeadSprite;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                Debug.LogError(<span class="hljs-string">&quot;请设置BodySpriteRenderer&quot;</span>);<br>            &#125;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogWarning(<span class="hljs-string">&quot;请设置DeadSprite&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 将所有的Collider2D都设置为Trigger，避免和其他物体产生物理碰撞</span><br>        Collider2D[] cols = GetComponents&lt;Collider2D&gt;();<br>        <span class="hljs-keyword">foreach</span>(Collider2D c <span class="hljs-keyword">in</span> cols) &#123;<br>            c.isTrigger = <span class="hljs-literal">true</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// 随机播放死亡的音效</span><br>        <span class="hljs-keyword">if</span>(DeathClips != <span class="hljs-literal">null</span> &amp;&amp; DeathClips.Length &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-built_in">int</span> i = Random.Range(<span class="hljs-number">0</span>, DeathClips.Length);<br>            AudioSource.PlayClipAtPoint(DeathClips[i], transform.position);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogWarning(<span class="hljs-string">&quot;请设置DeathClips&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 生成得分特效</span><br>        <span class="hljs-keyword">if</span>(ScorePrefab != <span class="hljs-literal">null</span>) &#123;<br>            Vector3 scorePos = <span class="hljs-keyword">this</span>.transform.position + Vector3.up * <span class="hljs-number">1.5f</span>;<br>            Instantiate(ScorePrefab, scorePos, Quaternion.identity);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            Debug.LogError(<span class="hljs-string">&quot;请设置ScorePrefab&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 增加分数</span><br>        GameStateManager.Instance.ScoreManagerInstance.AddScore(<span class="hljs-number">100</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&amp;emsp;&amp;emsp;最后，我们分别选中<code>Assets\Prefabs\Character</code>文件夹下的<code>AlienShip</code>和<code>AlienSlug</code>这两个Prefab，将其<code>Enemy.cs</code>上的<code>Score Prefab</code>字段都设置为<code>Assets\Prefabs\Character</code>文件夹下的<code>Score</code>物体对应的Prefab。运行游戏，我们可以看到击杀怪物时，怪物上方会出现得分特效。</p>
+<hr>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>&amp;emsp;&amp;emsp;至此，我们就已经完成了<code>使用单例模式实现游戏游戏主逻辑管理器</code>的所有功能。最后，本篇文章所做的修改，可以在<a target="_blank" rel="noopener" href="https://github.com/AsanCai/PotatoGloryTutorial">PotatoGloryTutorial</a>这个仓库的<code>essay17</code>分支下看到，读者可以clone这个仓库到本地进行查看。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Singleton_pattern">单例模式</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/EventFunctions.html">Unity-Initialization Events</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/script-Serialization-Custom.html">Unity-Custom serialization</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tutorial/" class="category-chain-item">教程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/tutorial/potato-glory/" class="category-chain-item">《土豆荣耀》</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Unity-%E6%95%99%E7%A8%8B/">#Unity,教程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>《土豆荣耀》重构笔记（十九）使用单例模式实现游戏主逻辑管理器</div>
+      <div>https://asancai.github.io/posts/733f40fd.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年1月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/908f0d6b.html" title="《土豆荣耀》重构笔记（二十）为游戏场景添加UI">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（二十）为游戏场景添加UI</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/5a4a3ccc.html" title="《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator">
+                        <span class="hidden-mobile">《土豆荣耀》重构笔记（十八）使用自定义Inspector窗口拓展Generator</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
