@@ -1,0 +1,870 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 为什么需要物理同步在网络游戏中，如果场景中某个可以与玩家所操作的对象发生交互的物体需要借助物理引擎的模拟来得到正确的位置和朝向，那么需要确保在不同客户端上的模拟结果一致。 如果可以保证物理引擎的每一次模拟结果是确定的，那么仅需要同步每次玩家操作，就能保证不同客户端的模拟结果一致。但大部分物理引擎（如UE4使用的PhysX物理引擎）都是不确定性物理引擎，其模拟结果受不同平台浮点数精度不同等问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UE4的物理同步">
+<meta property="og:url" content="https://asancai.github.io/posts/84142416/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="1. 为什么需要物理同步在网络游戏中，如果场景中某个可以与玩家所操作的对象发生交互的物体需要借助物理引擎的模拟来得到正确的位置和朝向，那么需要确保在不同客户端上的模拟结果一致。 如果可以保证物理引擎的每一次模拟结果是确定的，那么仅需要同步每次玩家操作，就能保证不同客户端的模拟结果一致。但大部分物理引擎（如UE4使用的PhysX物理引擎）都是不确定性物理引擎，其模拟结果受不同平台浮点数精度不同等问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png">
+<meta property="article:published_time" content="2023-05-29T15:02:11.000Z">
+<meta property="article:modified_time" content="2023-06-05T11:02:20.346Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="UE4">
+<meta property="article:tag" content="物理">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png">
+  
+  
+  
+  <title>UE4的物理同步 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="UE4的物理同步"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-29 23:02" pubdate>
+          2023年5月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          51 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">UE4的物理同步</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-为什么需要物理同步"><a href="#1-为什么需要物理同步" class="headerlink" title="1. 为什么需要物理同步"></a>1. 为什么需要物理同步</h2><p>在网络游戏中，如果场景中某个可以<code>与玩家所操作的对象发生交互</code>的物体需要<code>借助物理引擎的模拟</code>来得到正确的<code>位置</code>和<code>朝向</code>，那么需要确保在不同客户端上的模拟结果一致。</p>
+<p>如果可以保证物理引擎的每一次模拟结果是确定的，那么仅需要同步每次玩家操作，就能保证不同客户端的模拟结果一致。但大部分物理引擎（如UE4使用的PhysX物理引擎）都是不确定性物理引擎，其模拟结果受不同平台浮点数精度不同等问题影响，在不同客户端上的物理模拟结果常常不一致。</p>
+<blockquote>
+<p>之所以大部分物理引擎都是不确定性物理引擎，是因为确定性物理引擎有以下劣势：</p>
+<ol>
+<li>需要使用定点数来代替浮点数进行物理运算，且需要确保每个客户端用于随机运算的随机数种子一致；</li>
+<li>定点数的运算消耗大于浮点数，且能表示的数值范围远小于浮点数；</li>
+<li>所有与物理相关的数据都需要用定点数表示（如碰撞体数据、地形数据等），需要编写专门的数据转换工具；</li>
+</ol>
+</blockquote>
+<p>如果仅仅让不同客户端分别独立进行物理模拟，而不进行物理同步。那么在网络延迟的作用下，不同客户端的状态差异会让物理模拟上的细微差异迅速放大，从而让不同客户端失去同步。</p>
+<blockquote>
+<p>（1）<code>主控端</code>的预表现会让<code>玩家所控制的角色</code>状态先于服务器；<br><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/CA16C895E44049B1B512DC1274786B04.png" srcset="/img/loading.gif" lazyload alt="CA16C895E44049B1B512DC1274786B04"><br>（2)如果不进行物理同步，那么主控端上玩家控制的角色踢到了球，但服务器的球则会因为没有接触玩家所控制的角色而继续向前运动，从而导致不同步的问题；<br><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/9CE09B822481471F9C185FCDA4394C5F.png" srcset="/img/loading.gif" lazyload alt="9CE09B822481471F9C185FCDA4394C5F"></p>
+</blockquote>
+<hr>
+<h2 id="2-物理同步的基本策略"><a href="#2-物理同步的基本策略" class="headerlink" title="2. 物理同步的基本策略"></a>2. 物理同步的基本策略</h2><h3 id="2-1-物理同步需要解决的问题"><a href="#2-1-物理同步需要解决的问题" class="headerlink" title="2.1 物理同步需要解决的问题"></a>2.1 物理同步需要解决的问题</h3><p>使用非确定性物理引擎的网络游戏没办法使用帧同步作为网络同步方案，因此这里主要讨论状态同步下的物理同步策略。</p>
+<p>状态同步的思路是客户端将输入上传到服务器后，由服务器计算出结果，再将发生变化的状态广播给所有客户端，让客户端在本地更新渲染数据。如果按照这个思路，服务器将物理状态同步给客户端，而客户端只负责渲染本地数据，会有以下几个问题：</p>
+<ol>
+<li>为了节省带宽会降低服务器的同步频率（每秒10帧左右），导致物体移动很不平滑（帧率过低）；</li>
+<li>玩家的操作需要等待一个<code>RTT（往返时延）</code>之后才会在客户端上生效，再加上网络的不稳定性（丢包或者卡顿），输入延迟较大；</li>
+</ol>
+<p>如何让客户端上的物体能及时、平滑地正确运动，是物理同步需要解决的问题。</p>
+<h3 id="2-2-内插值（Interpolation）"><a href="#2-2-内插值（Interpolation）" class="headerlink" title="2.2 内插值（Interpolation）"></a>2.2 内插值（Interpolation）</h3><p>内插值是一种常用的物理同步方案，其基本思路是仅同步物体的<code>位置</code>和<code>朝向</code>，在收到的两个数据包间通过<code>线性插值（Lerp）</code>插入过渡数据，从而让物体移动的视觉效果更加平滑。</p>
+<p>虽然内插值解决了物体移动不平滑的问题，但解决不了输入延迟的问题，且会引入新的问题：</p>
+<ol>
+<li>在收到数据包时不能立刻应用，必须等下一个数据包到来才可以开始插值，延迟增加；</li>
+<li>如果网络延迟比较高，那么会停住直到下一个数据包到来；</li>
+<li>在运动状态发生剧烈变化时，会丢失部分的运动状态；</li>
+</ol>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/5F5C2EB7D44342B481FEFBD7CC6C7E91.gif" srcset="/img/loading.gif" lazyload alt="5F5C2EB7D44342B481FEFBD7CC6C7E91"></p>
+<blockquote>
+<p>左侧客户端丢失了一次往返运动</p>
+</blockquote>
+<h3 id="2-3-外插值（Extrapolation）"><a href="#2-3-外插值（Extrapolation）" class="headerlink" title="2.3 外插值（Extrapolation）"></a>2.3 外插值（Extrapolation）</h3><p>外插值的基本思路是，通过额外同步<code>线速度</code>、<code>角速度</code>、<code>加速度</code>和<code>网络延迟</code>等数据，在收到数据包时直接推测出下一个数据包的状态，从而降低延迟。</p>
+<p>与内插值相比，外插值因为不需要等下一个数据包，所以会少一个RTT的延迟。但因为外插值需要等服务器发回来的数据包，所以并不能解决<code>输入延迟</code>的问题。</p>
+<p>此外，外插值会根据当前的运动状态预测出下一个数据包的状态，所以即便运动状态有变化，也可以很好地预测。但如果发生了碰撞，那么简单的预测无法模拟出正确的物理结果，此时则需要让客户端也进行物理模拟。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/015CD5D20C304B90877924B6E27F15AE.gif" srcset="/img/loading.gif" lazyload alt="015CD5D20C304B90877924B6E27F15AE"></p>
+<p>当然，因为物理引擎的不确定性，即便让客户端也进行物理模拟，其最后的模拟结果也不一定正确。再加上在网络情况不稳定、运动方向频繁改变等情况下，外插值的预测结果非常容易出错，由此引入了新的问题：</p>
+<ol>
+<li>如何判断外插值的预测结果是否正确；</li>
+<li>如何从错误的预测结果平滑过渡到正确的运动状态；</li>
+</ol>
+<h3 id="2-4-导航推测算法"><a href="#2-4-导航推测算法" class="headerlink" title="2.4 导航推测算法"></a>2.4 导航推测算法</h3><p><code>导航推测算法（Dead Reckoning Algorithm，简称DR）</code>是一个利用物体位置及速度推定未来位置方向的<code>航海技术</code>，后被用于在网络游戏中<code>预测物体未来的位置</code>并<code>计算物体的运动轨迹</code>。</p>
+<p>Murphy在<a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/293809946_Believable_Dead_Reckoning_for_Networked_Games">Believable Dead Reckoning for Networked Games</a>一文中提出了一个可以用于预测物体未来位置的公式。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/7C457560CE134A1784C9D384EC62C1BD.png" srcset="/img/loading.gif" lazyload alt="7C457560CE134A1784C9D384EC62C1BD"></p>
+<blockquote>
+<p>假设服务器告诉客户端，物体当前正处于位置P0’，并以V0’的速度和A0’的加速度向前运动。那么可以预测时间T之后，服务器上的物体将会处于位置Qt</p>
+</blockquote>
+<p>当然，如果服务器在通知客户端之后立即转向，那么客户端将会得到一个错误的预测结果。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/F73ABF49266448F5BFDD0DA2B9A6D7A8.png" srcset="/img/loading.gif" lazyload alt="F73ABF49266448F5BFDD0DA2B9A6D7A8"></p>
+<blockquote>
+<p>P0是客户端的预测结果，而P’0是物体在服务器上的位置。</p>
+</blockquote>
+<p>针对这种预测错误的情况，最简单的处理方法是直接将物体在客户端的位置切换到P’0，然后开始新一轮的预测。显然，这样做的效果非常不好，让物体沿着平滑的运动轨迹逐渐切换到正确的运动状态是更加理想的做法。</p>
+<p>在预测的点P0到实际的点P’0之间计算出一条曲线有很多种方法，比如<code>三次贝塞尔曲线（Cubic Bezier Curve）</code>。但出于CPU开销、曲线平滑度等因素的考虑，Murphy提出了一种名为<code>Projective Velocity Blending</code>的算法，它使用简单的线性插值去计算物体的运动轨迹，并能很好地消除速度变化对轨迹的影响。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/72B5AB84C4D84FFA9F78647B61C5DC2B.png" srcset="/img/loading.gif" lazyload alt="72B5AB84C4D84FFA9F78647B61C5DC2B"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/FBBC579333D641738956CB365BD4D56E.png" srcset="/img/loading.gif" lazyload alt="FBBC579333D641738956CB365BD4D56E"></p>
+<blockquote>
+<p>整个算法的思路非常简单，那就是接受客户端预测失败的事实，然后想办法让客户端在每次预测的时候尽量多靠近服务器真实状态一点，从而确保客户端沿着一个平滑的轨迹不断修正预测结果。<br>（1）先用线性插值纠正客户端的速度，得到速度Vb；<br>（2）然后利用前面提到的公式，分别计算出T秒后<code>客户端的位置Pt</code>和<code>服务器的位置P&#39;t</code>；<br>（3）最后再使用线性插值，进一步纠正客户端的位置，算出一个<code>更接近服务器预测位置的Qt</code>；</p>
+</blockquote>
+<h3 id="2-5-纠错机制"><a href="#2-5-纠错机制" class="headerlink" title="2.5 纠错机制"></a>2.5 纠错机制</h3><p>尽管<code>Projective Velocity Blending</code>算法可以很好地纠正大部分预测错误的情况，但在预测结果偏差很大时，客户端的运动轨迹与服务器的运动轨迹的差异也会很大，其纠正所需的时间也会越长。期间出现碰撞等问题导致客户端的运动状态与服务器的运动状态差异变得更大的可能性也就越高。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/BCB3FB9403FE474494707AED081EB412.png" srcset="/img/loading.gif" lazyload alt="BCB3FB9403FE474494707AED081EB412"></p>
+<blockquote>
+<p>红色线表示物体在客户端上的运动轨迹，而绿色线则表示物体在服务器的运动轨迹。<br>客户端在沿着红色虚线这一计算出来的轨迹运动时，与蓝色物体发生了碰撞，导致与服务器的运动状态差异更大。</p>
+</blockquote>
+<p>因此，在差异过大时（尤其是地形比较复杂，障碍物比较多的场景），直接强行将客户端纠正到服务器下发的最新运动状态是很有必要的。</p>
+<p>一般来讲，可以通过以下几个指标来衡量客户端与服务器的差异程度。</p>
+<ol>
+<li>位置距离大小；</li>
+<li>朝向夹角大小；</li>
+<li>速度方向的夹角大小；</li>
+</ol>
+<p>然后通过设定阈值的方式，在某一指标差异过大时，直接纠正客户端的<code>运动状态（位置、朝向和速度等）</code>，再进行下一次的预测。</p>
+<hr>
+<h2 id="3-UE4的物理同步"><a href="#3-UE4的物理同步" class="headerlink" title="3. UE4的物理同步"></a>3. UE4的物理同步</h2><h3 id="3-1-主要流程"><a href="#3-1-主要流程" class="headerlink" title="3.1 主要流程"></a>3.1 主要流程</h3><p>UE4是在其网络同步框架的基础上实现物理同步，其主要流程如下所示。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/719AF098A2474293A2A5726AADC7A026.png" srcset="/img/loading.gif" lazyload alt="719AF098A2474293A2A5726AADC7A026"></p>
+<p>其中，服务器在每一帧的物理模拟结束之后，将物体的物理数据存放进类型为<code>FRepMovement</code>的成员变量<code>ReplicatedMovement</code>，并由UE4的网络同步框架将其同步至客户端。</p>
+<p>在被同步至客户端之后，ReplicatedMovement的数据会在<code>AActor::PostNetReceivePhysicState函数里</code>被拷贝至一个类型为<code>FRigidBodyState</code>的变量，最后将其添加到<code>FPhysicsReplication</code>的<code>ComponentsToTargets</code>队列中，并准备执行物理同步逻辑。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/C0E01D1895A34847959F0BBB1C314E9C.png" srcset="/img/loading.gif" lazyload alt="C0E01D1895A34847959F0BBB1C314E9C"></p>
+<blockquote>
+<p>FRepMovement用于同步物体的物理数据，而FRigidBodyState则用于记录物体的物理状态。</p>
+<p>考虑到float的表示范围在大部分游戏场景下都是大大溢出的，可以在传输时对其进行压缩，减少数据量。但是float遵循IEEE754标准，在网络上传输float无法使用自适应Bit流来减小数据量，导致直接传输FVector就必须用12个Byte，有些浪费。</p>
+<p>因此，UE4在FRepMovement中定义了针对<code>Location</code>、<code>Velocity</code>和<code>Roation</code>这三个变量的压缩等级，在将其序列化前根据压缩等级对FVector进行有损压缩。至于<code>FRigidBodyState</code>中使用的<code>FVector_NetQuantize100</code>则是封装了压缩操作的数据结构。</p>
+</blockquote>
+<p>物理同步逻辑执行完之后，客户端再以同步后的物理状态继续物理模拟，从而得到同步之后最新的物理结果。</p>
+<h3 id="3-2-物理同步逻辑"><a href="#3-2-物理同步逻辑" class="headerlink" title="3.2 物理同步逻辑"></a>3.2 物理同步逻辑</h3><p>UE4在<code>FPhysicsReplication::ApplyRigidBodyState方法</code>里使用<code>导航预测算法</code>实现了物理同步逻辑，这里主要讨论UE4是如何应用导航预测算法的。</p>
+<h4 id="3-2-1-预测逻辑"><a href="#3-2-1-预测逻辑" class="headerlink" title="3.2.1 预测逻辑"></a>3.2.1 预测逻辑</h4><p>从<code>2.3节</code>可以知道，外插值可以很好地解决物理同步中的延迟问题。因此，在收到服务器同步的数据包之后，UE4首先通过外插值的方式，推测出此时物体在服务器上的物理状态。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/ABF2CF247DBC41F48E5B87B1ED61C69D.png" srcset="/img/loading.gif" lazyload alt="ABF2CF247DBC41F48E5B87B1ED61C69D"></p>
+<p>下图更加直观地展示了预测的过程。在知道服务器同步数据包时的物理状态和数据包的传输延迟的前提下，利用导航预测算法给出的公式，就能很好的预测在同一时刻下，物体在服务器上的物理状态。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/72469268A0DD4E27BC43CE0F81F9B559.png" srcset="/img/loading.gif" lazyload alt="72469268A0DD4E27BC43CE0F81F9B559"></p>
+<blockquote>
+<ol>
+<li>圆形表示物理同步的目标；</li>
+<li>三角形表示场景中的静态物体，用于体现圆形物体的运动状态变化；</li>
+<li>虚线方框表示某个时刻下的场景状态；</li>
+</ol>
+</blockquote>
+<p>接下来，只需要消除<code>客户端的实际物理状态</code>与<code>服务器的预测状态</code>之间的差异，就可以消除网络延迟的影响，实现物理同步。</p>
+<h4 id="3-2-2-纠错逻辑"><a href="#3-2-2-纠错逻辑" class="headerlink" title="3.2.2 纠错逻辑"></a>3.2.2 纠错逻辑</h4><p>为了让客户端的运动轨迹更加平滑自然，UE4采用了一种名为<code>错误累积（Error Accumulation）</code>的纠错机制。</p>
+<p>首先计算<code>客户端的实际物理状态</code>与<code>服务器的预测状态</code>之间的<code>距离差</code>和<code>夹角大小</code>，若这两个数值的<code>加权和</code>小于预设的阈值，说明此时客户端与服务器是完全同步的，无须执行任何纠正逻辑，并通过设置<code>bRestoredState</code>为true来表示该物体在收到新的数据包之前无需再进行物理同步逻辑。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/89AC412420814203BD67867CC8E75FB4.png" srcset="/img/loading.gif" lazyload alt="89AC412420814203BD67867CC8E75FB4"></p>
+<p>如果大于阈值，则会执行纠错逻辑。如果两者距离差不是很大，那么会尝试通过导航预测算法里的<code>Projective Velocity Blending</code>让客户端以平滑的曲线不断接近服务器的预测状态，直到这两者差距足够小，不需要再进行物理同步为止。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/4D0818374D764652A85B16BF40B32AA4.png" srcset="/img/loading.gif" lazyload alt="4D0818374D764652A85B16BF40B32AA4"></p>
+<blockquote>
+<p>虽然这里和<code>2.5节</code>里给出的计算方式不完全一样，但仔细推导，就会发现思路其实很像；</p>
+<ol>
+<li>不难知道<code>TargetPos</code>是预测的位置P’t，而<code>NewLinVel</code>则是修正后的速度Vb；</li>
+<li>使用<code>TargetPos(P&#39;t)</code>和<code>CurrentState.Position(P0)</code>插值得到NewPos用于纠正物体的位置；</li>
+<li>在网络同步处理完之后，使用修正后的速度Vb进行物理模拟，这中间的位移等效于(Pt - P0)；</li>
+<li>因此，最终物体的位置Qt &#x3D; P0 + (P’t - P0) * ΔT + (Pt - P0) &#x3D; Pt + (P’t - P0) * ΔT；</li>
+</ol>
+</blockquote>
+<p>为了判断本次纠正是否有效，会计算<code>PrevProgress</code>和<code>PrevSimilarity</code>这两个指标并分别与设置的阈值比较。如下图所示，<code>PrevProgress</code>表示上一次修正的有效程度，而<code>PrevSimilarity</code>则表示上一次修正之后，客户端实际位置与当前预测位置的差异大小。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/B5E93E08C9294083BAC081A2888475A4.png" srcset="/img/loading.gif" lazyload alt="B5E93E08C9294083BAC081A2888475A4"></p>
+<blockquote>
+<p>如果纠正有效，客户端沿着正确的轨迹朝预测位置不断靠近：</p>
+<ol>
+<li>在客户端每帧运动的距离不变的前提下（蓝色线长度不变），蓝色线与绿色线会不断趋于平行，也就是<code>PrevProgress</code>的值会不断变大；</li>
+<li>客户端与预测位置的距离差会不断变小，也就是红色线的长度会不断变小，也就是<code>PrevSimilarity</code>会不断变小；</li>
+</ol>
+<p>值得注意的是，<code>PrevSimilarity</code>过大有可能不是纠正无效，而是收到了新的数据包，预测位置发生了变化。因此需要同时结合<code>PrevProgress</code>来判断客户端是否确实在沿着正确的轨迹不断靠近。<br><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/58E982BF1DA24F99B72518EB204E2A04.png" srcset="/img/loading.gif" lazyload alt="58E982BF1DA24F99B72518EB204E2A04"></p>
+</blockquote>
+<p>确定了如果判断纠正是否有效的方法之后，再来考虑<code>2.5节提到的问题</code>：如果在纠正过程中，因为碰撞或者其他原因，导致客户端实际位置与预测位置的状态差异更大了，该如何处理？</p>
+<p>如果在发生错误时立刻将其拉扯到预测位置，那么表现效果会很差，卡顿感会很明显。但如果长时间不干涉，差异则有可能越来越大，直到失去同步。</p>
+<p>对此，UE4给出的结果方案是，每次在发现纠正逻辑无法让客户端靠近预测位置时，先暂时相信客户端的纠错能力，只累积错误时间而不做其他处理，然后继续纠正。直到错误时间累积足够久（在一定时间内客户端始终无法完成纠错），或者两者的距离差距足够大时，才触发<code>Hard Snap</code>操作，直接将客户端拉扯到服务器的预测状态上，从而一定程度上减少物理同步时的卡顿感。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/F9DEFDE4922846A5B9D80B967A24A40C.png" srcset="/img/loading.gif" lazyload alt="F9DEFDE4922846A5B9D80B967A24A40C"></p>
+<blockquote>
+<p>触发HardSnap操作之后，客户端的位置显然与预测位置是同步的，后面自然不需要再执行物理同步逻辑。故这里直接将<code>bRestoredState</code>设置为true，并清空累积的错误时间。</p>
+</blockquote>
+<h4 id="3-2-3-参数配置"><a href="#3-2-3-参数配置" class="headerlink" title="3.2.3 参数配置"></a>3.2.3 参数配置</h4><p>为了在客户端有更好的表现，UE4允许允许根据项目的实际情况，配置错误阈值等各种参数。如下图所示，在Project Setting里，可以配置物理同步的各个参数，以获得不同的物理同步效果。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/4069096125D44B189C4C8FC1ADE64A05.png" srcset="/img/loading.gif" lazyload alt="4069096125D44B189C4C8FC1ADE64A05"></p>
+<hr>
+<h2 id="4-一些小缺陷"><a href="#4-一些小缺陷" class="headerlink" title="4. 一些小缺陷"></a>4. 一些小缺陷</h2><p>虽然到这里，UE4物理同步的大致逻辑已被梳理清楚，但仍有一个十分重要的点还没讨论到，那就是如何处理物体角速度和朝向的同步？</p>
+<p>UE4的处理逻辑十分简单，依旧是通过<code>&quot;预测+插值平滑&quot;</code>的方式来出处理物体的朝向同步逻辑。尽管这个方法在处理<code>物体的位置同步</code>上效果非常好，但在处理<code>物体的朝向同步</code>时，表现则比较差。如下图所示，相同的方法，可以计算出一条平滑的位置同步曲线，但只能得到一条来回波动的朝向同步折线。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/25C68A9A593A499EBC7DA61809D23F8B.png" srcset="/img/loading.gif" lazyload alt="25C68A9A593A499EBC7DA61809D23F8B"></p>
+<blockquote>
+<p>这个例子也许不是十分恰当，但能比较简单、直观地说明在处理物体的朝向同步时出现频繁抖动的原因。</p>
+</blockquote>
+<p>如果将每个帧的运动轨迹叠加起来，那么可以得到一个锯齿状的朝向同步折线。也就是说，物体在持续改变方向时，抖动感会非常明显。造成这一现象的主要原因，就是因为朝向同步的要求比位置同步的要求更为苛刻。位置同步只需要确保最终的轨迹平滑就可以了，而朝向同步则是在平滑的基础上尽可能避免来回波动。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/0BFF01D335474FE2A9AAFAACEE364F71.gif" srcset="/img/loading.gif" lazyload alt="0BFF01D335474FE2A9AAFAACEE364F71"></p>
+<blockquote>
+<p>在位置上来回波动几厘米肉眼可能感知到不到，但如果在朝向上来回波动几度，那么玩家则可以明显感知到物体的抖动，尤其是玩家当前正在操作、有摄像机跟随的物体。</p>
+</blockquote>
+<p>修复这一问题的方法有很多，其中最简单的一个方法是通过修改参数减小朝向的预测幅度，从而尽可能减少朝向在修正过程中来回波动的情况。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/7FEBBEBCC2894B53BD88F921261FD2E9.gif" srcset="/img/loading.gif" lazyload alt="7FEBBEBCC2894B53BD88F921261FD2E9"></p>
+<blockquote>
+<p>在Project Setting里，将物理同步参数里的<code>Angle Lerp</code>从默认的0.4改成0.2，可以看到物体的抖动幅度明显降低。</p>
+</blockquote>
+<hr>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>总体来说，UE4的物理同步逻辑能很好地满足大部分使用场景的需求，但并没有做到完美。玩家在操作高速运动、且频繁改变运动方向的物体时（如驾驶载具时），UE4的物理同步逻辑会导致物体持续抖动。</p>
+<p>尽管通过调整物理同步的参数可以缓解这一问题，但始终是治标不治本。最佳的方案是根据游戏的实际需求自定义物理同步逻辑。</p>
+<hr>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/341447703">浅谈物理引擎的网络同步方案</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/293809946_Believable_Dead_Reckoning_for_Networked_Games">Believable Dead Reckoning for Networked Games</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/114341957">UE4移动的网络同步，”关于FVector_NetQuantize一节”</a></p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/unreal-engine-s-painful-road/" class="category-chain-item">UnrealEngine的苦痛之路</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/UE4/">#UE4</a>
+      
+        <a href="/tags/%E7%89%A9%E7%90%86/">#物理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>UE4的物理同步</div>
+      <div>https://asancai.github.io/posts/84142416/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/17ed14e0/" title="从零开始部署waline服务器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">从零开始部署waline服务器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/ad89a9b/" title="《C++回顾笔记》取模运算与取余运算">
+                        <span class="hidden-mobile">《C++回顾笔记》取模运算与取余运算</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://lib.baomitu.com/waline/2.14.1/waline.min.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/waline/2.14.1/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"http://119.29.239.48:8360/","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

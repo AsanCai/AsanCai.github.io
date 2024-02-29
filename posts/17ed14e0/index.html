@@ -1,0 +1,878 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言waline 是一款简洁、安全、支持多种部署方式的评论系统。网上关于如何使用Vercel+LeanCloud进行部署的资料很多很详细，但这类免费平台的稳定性很差。如果自己有服务器，在自己服务器上部署无疑是更好的选择。遗憾的是，很少有文章会详细地记录如何使用独立服务器部署waline，大多数只记录了其中某些关键的步骤，容易让新手感到困惑。 因此在看了官方文档和一些独立部署的文章之后，这里总结了如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始部署waline服务器">
+<meta property="og:url" content="https://asancai.github.io/posts/17ed14e0/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="前言waline 是一款简洁、安全、支持多种部署方式的评论系统。网上关于如何使用Vercel+LeanCloud进行部署的资料很多很详细，但这类免费平台的稳定性很差。如果自己有服务器，在自己服务器上部署无疑是更好的选择。遗憾的是，很少有文章会详细地记录如何使用独立服务器部署waline，大多数只记录了其中某些关键的步骤，容易让新手感到困惑。 因此在看了官方文档和一些独立部署的文章之后，这里总结了如">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230604213809.png">
+<meta property="article:published_time" content="2023-06-03T14:40:49.000Z">
+<meta property="article:modified_time" content="2023-06-05T11:02:20.348Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="waline">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230604213809.png">
+  
+  
+  
+  <title>从零开始部署waline服务器 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230604213809.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="从零开始部署waline服务器"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-03 22:40" pubdate>
+          2023年6月3日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">从零开始部署waline服务器</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>waline 是一款简洁、安全、支持多种部署方式的评论系统。网上关于如何使用<code>Vercel+LeanCloud</code>进行部署的资料很多很详细，但这类免费平台的稳定性很差。如果自己有服务器，在自己服务器上部署无疑是更好的选择。遗憾的是，很少有文章会详细地记录如何使用独立服务器部署waline，大多数只记录了其中某些关键的步骤，容易让新手感到困惑。</p>
+<p>因此在看了官方文档和一些独立部署的文章之后，这里总结了如何从零开始，一步一步地在一台服务器上部署waline。</p>
+<blockquote>
+<p>服务器：腾讯云轻量应用服务器（CentOS 8系统）</p>
+<p>数据库：MySQL</p>
+</blockquote>
+<hr>
+<h2 id="安装node环境"><a href="#安装node环境" class="headerlink" title="安装node环境"></a>安装node环境</h2><p>运行curl命令，下载并运行NodeSource安装脚本。<code>setup_16.x</code>里的16是版本号，可根据自己需要修改。该脚本运行后会将NodeSource签名密钥添加到您的系统，创建yum储存库文件，安装所有必需的软件包，并刷新yum缓存。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash<br></code></pre></td></tr></table></figure>
+
+
+
+<p>接着运行以下命令安装Node.js和npm。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo yum install -y nodejs<br></code></pre></td></tr></table></figure>
+
+
+
+<p>安装完成之后，可以运行以下命令判断是否安装成功。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">node --version<br><span class="hljs-comment"># v16.20.0</span><br><br>npm --version<br><span class="hljs-comment"># 8.19.4</span><br></code></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="配置mysql环境"><a href="#配置mysql环境" class="headerlink" title="配置mysql环境"></a>配置mysql环境</h2><h3 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h3><p>首先通过以下命令确保<code>CentOS系统</code>处于最新的状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo yum update<br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后在服务器的任意目录下，使用yum下载MySQL 8.0数据库版本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm<br></code></pre></td></tr></table></figure>
+
+
+
+<p>下载完成后，通过<code>ls</code>指令可以看到<code>mysql80-community-release-el7-3.noarch.rpm</code>已成功下载到服务器上。此时可以执行以下指令安装数据库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo rpm -Uvh mysql80-community-release-el7-3.noarch.rpm<br></code></pre></td></tr></table></figure>
+
+
+
+<p>安装完成之后，可以直接使用yum安装<code>MySQL Server</code>。在遇到系统提示时输入<code>y</code>并按<code>Enter</code>确认安装即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo yum install mysql-server<br></code></pre></td></tr></table></figure>
+
+
+
+<p>至此，mysql的安装工作已全部完成。</p>
+<h3 id="初始化mysql设置"><a href="#初始化mysql设置" class="headerlink" title="初始化mysql设置"></a>初始化mysql设置</h3><p>安装好mysql之后，需要执行以下指令启动mysql，并查看mysql的状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启mysql</span><br>service mysqld start<br><span class="hljs-comment"># Redirecting to /bin/systemctl start mysqld.service</span><br><br><span class="hljs-comment"># 查看状态</span><br>service mysqld status<br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后运行以下指令进入mysql。mysql的root用户初始密码默认为空，所以第一次进入时，在输入密码处直接按回车即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysql -u root -p<br></code></pre></td></tr></table></figure>
+
+
+
+<p>进入mysql之后，先设置一下root的密码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs mysql"># 设置密码，显示指定了使用mysql_native_password的加密方式<br>ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;新密码&#x27;;<br><br># 刷新权限<br>flush privileges;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>完成设置之后通过以下指令退出mysql。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">exit</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="创建waline使用的数据库"><a href="#创建waline使用的数据库" class="headerlink" title="创建waline使用的数据库"></a>创建waline使用的数据库</h3><p>按照<a target="_blank" rel="noopener" href="https://waline.js.org/guide/database.html#mysql">官网文档</a>的指引，需要在服务器的任意目录下，创建一个名为<code>waline.sql</code>的文件，然后将官网用于<a target="_blank" rel="noopener" href="https://github.com/walinejs/waline/blob/main/assets/waline.sql">创建数据库表结构的文件</a>复制粘贴到<code>waline.sql</code>中。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建并打开waline.sql文件，具体编辑文件的方式可以查询vim的用法</span><br>vim waline.sql<br></code></pre></td></tr></table></figure>
+
+
+
+<p>完成编辑之后，输入<code>pwd</code>查看并复制<code>waline.sql</code>所在的目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 这里我直接在root下创建waline.sql文件</span><br><span class="hljs-built_in">pwd</span><br><span class="hljs-comment"># /root</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>接着用前面设置的密码进入mysql，并创建一个名为<code>waline</code>的数据库。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mysql">create database waline;<br><br># 查看是否创建成功<br>show databases;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后进入新创建的waline数据库，通过source指令创建表结构。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs mysql"># 将当前数据库切换成waline<br>use waline;<br><br># waline.sql文件所在的目录<br>source /root/waline.sql;<br><br># 查看当前数据库下的表，可以看到wl_Comment，wl_Counter和wl_Users这三张表被创建了<br>show tables;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>最后切换到mysql数据库，将waline数据库的所有权限全部开放给root用户。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs mysql"># 这里指的是切换到一个名为mysql的数据库，这里保存着所有用户数据<br>use mysql;<br><br># 将waline数据库的所有权限全部开放给root用户<br>GRANT ALL ON waline.* TO &#x27;root&#x27;@&#x27;localhost&#x27; ;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>操作完成之后先退出mysql，然后输入以下指令重启mysql服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 重启mysql</span><br>service mysqld restart<br></code></pre></td></tr></table></figure>
+
+
+
+<p>此时可以选择删除前面创建<code>waline.sql</code>文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">rm</span> -rf waline.sql<br></code></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="部署waline"><a href="#部署waline" class="headerlink" title="部署waline"></a>部署waline</h2><h3 id="创建waline项目"><a href="#创建waline项目" class="headerlink" title="创建waline项目"></a>创建waline项目</h3><p>首先，在服务器的任意位置创建一个目录<code>waline-service</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> waline-service<br></code></pre></td></tr></table></figure>
+
+
+
+<p>紧接着在该目录下初始化项目。此步骤会创建<code>package.json</code>文件，该文件用于记录项目所依赖的module，并配置项目的相关属性。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> waline-service<br><br>npm init -y<br></code></pre></td></tr></table></figure>
+
+
+
+<p>初始化完成之后，直接安装waline的服务器依赖包。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install @waline/vercel<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h3><p>下载完成后，还需要进行环境变量的配置。直接修改全局环境变量配置文件并不是推荐的做法，使用<code>dotenv</code>在<code>不污染全局环境变量配置文件</code>的前提下创建环境变量无疑是更好的做法。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装dotenv的依赖包</span><br>npm install dotenv<br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后创建环境变量<code>.env</code>文件，并根据官方文档的配置说明写入环境变量配置项。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># waline环境变量配置</span><br><span class="hljs-comment"># 使用的数据库是mysql，所以这里需要设置mysql的相关配置</span><br><br><span class="hljs-comment"># 数据库连接地址</span><br>MYSQL_HOST=127.0.0.1<br><span class="hljs-comment"># 数据库连接端口号</span><br>MYSQL_PORT=3306<br><span class="hljs-comment"># 数据库名</span><br>MYSQL_DB=waline<br><span class="hljs-comment"># 连接数据库用户名</span><br>MYSQL_USER=root<br><span class="hljs-comment"># 连接密码</span><br>MYSQL_PASSWORD=root的密码<br></code></pre></td></tr></table></figure>
+
+
+
+<p>编辑完成之后，新建<code>main.js</code>文件，指定环境变量配置的覆盖逻辑。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 引入dotenv</span><br><span class="hljs-keyword">const</span> dotenv = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;dotenv&#x27;</span>)<br><span class="hljs-comment">// 调用config方法合并.env环境变量</span><br>dotenv.<span class="hljs-title function_">config</span>()<br><span class="hljs-comment">// 引入并执行该文件</span><br><span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@waline/vercel/vanilla.js&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h3><p>配置完成之后，可以使用node进程管理工具<code>pm2</code>来运行项目。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 这里需要先全局安装pm2，如果提示权限不足安装失败，需要切换到root用户再重新安装</span><br>npm install -g pm2<br></code></pre></td></tr></table></figure>
+
+
+
+<p>接着创建<code>ecosystem.config.js</code>文件，指定pm2的执行参数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">apps</span>: [<br>    &#123;<br>      <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;waline-service&#x27;</span>, <span class="hljs-comment">// 项目名称</span><br>      <span class="hljs-attr">script</span>: <span class="hljs-string">&#x27;./main.js&#x27;</span>, <span class="hljs-comment">// 执行入口</span><br>      <span class="hljs-attr">cwd</span>: <span class="hljs-string">&#x27;./&#x27;</span>, <span class="hljs-comment">// 工作路径</span><br>      <span class="hljs-attr">watch</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 是否开启监听</span><br>      <span class="hljs-attr">ignore_watch</span>: [<span class="hljs-string">&#x27;logs&#x27;</span>, <span class="hljs-string">&#x27;.git&#x27;</span>, <span class="hljs-string">&#x27;node_modules&#x27;</span>], <span class="hljs-comment">// 监听器忽略文件目录</span><br>      <span class="hljs-attr">out_file</span>: <span class="hljs-string">&#x27;./logs/waline_info.log&#x27;</span>, <span class="hljs-comment">// 日志输出路径</span><br>      <span class="hljs-attr">error_file</span>: <span class="hljs-string">&#x27;./logs/waline_err.log&#x27;</span>, <span class="hljs-comment">// 报错日志输出路径</span><br>      <span class="hljs-attr">log_date_format</span>: <span class="hljs-string">&#x27;YYYY-MM-DD HH:mm&#x27;</span>, <span class="hljs-comment">// 日志时间格式 会在每一行日志的前面加上该格式的时间戳</span><br>      <span class="hljs-attr">merge_logs</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 合并日志文件名称</span><br>      <span class="hljs-attr">restart_delay</span>: <span class="hljs-number">1000</span>, <span class="hljs-comment">// 崩溃重启服务时间间隔</span><br>      <span class="hljs-attr">max_restarts</span>: <span class="hljs-number">3</span> <span class="hljs-comment">// 崩溃后重启次数</span><br>    &#125;<br>  ]<br>&#125;;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后修改package.json里的<code>scripts</code>字段配置启动项，让pm2使用<code>ecosystem.config.js</code>文件的执行参数运行项目。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  ...<br>  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;start&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pm2 start ./ecosystem.config.js&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;stop&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pm2 stop waline-service&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;log&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pm2 log waline-service&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pm2 status&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  ...<br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>最后，执行以下指令运行项目。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 运行项目</span><br>npm run start  <br><br><span class="hljs-comment"># 其他常用的指令</span><br>npm run stop    <span class="hljs-comment"># 停止服务</span><br>npm run <span class="hljs-built_in">log</span>     <span class="hljs-comment"># 查看服务日志</span><br>npm run status  <span class="hljs-comment"># 查看服务运行状态</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>除此之外，还可以使用pm2设置waline项目开机自启动，具体命令如下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在项目运行期间执行，保存当前任务</span><br>pm2 save<br><br><span class="hljs-comment"># 将保存的任务生成开机自启动服务配置pm2-root.service</span><br>pm2 startup<br><br><span class="hljs-comment"># 允许任务开机自启动</span><br>systemctl <span class="hljs-built_in">enable</span> pm2-root<br></code></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="使用waline"><a href="#使用waline" class="headerlink" title="使用waline"></a>使用waline</h2><h3 id="注册管理员并测试"><a href="#注册管理员并测试" class="headerlink" title="注册管理员并测试"></a>注册管理员并测试</h3><p>waline默认使用8360端口，因此需要确保云服务器的8360端口处于开放的状态。以腾讯云的轻量应用服务器为例，需要手动添加一个开放8360端口的<code>安全组</code>。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20230604125546557.png" srcset="/img/loading.gif" lazyload alt="开放8360端口"></p>
+<p>然后可以在浏览器输入<code>http://服务器公网IP:8360/</code>进入waline的测试界面。此时点击<code>login</code>则会出现登录界面，点击注册或者使用关联账号登录之后，waline会默认将第一个用户注册为后台管理员。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20230604020556416.png" srcset="/img/loading.gif" lazyload alt="waline测试界面"></p>
+<p>注册完成之后，可以输入<code>http://服务器公网IP:8360/ui</code>进入后台管理系统，并在里面管理评论数据。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20230604021129648.png" srcset="/img/loading.gif" lazyload alt="waline后台管理界面"></p>
+<h3 id="在hexo中接入waline"><a href="#在hexo中接入waline" class="headerlink" title="在hexo中接入waline"></a>在hexo中接入waline</h3><p>hexo并没有默认接入waline，但开发者可以在自主开发的主题中接入。</p>
+<p>对于支持waline的hexo主题来说，接入waline最重要的参数是<code>serverURL</code>，也就是前边用于测试评论效果的<code>http://服务器公网IP:8360/</code>。</p>
+<p>以本博客使用的<a target="_blank" rel="noopener" href="https://hexo.fluid-dev.com/docs/guide/#%E8%AF%84%E8%AE%BA">hexo-fluid-theme</a>为例，只需要在<code>_config.fluid.yml</code>中开启评论功能之后，在填入上述链接即可。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20230604132649089.png" srcset="/img/loading.gif" lazyload alt="_config.fluid.yml"></p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.wstee.com/2022/08/22/self-host-waline.html">独立部署waline评论系统</a></li>
+<li><a target="_blank" rel="noopener" href="https://anyfork.github.io/blog-docs/posts/other/walineServer.html">Waline 服务端独立部署解决方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://loclink.cn/views/articles/back-end/waline-service.html#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93">Waline 服务端一键独立部署解决方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.51cto.com/article/741252.html">在CentOS 7上安装 MySQL 保姆级教程</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="category-chain-item">个人博客</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/waline/">#waline</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>从零开始部署waline服务器</div>
+      <div>https://asancai.github.io/posts/17ed14e0/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/53757809/" title="《Space Engineers》基于物理的预测同步方案">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《Space Engineers》基于物理的预测同步方案</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/84142416/" title="UE4的物理同步">
+                        <span class="hidden-mobile">UE4的物理同步</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://lib.baomitu.com/waline/2.14.1/waline.min.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/waline/2.14.1/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"http://119.29.239.48:8360/","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

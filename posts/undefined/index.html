@@ -1,0 +1,823 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 载具的物理模拟游戏中经常被使用的载具种类有很多，如汽车、摩托、船艇和飞机等。其中，汽车是最为常见的载具。在没有特别说明的前提下，载具通常默认表示汽车。 当然，无论是哪种载具，其在现实世界中的运动状态都很复杂。如何对载具的运动状态进行合理的简化和解耦，建立合适的物理模拟模型，让玩家能感受到真实的物理效果，对载具的物理模拟至关重要。 以游戏中最常见的汽车为例，为了最大程度还原真实的驾驶体验，需要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="载具的物理同步方案">
+<meta property="og:url" content="https://asancai.github.io/posts/undefined/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="1. 载具的物理模拟游戏中经常被使用的载具种类有很多，如汽车、摩托、船艇和飞机等。其中，汽车是最为常见的载具。在没有特别说明的前提下，载具通常默认表示汽车。 当然，无论是哪种载具，其在现实世界中的运动状态都很复杂。如何对载具的运动状态进行合理的简化和解耦，建立合适的物理模拟模型，让玩家能感受到真实的物理效果，对载具的物理模拟至关重要。 以游戏中最常见的汽车为例，为了最大程度还原真实的驾驶体验，需要">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png">
+<meta property="article:published_time" content="2024-02-28T09:10:22.000Z">
+<meta property="article:modified_time" content="2024-02-29T07:27:30.957Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="UE4">
+<meta property="article:tag" content="载具">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png">
+  
+  
+  
+  <title>载具的物理同步方案 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="载具的物理同步方案"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-28 17:10" pubdate>
+          2024年2月28日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          50 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">载具的物理同步方案</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-载具的物理模拟"><a href="#1-载具的物理模拟" class="headerlink" title="1. 载具的物理模拟"></a>1. 载具的物理模拟</h2><p>游戏中经常被使用的载具种类有很多，如汽车、摩托、船艇和飞机等。其中，汽车是最为常见的载具。在没有特别说明的前提下，载具通常默认表示汽车。</p>
+<p>当然，无论是哪种载具，其在现实世界中的运动状态都很复杂。如何对载具的运动状态进行合理的简化和解耦，建立合适的<code>物理模拟模型</code>，让玩家能感受到真实的物理效果，对载具的物理模拟至关重要。</p>
+<p>以游戏中最常见的汽车为例，为了最大程度还原真实的驾驶体验，需要模拟在通过障碍物时悬挂的缓冲效果、踩下油门之后引擎驱动汽车的加速效果，以及转动方向盘时控制轮胎朝向的转向效果。</p>
+<p>一般来说，不同物理引擎上的汽车物理模拟都大同小异，可大致抽象为如下所示的流程：</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Image.png" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<hr>
+<h2 id="2-载具物理同步的难点"><a href="#2-载具物理同步的难点" class="headerlink" title="2. 载具物理同步的难点"></a>2. 载具物理同步的难点</h2><p>与大部分游戏场景中的需要进行物理同步的物体相比，载具的运动状态更为复杂，网络同步的难度更高，其主要难点体现在以下几个方面：</p>
+<ol>
+<li><code>移动速度快</code>：载具在游戏中最主要的作用就是提高玩家所操纵角色的移动速度，因此载具的运动速度在大部分情况下都很快，即便是细微的网络延迟都会造成很大的误差；</li>
+<li><code>物理交互多</code>：玩家在驾驶载具时可能会频繁与场景中的其他物体发生碰撞、摩擦或者挤压等物理交互。而这些物理交互都会导致载具的<code>运动状态（速度大小、方向，以及朝向）</code>发生剧烈改变，进一步加大了物理同步的难度；</li>
+<li><code>质量要求高</code>：载具的运动轨迹是平滑的曲线，对物理同步质量的要求更高。<code>频繁拉扯</code>所形成的不自然轨迹会立刻引起玩家注意，影响玩家的游戏体验；</li>
+<li><code>输入预测难</code>：从<code>1. 载具的物理模拟流程</code>一节中不难知道，载具的运动状态很大程度上由输入数据决定。而输入数据来自于玩家的操作，其变化很难预测，其对载具运动状态所造成的变化自然也就很难预测；</li>
+</ol>
+<hr>
+<h2 id="3-载具物理同步方案"><a href="#3-载具物理同步方案" class="headerlink" title="3. 载具物理同步方案"></a>3. 载具物理同步方案</h2><p>物理同步的基本思路是<code>预测+纠错</code>。载具也是如此。只是与普通物体相比有以下几个区别：</p>
+<ol>
+<li>载具的运动状态由<code>当前的运动状态</code>和<code>输入数据</code>一起决定，仅同步载具的运动状态无法满足预测的要求；</li>
+<li>玩家在操作载具时，客户端上的输入数据要立刻生效，否则网络传输带来的输入延迟会极大地影响玩家的操作体验；</li>
+</ol>
+<p>为了满足上面的限制，最简单直接的方案是，<code>主控端</code>直接使用输入数据修改载具的运动状态，然后将输入数据发给服务器，再由服务器广播给其他<code>模拟端</code>，并在<code>服务器</code>和<code>模拟端</code>上分别使用输入数据修改载具的运动状态。最后，再通过物理同步的方式，纠正不确定性物理引擎在模拟过程中的差异。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Image(1).png" srcset="/img/loading.gif" lazyload alt="Image(1)"></p>
+<blockquote>
+<p>红色虚线的圆圈表示服务器同步过来的运动状态，绿色虚线的圆圈表示在相同时刻下服务器的预测结果，而黑色实线的圆圈则表示当前的运动状态。</p>
+</blockquote>
+<p>从上图可以看到，为了满足输入数据立刻生效的要求，载具在服务器上的运动状态一定是滞后于主控端的。此时，当服务器给主控端下发运动状态并尝试进行物理同步时，主控端既要根据输入数据进行物理模拟，又要按照物理同步的处理逻辑修正运动状态。</p>
+<p>如何权衡这两者的关系，是载具物理同步的重点之一。如果用服务器下发的滞后数据去纠正主控端的运动状态，那么主控端可能出现拉扯问题。而如果以主控端的物理模拟结果为准去纠正服务器的运动状态，则会面临玩家作弊的风险。</p>
+<p>此外，因为模拟端上的数据都来自于服务器，所以即便是在模拟端上进行预测也只能缩小与服务器的延迟。而先行预测的主控端明显快于服务器，因此模拟端与主控端一定会存在延迟。如何缩小模拟端与主控端的延迟，是载具物理同步的另外一个重点。</p>
+<h3 id="3-2-UE4的原生方案"><a href="#3-2-UE4的原生方案" class="headerlink" title="3.2 UE4的原生方案"></a>3.2 UE4的原生方案</h3><p>UE4使用<code>导航预测算法</code>实现了一套适用于许多应用场景的物理同步方案。因此，UE4并未针对载具的物理同步做过多的额外处理，依然使用其通用的物理同步方案，以服务器下发的运动状态为准强行纠正客户端的运动状态。</p>
+<blockquote>
+<p>更多关于UE4物理同步的细节，可以看<a target="_blank" rel="noopener" href="http://www.asancai.top/posts/84142416/">UE4的物理同步</a>一文。</p>
+</blockquote>
+<p>同时，主控端每帧都会将最新的输入数据发给服务器，确保主控端与服务器运动状态相差不大。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Image(2).png" srcset="/img/loading.gif" lazyload alt="Image(2)"></p>
+<p>因此，当网络延迟较大，主控端的输入数据无法及时发给服务器时，主控端会在物理同步逻辑的影响下不断将载具的运动状态纠正至服务器所下发的运动状态。而此时服务器下发的运动状态是使用较长时间之前的输入数据进行物理模拟的结果，所以玩家会感觉到此时载具会失去控制，无法及时响应其输入数据。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/06.gif" srcset="/img/loading.gif" lazyload alt="网络延迟较大时出现明显的卡顿、滞后感"></p>
+<p>此外，即便网络延迟较小，玩家在操作载具时也会出现载具来回摆动的现象，这主要有两个原因：</p>
+<ol>
+<li>由于外插值算法的缺陷，UE4的物理同步方案在处理持续转弯的物体时会出现频繁抖动的问题；</li>
+<li>主控端的物理模拟结果和物理同步的结果冲突；</li>
+</ol>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/07.gif" srcset="/img/loading.gif" lazyload alt="网络较好时也会出现轻微的卡顿"></p>
+<p>总体来说，在处理载具的物理同步上，UE4的原生方案有多致命的缺陷，并非一个好的方案。</p>
+<h3 id="3-3-预测一切：来自《火箭联盟》的启发"><a href="#3-3-预测一切：来自《火箭联盟》的启发" class="headerlink" title="3.3 预测一切：来自《火箭联盟》的启发"></a>3.3 预测一切：来自《火箭联盟》的启发</h3><p>根据<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ueEmiDM94IE">火箭联盟在GDC 2018上的演讲</a>，可以知道作为一个以<code>载具与球之间的物理交互</code>作为核心玩法的<code>多人PC游戏</code>，火箭联盟更具挑战的点在于不仅需要处理载具的物理同步问题，同时还需要处理因为网络延迟所带来的碰撞问题。</p>
+<p>首先，作为一个PC游戏，使用一个权威服务器防止玩家作弊是必不可少的。在此基础上，为了让玩家拥有<code>零延迟的操作体验（No Input Delay）</code>，火箭联盟采用的策略是客户端在收到输入数据时马上对操纵的载具进行物理模拟，也就是<code>客户端提前预测</code>。</p>
+<p>姑且先不讨论客户端模拟结果与服务器结果模拟不一致之后如何纠错的问题，这个方案会带来一个很致命的问题：在同一个客户端上，玩家操作的载具是快于服务器的，而玩家准备踢的球则是慢于服务器的。</p>
+<blockquote>
+<p>玩家踢的球慢于服务器并不难理解，既然要用权威服务器来防止玩家作弊，那么对于影响游戏结果的球来说，其<code>物理状态（位置和速度）</code>由服务器同步给客户端，客户端只负责渲染是一个很合理的方案。</p>
+</blockquote>
+<p>当<code>未来的载具</code>准备踢<code>过去的球</code>，自然会出现玩家认为自己踢到了球，而服务器却认为玩家根本没碰到球的问题。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/01.gif" srcset="/img/loading.gif" lazyload alt="球从左往右运动，载具从上往下运动准备踢球"></p>
+<p>如何解决这一问题？如果直接使用FPS游戏里常用的<code>延迟补偿（Lag Compension）</code>方案，那么则会出现低延迟的玩家在马上踢到球时，发现球在其他高延迟玩家的交互下突然从身边飞走了。</p>
+<blockquote>
+<p><strong>延迟补偿的具体实现</strong>：<br>  在客户端踢到球时将载具和球的数据一起发送给服务器，服务器在收到数据包之后，将球拉回到网络延迟前的位置并确认客户端是否踢到了球。如果校验通过，那么服务器则会接受客户端的结果，认为客户端踢到了球并纠正球的物理状态。</p>
+</blockquote>
+<p>让高延迟的玩家影响低延迟玩家的游戏体验显然是无法接受的。为了兼顾所有玩家的游戏体验，最终火箭联盟采用了类似于守望先锋的<code>关键帧同步方案</code>：</p>
+<ol>
+<li><p>客户端在接收到输入数据时直接开始物理模拟，然后记录下<code>当前的物理帧号</code>和<code>所有物体的物理状态</code>作为当前的关键帧，并将关键帧数据存入<code>关键帧缓存队列</code>中；</p>
+</li>
+<li><p>客户端将<code>输入数据</code>以及<code>对应的物理帧号</code>发送给服务器；</p>
+</li>
+<li><p>服务器收到客户端同步的数据数据之后开始物理模拟，然后将<code>当前的物理帧号</code>和<code>所有物体的物理状态</code>同步给客户端；</p>
+</li>
+<li><p>客户端收到服务器同步的数据时，从关键帧缓存队列里找出对应的关键帧数据进行比对，对于差距比较大的物体，将其物理状态直接回溯到服务器同步过来的状态；</p>
+</li>
+<li><p>回溯结束之后，从关键帧缓存队列中取出后续的输入操作，然后一次性执行<code>多次物理模拟</code>，直到将全部输入数据都消耗完为止，确保客户端以正确的状态重新进行预测；</p>
+</li>
+</ol>
+<p>如下图所示，客户端在接收到输入数据时让载具直接移动，而此时客户端的球因为缺少服务器同步过来的数据处于静止的状态。直到后面服务器将数据同步过来时，才发现从第1帧开始球的状态就与服务器出现不同步，而载具则因为输入数据没有发生变化而与服务器保持同步。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/02.gif" srcset="/img/loading.gif" lazyload alt="全预测方案的具体步骤"></p>
+<p>此时，客户端先回溯到第1帧，然后将球的状态纠正至服务器同步下来的状态。因为客户端的最新物理帧为4，所以会一次性执行3次物理模拟，同时对载具和球以正确的状态进行预测，确保客户端上的载具和球都快于服务器。这样，客户端上的载具在踢球时，就是以<code>未来的载具</code>踢<code>未来的球</code>。只要客户端的网络稳定，那么客户端的预测结果就与服务器相差不大，客户端也就感受不到任何延迟。</p>
+<blockquote>
+<p>因为客户端会对<code>所有物体（玩家操作的载具、其他玩家操作的载具和球）</code>的物理状态进行预测，确保其物理状态处于相同的时间线，所以这个预测策略被称为<code>客户端全预测（Client Predict Everything）</code>。</p>
+</blockquote>
+<p>在梳理清楚火箭联盟的物理同步方案之后，不难知道在预测失败时需要在<code>一帧内完成回溯以及多次物理模拟</code>的操作，CPU开销很大。为了尽可能地避免客户端预测失败的问题，火箭联盟将服务器和客户端的物理帧率都设置为120帧，以减少每次物理模拟时的差异，但过高的物理帧率无疑会进一步的增加CPU的开销。因此，火箭联盟的物理同步方案比较适合PC或者主机游戏，而不太适合手机游戏。此外，当游戏中的物体过多时，每次回溯的CPU开销和关键帧需要保存的数据也会快速增长，因此也并<code>不适合场景过大、物体较多</code>的游戏。</p>
+<p>当然，即便火箭联盟的物理同步方案在应用上存在诸多限制，但其<code>回溯+纠正+重新预测</code>的方案确实可以有效解决服务器的同步数据与客户端的预测数据冲突时的拉扯问题。</p>
+<h3 id="3-4-苦痛之路：打满补丁的《看门狗2》"><a href="#3-4-苦痛之路：打满补丁的《看门狗2》" class="headerlink" title="3.4 苦痛之路：打满补丁的《看门狗2》"></a>3.4 苦痛之路：打满补丁的《看门狗2》</h3><p>在2017年的GDC上，育碧的开发人员详细地分享了《看门狗2》关于载具物理同步的策略。</p>
+<p>《看门狗2》的网络模型是基于状态同步的P2P，主控端在接收到输入数据时直接进行物理模拟，然后将载具的物理状态同步给模拟端，并在模拟端上使用<code>导航预测算法</code>进行预测以减少载具的延迟。因为模拟端并<code>没有使用载具的输入数据</code>进行物理模拟，所以在载具转弯时会出现因为频繁预测失败而出现抖动的现象。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/03.gif" srcset="/img/loading.gif" lazyload></p>
+<p>本来最佳的解决方案应该是使用<code>输入数据</code>驱动<code>载具的物理模拟系统</code>，然后根据轮胎的朝向和速度等物理属性来预测载具的转向变化。但《看门狗2》的开发团队觉得这个很复杂，所以使用了更为简单的方案，直接用载具的角速度进行外插值来预测载具的转向，结果确实平滑了很多但仍能看到有轻微的抖动。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/03(1).gif" srcset="/img/loading.gif" lazyload></p>
+<p>也正是因为预测机制的缺陷导致载具的运动轨迹会被频繁纠正，所以《看门狗2》又打了个补丁：使用主控端同步给模拟端的<code>快照（Sanpshot，也就是载具的物理状态）</code>对模拟端的载具进行内插值，从而得到更为准确的运动轨迹。</p>
+<p>但内插值会增加载具在模拟端上的延迟，而外插值可以减小延迟所带来的运动状态差异。因此，《看门狗2》使用了内插值和外插值混合的策略，以尽可能缩小模拟端上的载具与主控端的差异。下图演示了这个策略的具体工作原理：</p>
+<blockquote>
+<p>其实这个策略很简单，总结起来就一个原则：有最新的快照就优先用内插值得到较为准确的轨迹，如果没有就使用外插值尽可能缩小与主控端的差异。</p>
+</blockquote>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/05.gif" srcset="/img/loading.gif" lazyload alt="内插值和外插值的混合策略"></p>
+<p>如上图所示，模拟端在收到第一个<code>SnapShot（红色的点）</code>时，因为没有下一个SanpShot用于内插值，此时执行的是外插值，所以模拟端的运动轨迹和主控端不一致。等收到第二个<code>SnapShot</code>的时候，开始内插值，此时模拟端则可以以一个较为准确的运动轨迹追上主控端。最后，模拟端与客户端的延迟为3帧，而如果单纯用内插值，延迟则为5帧。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/336869551">细谈网络同步在游戏历史中的发展变化（下）</a>一文中，关于这一过程的解读明显是错的。</p>
+</blockquote>
+<p>此外，在网络比较好的情况下，有可能模拟端在追上最新的SnapShot之前，又收到了一个新的SanpShot。此时，如何决定外插值和内插值的比例是一个很大的问题。如果外插值比例过大，那么载具运动轨迹的准确性会变差。而如果内插值的比例过大，那么载具的延迟会增加。</p>
+<p>因此，《看门狗2》引入了<code>TimeOffset</code>的概念，用TimeOffset来决定内插值和外插值的比例。TimeOffset的大小为<code>网络平均延迟</code>加上一个<code>由载具速度决定的修正值</code>，并且限制其最大不超过300ms。</p>
+<blockquote>
+<p>（1）TimeOffset必须大于网络延迟是合理的。如下图所示，如果外插值的预测完全正确，那么模拟端载具的物理状态在<code>时刻T</code>一定可以与主控端载具的物理状态（SnapShot 3同步下来的数据），此时再进行外插值反而会加大模拟端和主控端的差异；<br>（2）综合考虑网络的波动性和预测的不准确性，在网络延迟的基础上加上一个修正值是很有必要的，只是这个修正值是一个经验数值；</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Image(3).png" srcset="/img/loading.gif" lazyload alt="TimeOffset的用法"></p>
+</blockquote>
+<p>当然，外插值和内插值混合的方案只能减少延迟而不能完全消除延迟。玩家操作的载具在与其他玩家操作的载具碰撞时，依旧会出现<code>玩家当前的载具</code>撞击了<code>其他玩家过去的载具</code>的问题，也就是《火箭联盟》面临的问题。更要命的是，这个方案在载具相互碰撞时会出现bug。</p>
+<p>如下图所示，不妨假设下面两个车相互撞击。此时模拟端上的白车在与蓝车碰撞之后，因为还没收到主控端下发的SnapShot，所以会使用外插值继续向前行驶。而白车在主控端上则因为碰撞向后运动，并随后向模拟端下发一个向后运动的Snap Shot。当模拟端的白车在收到该Snap Shot之后，则会因为外插值而向后运动更长的距离。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Image(4).png" srcset="/img/loading.gif" lazyload alt="撞击时载具的运动图解"></p>
+<p>因为《看门狗2》没有权威服务器，没有一个权威的碰撞结果让客户端有机会纠正网络延迟带来的差异。所以为了让载具有更为自然的碰撞表现，《看门狗2》又打上了<code>物理模拟融合（Physsics Simulation Blending）</code>补丁：在碰撞时让模拟端的载具完全受物理模拟的控制，随后不断减小物理模拟的权重增大网络同步的权重，从而让载具在碰撞的时候有更加自然的表现。</p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Image(5).png" srcset="/img/loading.gif" lazyload alt="Physsics Simulation Blending"></p>
+<p>虽然使用物理模拟融合之后碰撞效果也没有很自然，但至少比使用物理模拟融合前的碰撞效果好了很多。</p>
+<p>总体来说，《看门狗2》最终的载具物理同步效果并不好，虽然主要是受限于P2P的网络模型，但也从某种程度上说明载具的物理同步确实很难，否则也不需要打这么多补丁才能得到一个勉强能看的效果。</p>
+<p>里面提到的很多优化策略大部分都没有多少参考价值，都是为了弥补P2P的缺陷所打的补丁，唯一比较值得参考的点是通过内插值和外插值混合的方式，确保模拟端载具以比较准确的轨迹运动的同时减少和主控端的延迟。</p>
+<hr>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>物理同步一直是多人网络游戏中比较不好处理的部分，如何处理拥有复杂物理模拟逻辑的载具更是难上加难。</p>
+<p>目前并没有针对载具物理同步的通用解决方案，基本都需要根据项目的具体需求和限制来决定具体的同步策略。就像《火箭联盟》的方案可以获得一个很棒的同步效果，但其回溯以及高物理帧率所带来的巨大CPU开销使其很难在手机游戏上落地。</p>
+<hr>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cxymm.net/article/Jingsongmaru/119149115">车辆动力学及在Unity、UE4中的实现</a></li>
+<li><a target="_blank" rel="noopener" href="https://app.yinxiang.com/fx/76709e67-7faa-4913-aed6-19192b007bf9">UE4的物理同步</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/341447703">浅谈物理引擎的网络同步方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ueEmiDM94IE">GDC 2018, It IS Rocket Science! The Physics of Rocket League Detailed</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gabrielgambetta.com/lag-compensation.html">Fast-Paced Multiplayer (Part IV): Lag Compensation</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/95560180">复制混乱——看门狗2的载具同步(翻译)</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/387842360">手游中的载具物理同步的实现方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://devforum.roblox.com/t/extrapolated-physics-interpolation-mode/842873">Extrapolated physics interpolation mode</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/336869551">细谈网络同步在游戏历史中的发展变化（下）</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/unreal-engine-s-painful-road/" class="category-chain-item">UnrealEngine的苦痛之路</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/UE4/">#UE4</a>
+      
+        <a href="/tags/%E8%BD%BD%E5%85%B7/">#载具</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>载具的物理同步方案</div>
+      <div>https://asancai.github.io/posts/undefined/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/53757809/" title="《Space Engineers》基于物理的预测同步方案">
+                        <span class="hidden-mobile">《Space Engineers》基于物理的预测同步方案</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://lib.baomitu.com/waline/2.14.1/waline.min.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/waline/2.14.1/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"http://119.29.239.48:8360/","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

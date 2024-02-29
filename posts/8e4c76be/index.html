@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="RainbowCyan">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 方案背景随着在场景中添加的物体类型越来越多，碰撞关系也会逐渐变得复杂。如果缺少合理的规划，包含了许多不同类型的大世界场景里将非常容易会出现各种碰撞相关的Bug，且造成额外的物理检测开销。 因此，急需梳理一份完善、详细的物理碰撞设置规范，用来指导LA、开发如何合理地修改物体碰撞设置，减少碰撞Bug出现的概率，减少不必要的物理检测开销。  2. 方案展示此碰撞方案通过参考Unreal的官方文档和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="物理设置方案">
+<meta property="og:url" content="https://asancai.github.io/posts/8e4c76be/index.html">
+<meta property="og:site_name" content="RainbowCyan">
+<meta property="og:description" content="1. 方案背景随着在场景中添加的物体类型越来越多，碰撞关系也会逐渐变得复杂。如果缺少合理的规划，包含了许多不同类型的大世界场景里将非常容易会出现各种碰撞相关的Bug，且造成额外的物理检测开销。 因此，急需梳理一份完善、详细的物理碰撞设置规范，用来指导LA、开发如何合理地修改物体碰撞设置，减少碰撞Bug出现的概率，减少不必要的物理检测开销。  2. 方案展示此碰撞方案通过参考Unreal的官方文档和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png">
+<meta property="article:published_time" content="2023-05-31T14:51:44.000Z">
+<meta property="article:modified_time" content="2023-06-05T11:02:20.347Z">
+<meta property="article:author" content="RainbowCyan">
+<meta property="article:tag" content="UE4">
+<meta property="article:tag" content="物理">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png">
+  
+  
+  
+  <title>物理设置方案 - RainbowCyan</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"asancai.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-ZLBHSHZWRX","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-ZLBHSHZWRX', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>蔬菜沙拉秘密基地</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/20230530001655.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="物理设置方案"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-31 22:51" pubdate>
+          2023年5月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">物理设置方案</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-方案背景"><a href="#1-方案背景" class="headerlink" title="1. 方案背景"></a>1. 方案背景</h2><p>随着在场景中添加的物体类型越来越多，碰撞关系也会逐渐变得复杂。如果缺少合理的规划，包含了许多不同类型的大世界场景里将非常容易会出现各种碰撞相关的Bug，且造成额外的物理检测开销。</p>
+<p>因此，急需梳理一份完善、详细的物理碰撞设置规范，用来指导LA、开发如何合理地修改物体碰撞设置，减少碰撞Bug出现的概率，减少不必要的物理检测开销。</p>
+<hr>
+<h2 id="2-方案展示"><a href="#2-方案展示" class="headerlink" title="2. 方案展示"></a>2. 方案展示</h2><p>此碰撞方案通过参考Unreal的官方文档和一些解析Unreal物理系统的文章，在了解每个配置项用途的基础上来确定<code>如何为物体添加碰撞设置</code>的最佳实践。</p>
+<h3 id="2-1-碰撞设置拆解"><a href="#2-1-碰撞设置拆解" class="headerlink" title="2.1 碰撞设置拆解"></a>2.1 碰撞设置拆解</h3><h4 id="2-1-1-Collision-Presets"><a href="#2-1-1-Collision-Presets" class="headerlink" title="2.1.1 Collision Presets"></a>2.1.1 Collision Presets</h4><p>在UnrealEngine的碰撞设置中，最重要的配置项是<code>Collision Presets</code>。</p>
+<p>Collision Presets主要包含以下几个信息：</p>
+<ol>
+<li><code>CollisionEnabled</code>：决定物体的<code>碰撞用途</code>；</li>
+<li><code>ObjectType</code>：物体的类型，决定<code>其他物体对自身</code>的<code>响应类型</code>；</li>
+<li><code>Collision Responses</code>：决定<code>自身对其他物体</code>的<code>响应类型</code>：</li>
+</ol>
+<h4 id="2-1-2-响应类型"><a href="#2-1-2-响应类型" class="headerlink" title="2.1.2 响应类型"></a>2.1.2 响应类型</h4><p> UnrealEngine提供了三种不同的响应类型，其作用分别如下：</p>
+<ul>
+<li><code>Ignore</code>：任意一方为Ignore时，双方不进行任何碰撞检测，无视任何碰撞互相穿透；</li>
+<li><code>Overlap</code>：任意一方为Overlap，且另一方不为Ignore时，双方无视任何碰撞互相穿透，但在双方重叠时会触发Overlap事件；</li>
+<li><code>Block</code>：当双方都设置为Block时，双方将进行碰撞检测且发生阻挡；<blockquote>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/E2B69F43827443DFBF050DDA5D116264.png" srcset="/img/loading.gif" lazyload alt="E2B69F43827443DFBF050DDA5D116264"></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="2-1-3-Collision-Enabled"><a href="#2-1-3-Collision-Enabled" class="headerlink" title="2.1.3 Collision Enabled"></a>2.1.3 Collision Enabled</h4><p><code>Collision Enabled</code>共有四种类型，其具体作用分别如下：</p>
+<ul>
+<li><code>NoCollision</code>：不考虑与其他物体的碰撞；</li>
+<li><code>Query Only</code>：仅用于查询，不会考虑物理仿真；</li>
+<li><code>Physics Only</code>：仅用于物理仿真，不考虑查询；</li>
+<li><code>Collision Enabled (Query and Physics)</code>：同时用于查询与仿真；</li>
+</ul>
+<p>其中，只要物体被设置为<code>Query Only</code>，那么无论其与其他物体的响应类型是什么，都会无视任何碰撞与其他物体相互穿透，并与响应类型不为Ignore的物体在互相穿透时触发Overlap事件。</p>
+<h4 id="2-1-4-Collision-Responses"><a href="#2-1-4-Collision-Responses" class="headerlink" title="2.1.4 Collision Responses"></a>2.1.4 Collision Responses</h4><p><code>Collision Responses</code>分为<code>Trace Responses</code>和<code>Object Responses</code>，这两个的数据分别来自<code>Trace Channels</code>和<code>Object Channels</code>。</p>
+<p>从底层实现上讲，<code>Trace Channels</code>和<code>Object Channels</code>并没有任何区别，这两者都定义于<code>ECollisionChannel</code>，最终转换成一个<code>32位的word</code>传递给物理引擎用于物理检测逻辑。</p>
+<blockquote>
+<p>因为UnrealEngine预留了6个Channel用于引擎内部使用，且默认创建了6个Object Channel和2个Trance Channel，所以允许项目添加的<code>最大Channel数量为18个（Trace Channels和Object Channels共用）</code>。<br><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/11D8A8B0C9CE4C58808218BCECF043BF.png" srcset="/img/loading.gif" lazyload alt="11D8A8B0C9CE4C58808218BCECF043BF"></p>
+</blockquote>
+<p>从使用上讲，<code>Trace Channels</code>主要是用于不可见的射线检测，而<code>Object Channels</code>则主要用于在场景中实际存在的物体。也正因如此，<code>Object Type</code>只能从<code>Object Channels</code>中选择而无法选择用于射线检测的<code>Trace Channels</code>。</p>
+<hr>
+<h3 id="2-2-最佳实践（建议）"><a href="#2-2-最佳实践（建议）" class="headerlink" title="2.2 最佳实践（建议）"></a>2.2 最佳实践（建议）</h3><h4 id="2-2-1-应尽量通过添加Collision-Presets来满足新的碰撞需求"><a href="#2-2-1-应尽量通过添加Collision-Presets来满足新的碰撞需求" class="headerlink" title="2.2.1 应尽量通过添加Collision Presets来满足新的碰撞需求"></a>2.2.1 应尽量通过添加Collision Presets来满足新的碰撞需求</h4><p>从上面可以知道，真正影响自身对其他物体的响应类型的配置项是<code>Collision Responses</code>，而<code>Object Type</code>的主要作用则是增加<code>Collision Responses</code>的维度，提高排列组合的数量，满足不同的碰撞需求。</p>
+<p>当现有的Object Type无法满足需求时，可以考虑添加Object Type。</p>
+<blockquote>
+<p>如果只有一个<code>WorldStatic</code>这一个<code>Object Type</code>，那么当需要添加只阻挡玩家控制角色而其他物体可以正常通过的空气墙时，则无法满足要求。此时，应考虑新增一个名为<code>Pawn</code>的<code>Object Type</code>；</p>
+</blockquote>
+<p>为了满足绝大部分的碰撞需求，UnrealEngine默认提供了6个Object Type，分别如下：</p>
+<ul>
+<li>WorldStatic：静态几何物件，如山石，树干等；</li>
+<li>WorldDynamic：动态几何物件，如房门，地面可拾取物等；</li>
+<li>Pawn：人物或类人的东西，如玩家，野怪；</li>
+<li>PhysicsBody：物理体；</li>
+<li>Vehicle：载具，如摩托车，飞机等；</li>
+<li>Destructible：可破坏物件，如栅栏，窗户等；</li>
+</ul>
+<p>根据排列组合原理，这大概能组合出3^6种碰撞设置。因此，理论上不存在因为无法满足碰撞需求而添加Object Type的场景。</p>
+<blockquote>
+<p>当你为了碰撞表现而考虑添加一个Object Type的时候，大概率你应该停下来想想如何添加一个合适的Collision Presets。</p>
+</blockquote>
+<h4 id="2-2-2-通过Object-Type减少性能开销"><a href="#2-2-2-通过Object-Type减少性能开销" class="headerlink" title="2.2.2 通过Object Type减少性能开销"></a>2.2.2 通过Object Type减少性能开销</h4><p>UnrealEngine使用的PhysX引擎将查询细分为以下几个阶段：</p>
+<ol>
+<li><code>Broad Phase</code>：遍历全局场景空间分区结构找出候选物体；</li>
+<li><code>Pre-Filtering</code>：根据掩码来判断是否剔除物体；</li>
+<li><code>Mid Phase</code>：遍历候选物体的三角形网格和高度场内部剔除结构，得出较小的三角形网格集合；</li>
+<li><code>Narrow Phase</code>：对最终筛选出的三角形网格执行精确的相交测试；</li>
+<li><code>Post-Filtering</code>：确定是否丢弃某些通过检测的物体；</li>
+</ol>
+<p>如果能在<code>Pre-Filtering</code>阶段使用掩码尽量筛选出符合要求的物体，那么将极大地减少物理查询时的性能开销。</p>
+<p>PhysX引擎允许自定义<code>Pre-Filtering</code>函数来修改剔除物体的逻辑。如果没有任何自定义的函数，将使用PhysX内置的<code>Pre-Filtering</code>逻辑，使用<code>查询位掩码</code>来判断是否剔除物体。</p>
+<p>而在UnrealEngine中，<code>查询位掩码</code>被分成了<code>Object Channels</code>和<code>Trace Channels</code>。因此，对于一些需要<code>频繁</code>通过<code>物理查询操作（如射线检测和Trigger）</code>来获取的物体，可以专门添加一个<code>Object Type</code>，或者是复用场景中使用较少的<code>Object Type</code>，从而减少性能开销。</p>
+<h4 id="2-2-3-尽量缩小射线检测范围"><a href="#2-2-3-尽量缩小射线检测范围" class="headerlink" title="2.2.3 尽量缩小射线检测范围"></a>2.2.3 尽量缩小射线检测范围</h4><p>射线检测，可以理解成凭空构造一个指定形状的物体并修改其碰撞设置，然后让其从StartPoint一直移动到EndPoint，最后获取其在移动过程中的碰撞结果。</p>
+<p>UE4在<code>UWorld</code>中提供了很多个射线检测的接口<code>（UKismetSystemLibrary中的射线检测接口也是调用的UWorld的接口）</code>，它们都可以归结成以下形式：</p>
+<blockquote>
+<p>[射线形状: LineTrace | Sweep] +[检测类型：Multi | Single]  + [检测目标：ForObjects | ByChannel | ByProfile]</p>
+</blockquote>
+<p>其中，<code>LineTrace</code>意味着射线形状为点，而<code>Sweep</code>则意味着可以指定射线的形状。至于检测类型，<code>Multi</code>和<code>Single</code>的区别在于，Single在检测到任意一个物体时就会终止。而Multi则会一直检测，直到检测到第一个响应类型为Block的物体时中止，并将检测过程中遇到的所有响应类型为Overlap的物体一起放到检测结果中。</p>
+<p>最后，<code>ForObjects</code>意味着指定可以被射线检测到的Object Type，所有被设置为指定Object Type的物体都能被检测到。<code>ByChannel</code>则意味着将射线设置为指定的Channel，然后根据物体的碰撞设置来得到射线与物体的响应类型，从而判断物体是否能被检测到。而<code>ByProfile</code>的大致逻辑跟<code>ByChannel</code>很像，区别在于ByChannel是只设置Channel，而ByPorfile则是将射线设置为指定的<code>Collision Presets</code>，然后再去根据响应类型判断物体能否被检测到。</p>
+<blockquote>
+<p>值得说明的是，<code>ByChannel</code>接口接收的Channel类型为<code>ECollisionChannel</code>，这意味着Object Channels其实可以当成Trace Channels来使用。</p>
+</blockquote>
+<p>总的来说，无论使用何种方法进行检测，其最主要的目的是，尽量缩小检测范围，在检测阶段就将无关的物体剔除，而不是设定一个很宽泛的检测范围，然后在检测结果进行剔除。</p>
+<blockquote>
+<p>具体原因可以参见<code>2.2.2 通过Object Type减少性能开销</code>。</p>
+</blockquote>
+<h4 id="2-2-4-通过Trace-Channel缩小射线检测范围"><a href="#2-2-4-通过Trace-Channel缩小射线检测范围" class="headerlink" title="2.2.4 通过Trace Channel缩小射线检测范围"></a>2.2.4 通过Trace Channel缩小射线检测范围</h4><p>如果需要频繁通过射线检测获取多种物体，且这些物体的碰撞设置大不相同，那么就需要通过添加Trace Channel来缩小检测范围。</p>
+<p>例如在获取所有可以被武器攻击的物体时，可以添加一个名为<code>Weapon</code>的Trace Channel，然后手动修改所有可以被武器击中的物体的Collision Presets，将其与<code>Weapon</code>的响应类型设置为Block，那么就可以极大程度地减少武器攻击时的物理检测开销。</p>
+<h4 id="2-2-5-降低新增Channel的影响"><a href="#2-2-5-降低新增Channel的影响" class="headerlink" title="2.2.5 降低新增Channel的影响"></a>2.2.5 降低新增Channel的影响</h4><p>在添加一个新的Channel时，可以设置其与其他Channel的默认响应类型。</p>
+<p>为了避免造成预期之外的碰撞问题和性能开销，应该尽量将其默认响应类型设置为<code>Ignore</code>，然后按需在对应的Collision Presets中修改为具体的响应类型。</p>
+<blockquote>
+<p>虽然设置为Overlap不会产生阻挡问题，但仍会产生不必要的物理开销。</p>
+</blockquote>
+<hr>
+<h3 id="2-3-案例展示"><a href="#2-3-案例展示" class="headerlink" title="2.3 案例展示"></a>2.3 案例展示</h3><h4 id="2-3-1-PawnOverlap-Channel的清理"><a href="#2-3-1-PawnOverlap-Channel的清理" class="headerlink" title="2.3.1 PawnOverlap Channel的清理"></a>2.3.1 PawnOverlap Channel的清理</h4><p>添加PawnOverlap这一Object Channel的主要目的是添加一个能与Object Type为Pawn的物体触发Overlap事件的Trigger。</p>
+<p>因此，根据<code>最佳实践2.2.1</code>，此处添加一个<code>名为PawnOverlap的Collision Presets</code>更加合适。考虑到新增的物体并没有被检测的需求，只需要满足其与Pawn Channel的响应类型为Overlap即可。所以，PawnOverlap这一Collision Presets的Object Type可以直接使用<code>World Static</code>。</p>
+<h4 id="2-3-2-EasyDestructible-Channel的清理"><a href="#2-3-2-EasyDestructible-Channel的清理" class="headerlink" title="2.3.2 EasyDestructible Channel的清理"></a>2.3.2 EasyDestructible Channel的清理</h4><p>添加EasyDestructible这一Object Channel的原因是玻璃默认被设置为<code>Block All</code>，其与<code>Visiblity</code>这一Trace Channel的响应类型为<code>Block</code>，所以AI无法通过射线检测感知到玻璃之后的角色。为了解决这一问题，才添加了一个<code>名为EasyDestructible的Object Channel</code>，其与<code>Visiblity</code>的响应类型为<code>Overlap</code>。</p>
+<p>虽然这个案例涉及到射线检测，但本质上可以将其归结为碰撞需求，因为真正的述求是玻璃不再阻挡Trace Channel为Visibility的射线。</p>
+<p>因此，与<code>案例2.3.1</code>相同，应该根据<code>最佳实践2.2.1</code>添加一个<code>名为EasyDestructible的Collision Presets</code>，并确保其与Visibility的响应类型为<code>Ignore</code>，以减少<code>Overlao</code>带来的不必要的性能开销。</p>
+<h4 id="2-3-3-添加可交互物"><a href="#2-3-3-添加可交互物" class="headerlink" title="2.3.3 添加可交互物"></a>2.3.3 添加可交互物</h4><p>可交互物的交互逻辑是，通过射线检测的方式找出角色附近的可交互物，然后在可交互的位置显示对应的指示图标，并在角色靠近时展示对应的交互UI。</p>
+<p>从上面的描述不难知道，可交互物的交互逻辑可以分为两部分：</p>
+<p>（１）以Trigger的方式在角色靠近时触发Overlap事件；</p>
+<p>（2）可以通过射线检测的方式被发现；</p>
+<p>其中，（1）部分可以参照<code>2.3.1案例</code>，通过添加Collision Presets的方式来实现。至于（2）部分，为了尽可能避免射线检测时的不必要开销，按照<code>最佳实践2.2.3</code>，此时应该添加一个可交互物专用的Object Channel，并将新增Collision Preset的Object Type设置为新增的Channel。</p>
+<hr>
+<h2 id="3-碰撞设置规范"><a href="#3-碰撞设置规范" class="headerlink" title="3. 碰撞设置规范"></a>3. 碰撞设置规范</h2><p>暂无；</p>
+<hr>
+<h2 id="4-分阶段实施"><a href="#4-分阶段实施" class="headerlink" title="4. 分阶段实施"></a>4. 分阶段实施</h2><ol>
+<li>同步dev和stable的碰撞设置；</li>
+<li>逐步删除冗余的Object Channel，用其他方案代替；</li>
+<li>总结步骤2的替代方案，完善<code>2.3 案例展示</code>部分；</li>
+<li>总结一些常用物体的Collision Presets，整理成文档供LA查询；</li>
+<li>接入LA使用的一键应用Collision Presets工具；</li>
+</ol>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/SceneQueries.html">PhysX文档-场景查询</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62356261">UE4物理模块（三）—碰撞查询（下）SAP&#x2F;MBP&#x2F;BVH算法简介</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/unreal-engine-s-painful-road/" class="category-chain-item">UnrealEngine的苦痛之路</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/UE4/">#UE4</a>
+      
+        <a href="/tags/%E7%89%A9%E7%90%86/">#物理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>物理设置方案</div>
+      <div>https://asancai.github.io/posts/8e4c76be/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>RainbowCyan</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://lib.baomitu.com/waline/2.14.1/waline.min.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/waline/2.14.1/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"http://119.29.239.48:8360/","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
