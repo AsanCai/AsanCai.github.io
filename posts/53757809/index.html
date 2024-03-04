@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/GDC.jpg">
 <meta property="article:published_time" content="2023-11-11T03:18:55.000Z">
-<meta property="article:modified_time" content="2024-01-31T12:17:41.472Z">
+<meta property="article:modified_time" content="2024-03-04T13:26:43.582Z">
 <meta property="article:author" content="RainbowCyan">
 <meta property="article:tag" content="网络同步">
 <meta name="twitter:card" content="summary_large_image">
@@ -333,7 +333,7 @@
 <p>延迟指的是，从玩家操作输入设备，到屏幕上渲染出对应游戏画面所需要的时间。</p>
 </blockquote>
 <p>如果下图所示，假设<code>游戏帧率稳定为60HZ（16.6ms每帧）</code>，<code>网络延迟（Ping）稳定为50ms</code>，不考虑丢包等问题的影响，玩家的延迟为231ms</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231119134539750.png" srcset="/img/loading.gif" lazyload alt="image-20231119134539750"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231119134539750.png" srcset="/img/loading.gif" lazyload></p>
 <blockquote>
 <p>① 操作系统检测到玩家操作输入设备需要2ms；</p>
 <p>② 客户端在游戏线程的Tick中搜集输入数据，需要16.6ms；</p>
@@ -347,7 +347,7 @@
 </blockquote>
 <p>如果网络情况较差，网络延迟提高到300ms，那么延迟则会飙升至481ms。在丢包、掉帧等问题的影响下，延迟会变得更高。</p>
 <p>如此高的延迟会给玩家带来非常差的游戏体验。一个行之有效的、可以大幅度降低延迟的策略是，客户端在获得玩家的输入数据时，立刻在本地进行模拟并渲染对应的游戏画面，也就是所谓的<code>预表现</code>。这样延迟就只需要97ms，且不受网络波动影响。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231119140402303.png" srcset="/img/loading.gif" lazyload alt="image-20231119140402303"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231119140402303.png" srcset="/img/loading.gif" lazyload></p>
 <p>但天下没有免费的午餐。前面提到，《Space Engineers》使用的Havok物理引擎是一个不确定物理引擎，因此客户端和服务器的模拟结果并不能保证完全一致。再加上网络的不稳定性，服务器收到的输入数据和客户端用来预表现的输入数据也不能保证完全一致。</p>
 <p>因此，<code>客户端预表现的结果</code>和<code>服务器模拟的结果</code>极大概率是不一致的。这也意味着，客户端需要在收到服务器下发的模拟结果时，及时对预表现的结果进行<code>纠正（Correction）</code>，从而确保不出现不同步的问题。</p>
 <hr>
@@ -372,7 +372,7 @@
 <li>最后服务器依次从缓存区里取出输入数据进行模拟；</li>
 </ol>
 <p>下图演示<code>播放延迟缓存区</code>的具体工作过程：</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231120211153010.png" srcset="/img/loading.gif" lazyload alt="image-20231120211153010"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231120211153010.png" srcset="/img/loading.gif" lazyload></p>
 <blockquote>
 <ol>
 <li><p>服务器每帧都会取出缓存区的第一个元素作为当前帧的输入数据，如果当前取出的元素为空，则表示当前帧没有任何输入数据；</p>
@@ -419,7 +419,7 @@
 <li>服务器通知服务器当前已接收的最新输入数据；</li>
 <li>客户端<code>发送缓存区</code>中服务器已确认的输入数据清理掉，不再发送；</li>
 </ol>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231120213440788.png" srcset="/img/loading.gif" lazyload alt="image-20231120213440788"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231120213440788.png" srcset="/img/loading.gif" lazyload></p>
 <p>不难看出，这个方案的缺点很明显，客户端每次都需要额外发送冗余的数据数据。当客户端网络较差，长时间收不到服务器的确认信息时，发送缓存区会迅速膨胀，不断加大后面发送输入数据的性能压力。因此，限制发送缓存区的最大上限、甚至在一定的时间间隔之后强制清空发送缓存区是很有必要的。</p>
 <p>但不可否认的是，这种方式可以很好地解决丢包、乱序的问题，让UDP在传输数据时更可靠，且实际的延迟比<code>Space Engineers</code>的方案更低。</p>
 <hr>
@@ -431,27 +431,24 @@
 <p>内插值和外插值的具体实现并不是这里的重点，在网上有很多讲解的文章<sup id="fnref:5" class="footnote-ref"><a href="#fn:5" rel="footnote"><span class="hint--top hint--rounded" aria-label="[浅谈物理引擎的网络同步方案，Clawko](https://zhuanlan.zhihu.com/p/341447703)">[5]</span></a></sup>。</p>
 </blockquote>
 <p>当然，在将位置数据放入缓存队列之前，客户端会检查位置数据的时间戳，来判断该位置数据是否过期。原视频并没有很详细地介绍缓存队列的具体工作流程，只是简单地介绍了客户端具体是如何通过时间戳来判断位置数据是否过期的。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231121175118351.png" srcset="/img/loading.gif" lazyload alt="image-20231121175118351"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231121175118351.png" srcset="/img/loading.gif" lazyload></p>
 <p>但从上面的描述，<code>个人猜测</code>具体工作流程应该是这样的。客户端在收到位置数据时，先算出该位置数据的有效时间：</p>
 <blockquote>
 <p>位置数据的有效时间：服务器时间戳 + ping &#x2F; 2 + T（T推测应该就是60ms）</p>
 </blockquote>
 <p>如果在当前用来内插值的位置数据的有效时间内，收到了更新的位置数据，那么就会将新收到的位置数据存起来，并按照服务器的时间戳排序。否则就会认为新收到的位置数据已经过期了，直接丢弃，如下图所示：</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231121192640160.png" srcset="/img/loading.gif" lazyload alt="image-20231121192640160"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231121192640160.png" srcset="/img/loading.gif" lazyload></p>
 <p>从上图中不难看到，乱序的<code>位置数据B</code>在<code>位置数据C</code>被客户端用于内插值之前到达客户端，所以位置数据B会被放到缓存区里进行排序，等待后面用于内插值。如果位置数据B在位置数据C被用于内插值之后到达客户端，那么会直接丢弃。相当于<code>位置数据B</code>在传输的过程中发生了丢包的问题。</p>
 <p>这并不影响最后的结果，只是会<code>丢失一部分运动轨迹</code>，从原本的<code>A→B→C</code>直接变成<code>A→C</code>。</p>
 <p>最后，如果客户端一直没收到新的位置数据，那么会从最后收到的<code>位置数据C</code>继续外插值一段时间，这是为了避免在网络出现波动时，后面的位置数据因为传输时延迟较大而出现<code>物体时走时停</code>的问题。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231121193403246.png" srcset="/img/loading.gif" lazyload alt="image-20231121193403246"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231121193403246.png" srcset="/img/loading.gif" lazyload></p>
 <p>当然，外插值毕竟只是猜测服务器后续的运动轨迹，外插值的时间越长，其与服务器实际运动轨迹的误差就越大。通常来讲，外插值的时间最长不能超过<code>ping / 2</code> ，当超过<code>ping / 2</code>都没收到新的位置数据时，再进行外插值就失去了意义。此时应该认为服务器上的物体已停止运动，客户端上的物体也应该立即停止运动。</p>
 <h3 id="5-2-Relative-Position-Updates"><a href="#5-2-Relative-Position-Updates" class="headerlink" title="5.2 Relative Position Updates"></a>5.2 Relative Position Updates</h3><p>Animated同步模式的主要目的在于平滑地更新物体在客户端上的位置，所付出的代价是增加物体位置更新的延迟，并且在网络不好时会丢失物体部分的运动轨迹。</p>
 <p>如果是单个物体，玩家可能察觉不到。但如果将多个物体链接在一起，并且施加一定的物理约束（如物体只能沿着链接点的某个轴转动），那么物体在各自更新位置的过程中，可能会出现物体之间穿模或者断开等违背物理约束的问题。</p>
-<img src="C:\Users\96985\Desktop\GDC\1.gif" srcset="/img/loading.gif" lazyload alt="1" style="zoom:100%;" />
-
-
-
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/1.gif" srcset="/img/loading.gif" lazyload></p>
 <p>《Space Engineers》采取的解决办法是，为这些链接在一起的物体建立一个树状的<code>层级结构（Hierarchy）</code>。其中，Root节点还是接着使用原本的Animated同步逻辑，而Children节点则略有不同。</p>
 <p>首先，服务器不再同步Child节点的<code>世界位置数据</code>，而是同步Child在Parent节点下的<code>相对位置数据</code>。然后，Child节点在Parent节点的局部坐标系下执行Animated同步逻辑，算出当前的相对位置数据，最后再其转换成世界位置数据，并修改物体的位置。这样，虽然Child节点的<code>世界位置数据</code>不一定准确，但至少彼此之间的相对位置是正确的。</p>
-<p><img src="C:\Users\96985\Desktop\GDC\2.gif" srcset="/img/loading.gif" lazyload alt="2"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/2.gif" srcset="/img/loading.gif" lazyload></p>
 <p>最后，因为链接在一起的物体是平级的，如何在它们之间选取一个物体作为Root节点并建立层级结构是一个需要解决的问题。</p>
 <p>考虑到Child节点的世界位置数据会受Parent节点的世界位置数据影响<code>（因为需要利用Parent节点的世界位置数据计算）</code>，更新的延迟会增加。因此《Space Engineers》选择的策略是：将<code>体积更大</code>或者<code>玩家当前正在操作、交互</code>的物体选择为Root节点，因为这些物体对位置数据的准确性要求更高。</p>
 <h3 id="5-3-Predicted"><a href="#5-3-Predicted" class="headerlink" title="5.3 Predicted"></a>5.3 Predicted</h3><p>Predicted同步模式只用于玩家当前所控制的物体。</p>
@@ -463,7 +460,7 @@
 <li>客户端收到服务器下发的模拟结果之后，通过帧号从<code>History List</code>中找到对应的数据进行验证，判断是否需要进行纠正；</li>
 <li>从客户端的<code>History List</code>删除已经验证过的记录（帧号比当前已被验证过的数据小的）；</li>
 </ol>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123173015750.png" srcset="/img/loading.gif" lazyload alt="image-20231123173015750"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123173015750.png" srcset="/img/loading.gif" lazyload></p>
 <p>上面的流程看上去很简单，但细究起来，会发现有很多细节需要处理：</p>
 <ol>
 <li><p><strong>如何确保<code>客户端预表现结果</code>和<code>服务器模拟结果</code>的比较是有意义的？</strong></p>
@@ -480,7 +477,7 @@
 <li><p><strong>如何让客户端和服务器的帧率尽可能保持一致？</strong></p>
 <p>让客户端和服务器的帧率尽可能保持一致的前提条件是，能知道客户端和服务器当前帧率的实际差距，从而决定如何对客户端的帧率进行调整。</p>
 <p>如何计算客户端和服务器当前帧率的实际差距呢？首先，客户端需要记录每一帧对应的<code>实际时间</code>。其次，当服务器在使用输入数据得到模拟结果之后，要把<code>输入数据的帧号</code>和<code>服务器当前的帧号</code>一起带上下发客户端。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231126143114835.png" srcset="/img/loading.gif" lazyload alt="image-20231126143114835"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231126143114835.png" srcset="/img/loading.gif" lazyload></p>
 <p>如上图所示，当客户端在第9帧收到服务器下发的数据时，用第9帧的时间戳减去第1帧的时间戳，就得到了<code>RTT（Rount-Trip Time）</code>的具体时长。</p>
 <blockquote>
 <p>用第9帧的时间戳减去第1帧的时间戳，其实应该包括RTT、输入数据在Playout Delay Buffer里等待的时间、服务器得到模拟结果的实际耗时，原视频将其近似为RTT。</p>
@@ -488,7 +485,7 @@
 <p>至于<code>服务器帧号</code>的具体用途，原视频并没有很详细地介绍。根据上下文信息，<code>个人猜测</code>服务器帧号的具体用途应该是用来得到<code>客户端对应帧</code>的时间戳。之所以会这样猜测，是因为在理想情况下，客户端会在ping &#x2F; 2之后收到服务器的模拟结果，因此可以反推出服务器在得到该模拟结果时所对应的客户端时间戳。</p>
 <p>但此时我们希望得到的是客户端和服务器之间帧率的差异，因此我们还需要知道在服务器得到该模拟结果时客户端实际的时间戳。因此，使用服务器帧号来拿客户端实际的时间戳，然后来比较服务器帧率和客户端帧率的快慢，这就比较合理了。</p>
 <p>如下图所示，不妨假设客户端的帧率低于服务器，也就是客户端每帧的耗时大于服务器。当客户端在第7帧收到服务器下发的数据时，先根据推算出的ping值，算出<code>服务器得到模拟结果的估算时间</code>，然后再根据服务器下发的帧号，找到<code>客户端对应帧的实际时间</code>。根据这两个时间，可以很快推算出客户端和服务器每帧耗时的差距，也就是左边的红色部分。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231126161524118.png" srcset="/img/loading.gif" lazyload alt="image-20231126161524118"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231126161524118.png" srcset="/img/loading.gif" lazyload></p>
 <p>但《Space Engineers》采用的算法略有不同，是先根据<code>客户端对应帧的实际时间</code>推算出<code>在客户端的实际时间下服务器数据预期的抵达时间</code>，然后再根据<code>服务器数据的实际抵达时间</code>算出客户端和服务器每帧耗时的差距，也就是右边的红色部分，从而判断客户端当前是比服务器慢还是比服务器更快。</p>
 <blockquote>
 <p>虽然算法不一样，但很明显能知道两种方法算出来的差值，也就是左右两边的红色部分是一样的。</p>
@@ -498,7 +495,7 @@
 <p>当客户端落后服务器太多，大于1000ms时，需要执行reset to server操作。原视频对这里的介绍比较含糊，只是提到了”skips all frames up to the current server time”。</p>
 <p>个人猜测，此时累积的误差已足够大，后面的调整已经失去了意义。这里最好的方式，应该是指将客户端上的History List中的所有帧都清空，并强制客户端用服务器下发的位置数据进行重置。然后以当前收到的数据包为起点，重新进行对时，开始新一轮的预测。</p>
 </blockquote>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231126201030017.png" srcset="/img/loading.gif" lazyload alt="image-20231126201030017"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231126201030017.png" srcset="/img/loading.gif" lazyload></p>
 </li>
 <li><p><strong>如何判断客户端是否需要纠正？</strong></p>
 <p>由于浮点数精度的问题，比较两个浮点数是否相等，本质上是判断这两个浮点数的差值是否在一个可接受的范围内。</p>
@@ -509,7 +506,7 @@
 <p>当对客户端进行纠正的时候，其实是在对客户端的预表现，也就是客户端所记录的<code>History List</code>进行纠正。</p>
 <p>《Rocket League》采用的纠正办法是，先回溯到<code>不同步帧</code>，然后将物体强行重置到服务器下发的位置，最后再按照<code>History List</code>所记录的输入数据重新逐帧进行模拟，得到一个新的<code>History List</code>，也就是纠正后的预表现结果。</p>
 <p>因为场景很大物体很多，重新模拟的计算量是巨大的，所以《Space Engineers》并没有采用上述方法，而是直接使用<code>不同步帧</code>中客户端与服务器模拟结果的差异值去纠正<code>History List</code>里 的每一个数据，从而得到纠正后的预表现结果。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123200738752.png" srcset="/img/loading.gif" lazyload alt="image-20231123200738752"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123200738752.png" srcset="/img/loading.gif" lazyload></p>
 <p>当然，这种修正并不是准确的，甚至某种程度上还有可能加大客户端与服务器后续模拟结果的差异。因此，在应用修正值时，应该随着时间的推进不断减小修正的幅度。</p>
 <blockquote>
 <p>原文是：The correction should be applied over time with small doses - exponential to its extent.</p>
@@ -519,19 +516,19 @@
 <h3 id="5-4-Relative-Prediction"><a href="#5-4-Relative-Prediction" class="headerlink" title="5.4 Relative Prediction"></a>5.4 Relative Prediction</h3><p>Animated同步模式下，物体的位置数据会晚于服务器，而在Predicted同步模式下，物体的位置数据则是早于服务器。</p>
 <p>如果说服务器所处的时间线是<code>现在</code>，那么玩家在客户端上控制的角色则处于<code>未来</code>，其他玩家所控制的物体则处于<code>过去</code>。此时，当玩家想控制角色与其他玩家控制的物体进行交互时，无疑会产生和服务器上不一样的结果，这就是<code>时间悖论（Time Paradox）</code>。</p>
 <p>如下所示，其他玩家开的<code>飞船（蓝色方块）</code>以50m&#x2F;s的速度向左飞行，玩家控制的<code>角色（灰色圆圈）</code>也以50m&#x2F;s的速度向左飞行，并在追上之后准备从<code>门（黄色方块）</code>进入飞船。然而，在服务器，角色所在的位置却是飞船偏后的位置。不难知道，在一段时间之后，服务器上的角色会撞在船外面无法进入，然后将客户端上的角色纠正回船外面。此时控制角色的玩家看到自己进入飞船之后又迅速被拉扯回飞船外面，这无疑是非常差的体验。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123232431683.png" srcset="/img/loading.gif" lazyload alt="image-20231123232431683"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123232431683.png" srcset="/img/loading.gif" lazyload></p>
 <p>《Space Engineers》解决这一问题的方法被称为<code>Relative Prediction</code>，和前面提到的<code>Relative Position Updates</code>很像，那就是将飞船当前玩家所控制角色的Parent节点，然后服务器给客户端下发角色的相对位置数据，此时客户端本地的History List所记录的位置数据也全部转换成相对位置数据，并在Parent节点的局部坐标系下完成纠正，最后再转换成世界位置数据。</p>
 <p>服务器下发相对位置之后，先纠正客户端的相对位置，然后再转换成世界位置。此时，角色的相对位置是正确的，但世界位置则和服务器相差比较大，这是因为转换时所使用的Parent在客户端上的世界位置是晚于服务器的。虽然此时玩家也被拉扯了，但玩家会认为是自己网络突然卡了导致没追上，而不会觉得是bug。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123234625531.png" srcset="/img/loading.gif" lazyload alt="image-20231123234625531"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123234625531.png" srcset="/img/loading.gif" lazyload></p>
 <p>那么什么时候该选择合适的Parent并切换成同步相对位置呢？</p>
 <p>一个理想的情况，是角色接触到其他物体之后，将角色所接触的物体设置为Parent然后开始同步相对位置，如角色站在其他玩家操作的飞船上。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123235455815.png" srcset="/img/loading.gif" lazyload alt="image-20231123235455815"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123235455815.png" srcset="/img/loading.gif" lazyload></p>
 <p>还有一种复杂的情况，是玩家在飞行或者行走的过程中，试图靠近其他物体（例如前面准备进入飞船）。此时，如果等待接触时再切换到同步相对位置就太晚了。这个问题可以通过给物体加上一个包围盒解决，但角色进入包围盒，且速度和当前物体接近时，就认为物体是角色潜在的操作对象，此时将该物体设置为角色Parent并开始同步相对位置是比较合理的。</p>
 <blockquote>
 <p>（1）之所以要加上速度的限制，是为了避免玩家只是单纯路过物体时，出现奇怪的拉扯问题；</p>
 <p>（2）如果角色同时进入了多个物体的包围盒，且这些物体都满足成为Parent的要求，那么会优先选择最大的物体作为Parent；</p>
 </blockquote>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123235717606.png" srcset="/img/loading.gif" lazyload alt="image-20231123235717606"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231123235717606.png" srcset="/img/loading.gif" lazyload></p>
 <hr>
 <h2 id="6-性能优化带来的问题"><a href="#6-性能优化带来的问题" class="headerlink" title="6. 性能优化带来的问题"></a>6. 性能优化带来的问题</h2><p>作为一个太空沙盒类游戏，《Space Engineers》的场景很大，需要同步的物体也很多。直接将整个游戏世界的状态全部同步给客户端会造成巨大的性能浪费，因为距离玩家过远的物体，玩家根本看不到也并不关心，同步这些物体的状态没有任何作用。</p>
 <p>因此，《Space Engineers》使用了常规的<code>AOI（Area of Interest）技术</code>，根据玩家所控制角色所在的位置，将位于其附近的物体同步给客户端。且物体与角色的距离越远，物体同步的频率就越低。</p>
@@ -543,27 +540,27 @@
 </blockquote>
 <p>这个优化策略无疑大大减少了客户端物理模拟的开销，但付出的代价则是同步上的各种的问题╮（╯＿╰）╭</p>
 <h3 id="6-1-物理模拟差异导致的不同步"><a href="#6-1-物理模拟差异导致的不同步" class="headerlink" title="6.1 物理模拟差异导致的不同步"></a>6.1 物理模拟差异导致的不同步</h3><p>当角色准备推动比较小的物体时，由于客户端上的物体是Static RigidBody，所以角色没办法推动物体，而是直接爬到物体之上。但服务器上的物体是Dynamic  RigidBody，角色可以正常推动物体，并给客户端下发物体移动后的位置数据。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231124225612556.png" srcset="/img/loading.gif" lazyload alt="image-20231124225612556"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231124225612556.png" srcset="/img/loading.gif" lazyload></p>
 <p>由于客户端和服务器的物理设置不同，导致两边的模拟结果出现了不同步的问题。再加上角色接触到了物体之后，会按照前面的<code>Relative Prediction</code>规则将物体设置为角色的Parent。那么可想而知，后面物体会正常通过Animated同步模式使用服务器下发的数据往前移动，而角色则会因为纠正而出现拉扯问题。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Small%20Entity.gif" srcset="/img/loading.gif" lazyload alt="Small Entity"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Small%20Entity.gif" srcset="/img/loading.gif" lazyload></p>
 <p>​	</p>
 <h3 id="6-2-物理属性缺失导致的不同步"><a href="#6-2-物理属性缺失导致的不同步" class="headerlink" title="6.2 物理属性缺失导致的不同步"></a>6.2 物理属性缺失导致的不同步</h3><p>被设置为Static RigidBody的物体是不具备<code>速度</code>、<code>角速度</code>等物理属性的。当角色站在运动的物体上时，如果不做特殊处理，角色的速度会和服务器保持一致，而物体则会因为被设置成Static RigidBody失去速度。相当于客户端上角色和物体之间的<code>相对运动</code>出现了极大的不同步。</p>
 <p>为了解决这一问题，当其他物体成为玩家控制角色的Parent时，服务器会将客户端的速度修改成相对速度，从而确保角色和物体的相对运动是同步的。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125111910100.png" srcset="/img/loading.gif" lazyload alt="image-20231125111910100"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125111910100.png" srcset="/img/loading.gif" lazyload></p>
 <p>同时，为了在客户端还原角色和物体之间的相对运动关系（也就是被抹除的那一部分速度所带来的位移），当服务器下发物体的位置数据让客户端修改物体的位置时，客户端会将物体位置的变化<code>传播（Propagate）</code>给角色，先让角色移动相同的距离，然后角色再以当前的实际速度向前运动。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125170139109.png" srcset="/img/loading.gif" lazyload alt="image-20231125170139109"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125170139109.png" srcset="/img/loading.gif" lazyload></p>
 <p>这种策略，本质上是通过牺牲角色世界位置的准确性为代价，来获得相对位置的正确性。不难想象，当物体的速度处于一直变化的状态时，如果角色通过跳跃等方式与物体不再进行接触，不再将物体视为Parent，切换为世界位置的同步，前面累积的巨大差异将会使角色立刻触发纠正被拉扯。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125171235867.png" srcset="/img/loading.gif" lazyload alt="image-20231125171235867"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125171235867.png" srcset="/img/loading.gif" lazyload></p>
 <p>如上图所示，当角色站在一个以固定角速度旋转的物体上时，虽然物体的速度大小不变、但速度的方向一直在变化。虽然客户端上物体的角度与服务器相差不大，但角色所在的位置相差却很大。当角色跳跃脱离物体时，会立刻触发纠正被拉扯（离开时被拉扯回正确的世界位置，但相对位置不对，于是落下时又被拉扯回正确的相对位置）。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/%20switch%20off.gif" srcset="/img/loading.gif" lazyload alt=" switch off"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/%20switch%20off.gif" srcset="/img/loading.gif" lazyload></p>
 <p>客户端无法正确预测缺失的数据，这是一个无法解决的问题。因此，《Space Engineers》只能打上一个补丁：当检测到玩家所控制的角色频繁触发纠正被拉扯时，会关闭角色的预测，将其切换到Animated同步模式。这样角色就不再会出现频繁的拉扯问题，但付出的代价则是<code>玩家的延迟大大增加</code>。</p>
 <h3 id="6-3-复杂物理约束导致的不同步"><a href="#6-3-复杂物理约束导致的不同步" class="headerlink" title="6.3 复杂物理约束导致的不同步"></a>6.3 复杂物理约束导致的不同步</h3><p>玩家可能会通过游戏提供的链接组件将许多物体链接在一起，制造出很复杂的、可控制的物体。例如下图的Strandbeest-like Walker，它的每条腿都拥有很多个关节。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125184632776.png" srcset="/img/loading.gif" lazyload alt="image-20231125184632776"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125184632776.png" srcset="/img/loading.gif" lazyload></p>
 <p>当玩家控制这个步行器时，其每个关节都需要根据玩家的输入数据在物理约束下进行物理模拟，并驱动这个步行器进行移动。因此，每个关节都需要通过Prediced同步模式进行预表现和纠正。</p>
 <p>但是，在不确定性物理引擎中，物理的模拟结果是存在差异的。尤其是在物理约束的作用下，前面关节的模拟结果会影响到后面关节的模拟结果，也就是物理模拟的误差会逐渐累积。当物体的关节越多、物理约束链越长时，其末尾的物体在客户端和服务器上的模拟差异就会越大，就会频繁地触发纠正，导致抽搐等不自然的表现。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/walker.gif" srcset="/img/loading.gif" lazyload alt="walker"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/walker.gif" srcset="/img/loading.gif" lazyload></p>
 <p>为了规避这一问题，当物体的物理约束链过于复杂时，不再对约束链上的物体进行预测，而是切换到Animated同步模式，并通过前面提到的<code>Relative Position Updates</code>，确保约束链上物体相对位置的正确性，从而获得更加流畅自然的效果。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Animated%20Walker.gif" srcset="/img/loading.gif" lazyload alt="Animated Walker"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/Animated%20Walker.gif" srcset="/img/loading.gif" lazyload></p>
 <p>虽然这会极大地提高玩家在操作步行器的延迟，但考虑到约束链的模拟本身就存在延迟（需要等上一级模拟完之后才接着模拟，可以简单地理解为力的传递需要时间），不进行预测所带来的额外延迟玩家很难察觉到，是可以接受的。</p>
 <h3 id="6-4-脏碰撞导致的不同步"><a href="#6-4-脏碰撞导致的不同步" class="headerlink" title="6.4 脏碰撞导致的不同步"></a>6.4 脏碰撞导致的不同步</h3><p>按照物体物理设置的切换规则，当玩家尝试操纵一个载具时，载具会从Static RigidBody切换成Dynamic RigidBody。此时，如果载具内部挂着另外一个物体，尽管该物体在服务器上被设置为Dynamic RigidBody，但因为该物体在客户端上没有被玩家控制，所以会被设置为Static RigidBody并与载具不断发生自碰撞。</p>
 <blockquote>
@@ -573,7 +570,7 @@
 <p>因此，唯一的可能是，载具和物体是通过某种<code>特殊的物理约束</code>链接在一起的，这中物理约束会<code>忽略物体和载具之间的碰撞</code>且只对Dynamic RigidBody起作用。当物体被设置为Static RigidBody时，这个约束会失效，自然就会出现自碰撞的问题。之所以会有这个猜测，是因为既然允许玩家自由将不同的物体链接在一起去自由建造新的东西，那肯定需要相应的措施去解决物体碰撞体重叠时的碰撞问题。</p>
 </blockquote>
 <p>针对这个问题，一个解决的方法是，如果发现玩家控制的物体出现频繁的脏碰撞，那么可以考虑将其也设置为Static RigidBody并切换到Animated同步模式，等过段时间没有检测到任何脏碰撞时，再将其恢复成Dynamic RigidBody并切换回Predicted同步模式。</p>
-<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125180550709.png" srcset="/img/loading.gif" lazyload alt="image-20231125180550709"></p>
+<p><img src="https://blog-images-1253364479.cos.ap-guangzhou.myqcloud.com/image-20231125180550709.png" srcset="/img/loading.gif" lazyload></p>
 <hr>
 <h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>总的来说，这是一次很棒的分享，里面很详细地介绍了方案的实现细节，并很客观地介绍了一些不得不做的优化，以及这些优化所带来的各种问题，并逐一分享了这些问题对同步方案的挑战和解决的思路，很有启发。</p>
 <p>唯一的缺点是分享的内容比较分散，需要多看几遍才能理解前后不同章节的内容之间的联系。但瑕不掩瑜，这仍是一个非常值得认真观看并学习的GDC分享。</p>
